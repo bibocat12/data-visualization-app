@@ -1,0 +1,8 @@
+data-visualization-app.sln
+/.vs
+data-visualization-app.vcxproj
+data-visualization-app.vcxproj.filters
+data-visualization-app.vcxproj.user
+/data-vis.FCC6E011
+/packages
+packages.config
