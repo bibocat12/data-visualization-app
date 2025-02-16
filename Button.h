@@ -22,4 +22,4 @@ private:
 	sf::Text text;
 };
 
-#endif
+#endif // BUTTON_H
