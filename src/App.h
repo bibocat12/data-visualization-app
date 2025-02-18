@@ -21,7 +21,8 @@ struct Context
 	}
 };
 
-#include "State/MenuStage.h"
+#include "State/MenuState.h"
+#include "State/SinglyLinkedListMainState.h"
 
 class App
 {

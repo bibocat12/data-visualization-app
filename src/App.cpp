@@ -18,7 +18,7 @@ App::App()
 
 	m_context->assetManager->loadFont("arial", "assets/font/arial/ARIAL.TTF");
 
-	m_context->stateMachine->addState(std::make_unique<MenuStage>(m_context), 0);
+	m_context->stateMachine->addState(std::make_unique<MenuState>(m_context), 0);
 
 }
 
@@ -46,15 +46,19 @@ void App::run()
 			timeSinceLastUpdate -= TIME_PER_FRAME;
 			m_dt = TIME_PER_FRAME;
 			m_context->stateMachine->processStateChanges();
+
+			if (m_context->stateMachine->getActiveState() == nullptr)
+			{
+				m_context->window->close();
+				break;
+			}
+
 			m_context->stateMachine->getActiveState()->processEvents();
 			m_context->stateMachine->getActiveState()->update(m_dt);
 			m_context->stateMachine->getActiveState()->draw();
 		}
 
-		m_context->stateMachine->processStateChanges();
-		m_context->stateMachine->getActiveState()->processEvents();
-		m_context->stateMachine->getActiveState()->update(m_dt);
-		m_context->stateMachine->getActiveState()->draw();
+
 	}
 
 }
