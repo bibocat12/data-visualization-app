@@ -19,6 +19,16 @@ void Textbox::setFont(sf::Font& font){
 
 void Textbox::setPosition(sf::Vector2f pos){
 	textbox.setPosition(pos);
+	boundingBox.setPosition(pos);
+}
+
+void Textbox::setSizeBox(sf::Vector2f size)
+{
+	boundingBox.setSize(size);
+	boundingBox.setFillColor(sf::Color::White);
+	boundingBox.setPosition(textbox.getPosition());
+	boundingBox.setOutlineColor(sf::Color::Black);
+	boundingBox.setOutlineThickness(2);
 }
 
 void Textbox::setLimit(bool ToF) {
@@ -47,11 +57,15 @@ std::string Textbox::getText(){
 }
 
 void Textbox::drawTo(sf::RenderWindow& window) {
+	window.draw(boundingBox);
 	window.draw(textbox);
+	
 }
 
 void Textbox::typedOn(sf::Event input) {
+	
 	if (isSelected) {
+		
 		int charTyped = input.text.unicode;
 		if (charTyped < 128) {
 			if (hasLimit) {
@@ -67,6 +81,20 @@ void Textbox::typedOn(sf::Event input) {
 			}
 		}
 	}
+}
+
+bool Textbox::isMouseOver(sf::RenderWindow& window)
+{
+	
+	float mouseX = sf::Mouse::getPosition(window).x;
+	float mouseY = sf::Mouse::getPosition(window).y;
+	if (boundingBox.getGlobalBounds().contains(mouseX, mouseY))
+	{
+		return true;
+		
+	}
+	
+	return false;
 }
 
 void Textbox::inputLogic(int charTyped){

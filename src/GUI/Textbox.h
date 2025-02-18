@@ -17,15 +17,19 @@ public:
    Textbox(int size, sf::Color color, bool sel);  
    void setFont(sf::Font& font);  
    void setPosition(sf::Vector2f pos);  
+   void setSizeBox(sf::Vector2f size);
    void setLimit(bool ToF);  
    void setLimit(bool ToF, int lim);  
    void setSelected(bool sel);  
    std::string getText();  
    void drawTo(sf::RenderWindow& window);  
    void typedOn(sf::Event input);  
+   bool isMouseOver(sf::RenderWindow& window);
+
 
 private:  
    sf::Text textbox;  
+   sf::RectangleShape boundingBox;
    std::ostringstream text;  
    bool isSelected = false;  
    bool hasLimit = false;  
