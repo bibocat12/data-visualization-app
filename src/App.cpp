@@ -13,6 +13,7 @@ App::App()
 
 	m_context->assetManager->loadTexture("background", "assets/img/background/light.jpg");
 	m_context->assetManager->loadTexture("buttonPlay", "assets/img/button/buttonPlay.jpg");
+	m_context->assetManager->loadTexture("SinglyLinkedList", "assets/img/button/SinglyLinkedList.png");
 
 
 

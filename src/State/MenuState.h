@@ -13,10 +13,13 @@
 #include <SFML/Graphics.hpp>
 
 #include "../GUI/Button.h"
+#include "../GUI/ImageButton.h"
+#include "../GUI/Label.h"
 
 #include <memory>
 #include <stack>
 #include <iostream>
+#include <vector>
 
 class MenuState :
     public Engine::State
@@ -30,13 +33,12 @@ public:
     void processEvents() override;
     void update(const sf::Time& dt) override;
     void draw() override;
-
+    std::pair<Button, ImageButton> initButton(char* text, sf::Texture image, sf::Vector2f pos);
 
 	sf::Sprite background;
 	sf::Text title, testingEvent;
 
-    Button buttonPlay{"Singly Linked List", sf::Vector2f(200, 100), 24, sf::Color::Green, sf::Color::Black};
-
+    std::vector<std::pair<Button, ImageButton >> buttons;
 private:
 	std::shared_ptr<Context> m_context;
 };

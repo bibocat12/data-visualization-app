@@ -10,7 +10,7 @@ Button::Button(char* st, sf::Vector2f size, int charSize, sf::Color bgColor, sf:
 	button.setFillColor(bgColor);
 }
 
-void Button::setFront(sf::Font &font){
+void Button::setFont(sf::Font &font){
 	text.setFont(font);
 }
 
@@ -27,7 +27,15 @@ void Button::setPosition(sf::Vector2f pos) {
 
 	float xPos = (pos.x + button.getGlobalBounds().width / 3) - (text.getGlobalBounds().width / 2);
 	float yPos = (pos.y + button.getGlobalBounds().height / 3) - (text.getGlobalBounds().height / 2);
-	text.setPosition({ xPos, yPos });
+	text.setPosition(sf::Vector2f{ xPos, yPos });
+}
+
+void Button::setLowTextPosition(sf::Vector2f pos) {
+	button.setPosition(pos);
+
+	float xPos = pos.x + (button.getGlobalBounds().width - text.getGlobalBounds().width) / 2;
+	float yPos = pos.y + button.getGlobalBounds().height - text.getCharacterSize() - 20;
+	text.setPosition(sf::Vector2f{ xPos, yPos });
 }
 
 void Button::drawTo(sf::RenderWindow& window){
@@ -51,13 +59,22 @@ bool Button::isMouseOver(sf::RenderWindow& window){
 	return false;
 }
 
-void Button::handleHover(sf::RenderWindow& window) {
+void Button::handleHover(sf::RenderWindow& window, sf::Color normalColor, sf::Color hoverColor) {
 	if (isMouseOver(window)) {
-		setBackColor(sf::Color::White);
+		setBackColor(hoverColor);
 	}
 	else {
-		setBackColor(sf::Color::Green);
+		setBackColor(normalColor);
 	}
 }
+
+sf::Vector2f Button::getPositon(){
+	return button.getPosition();
+}
+
+sf::FloatRect Button::getGlobalBounds() {
+	return button.getGlobalBounds();
+}
+
 
 
