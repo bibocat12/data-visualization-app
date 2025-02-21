@@ -10,11 +10,11 @@ MenuState::~MenuState()
 
 }
 
-std::pair<Button, ImageButton> MenuState::initButton(char* text, sf::Texture image, sf::Vector2f pos) {
+std::pair<Button, ImageButton> MenuState::initButton(char* text, sf::Texture& image, sf::Vector2f pos) {
 	Button button;
 	ImageButton imgButton;
-	button = Button(text, sf::Vector2f{ 200, 200 }, 24, Orange, sf::Color::White);
-	button.setFont(m_context->assetManager->getFont("arial"));
+	button = Button(text, buttonSize, 24, normalButtonColor, textColor);
+	button.setFont(m_context->assetManager->getFont("Oswald"));
 	button.setLowTextPosition(pos);
 
 	imgButton = ImageButton(image, 1.0f, 1.0f);
@@ -25,26 +25,72 @@ std::pair<Button, ImageButton> MenuState::initButton(char* text, sf::Texture ima
 	return std::make_pair(button, imgButton);
 }
 
+void MenuState::switchTheme() {
+	themeType ^= 1;
+	if (themeType == 1) { // dark mode
+		backgroundColor = LightBlack;
+		textColor = sf::Color::White;
+		normalButtonColor = Orange;
+		hoverButtonColor = LightOrangeYellow;
+		themeButton.setBackground(m_context->assetManager->getTexture("LightTheme"));
+		
+		// change text color
+		for (int i = 0; i < (int) buttons.size(); i++) {
+			buttons[i].first.setTextColor(textColor);
+		}
+		title.setFillColor(textColor);
+	}
+	else if (themeType == 0) { // light mode
+		backgroundColor = SuperLightPink;
+		textColor = sf::Color::Black;
+		normalButtonColor = LightBlue;
+		hoverButtonColor = MediumBlue;
+		themeButton.setBackground(m_context->assetManager->getTexture("DarkTheme"));
+
+		// change text color
+		for (int i = 0; i < (int)buttons.size(); i++) {
+			buttons[i].first.setTextColor(textColor);
+		}
+		title.setFillColor(textColor);
+	}
+}
+
 void MenuState::init()
 {
 	background.setTexture(m_context->assetManager->getTexture("background"));
 	background.setScale(0.5, 0.5);
 	background.setPosition(0, 0);
 
-
-	title.setFont(m_context->assetManager->getFont("arial"));
-	title.setString("Menu Stage");
-	title.setCharacterSize(24);
-	title.setFillColor(sf::Color::Black);
-	title.setPosition(100, 100);
-
 	testingEvent.setFont(m_context->assetManager->getFont("arial"));
 	testingEvent.setCharacterSize(24);
 	testingEvent.setFillColor(sf::Color::Black);
 	testingEvent.setPosition(100, 200);
+	
+		
+	// Init theme
+	themeType = 0;
+	themeButton = ImageButton(m_context->assetManager->getTexture("LightTheme"), 1.0f, 1.0f);
+	switchTheme();
+	
+	// Init title
+	title.setFont(m_context->assetManager->getFont("Oswald"));
+	title.setString("DS VISUALIZATION");
+	title.setCharacterSize(78);
+	title.setFillColor(textColor);
+	title.setPosition((SCREEN_WIDTH - title.getGlobalBounds().width) / 2, 30);
 
-	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{150, 150}));
-
+	//Init Button
+	buttonSize.x = 250;
+	buttonSize.y = 200;
+	float spaceX = static_cast<float>((SCREEN_WIDTH - 250 * 3) / 4);
+	float spaceY = 50.f;
+	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375}));
+	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
+	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
+	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("MST", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("Shortest Path", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
+	themeButton.setPosition(sf::Vector2f{ 1450, 80 });
 }
 
 void MenuState::pause()
@@ -67,26 +113,50 @@ void MenuState::processEvents()
 			return;
 		}
 		
-		//buttonPlay.handleHover(*m_context->window);
-		for(int i = 0; i < (int) buttons.size(); i++) 
-		{
+		for (int i = 0; i < (int)buttons.size(); i++) {
 			buttons[i].second.handleHover(*m_context->window, m_context->assetManager->getTexture("SinglyLinkedList"), m_context->assetManager->getTexture("SinglyLinkedList"));
-		}
+			buttons[i].first.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 
-		if (event.type == sf::Event::KeyPressed)
-		{
-			std::string key = std::to_string(event.key.code);
-			testingEvent.setString("Key Pressed: " + key);
-		}
-		else {
-			for (int i = 0; i < (int)buttons.size(); i++) {
-				buttons[i].first.handleHover(*m_context->window, Orange, Yellow);
-
-				if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-					m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
-				}
+			if (i == 0 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
 				break;
 			}
+
+			if (i == 1 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				break;
+			}
+
+			if (i == 2 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				break;
+			}
+
+			if (i == 3 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				break;
+			}
+
+			if (i == 4 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				break;
+			}
+
+			if (i == 5 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+				std::cerr << "Button " << i << "\n";
+				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				break;
+			}
+		}
+
+		if (themeButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			std::cerr << "Theme Button\n";
+			switchTheme();
 		}
 		
 	}
@@ -100,17 +170,15 @@ void MenuState::update(const sf::Time& dt)
 void MenuState::draw()
 {
 
-	m_context->window->clear(sf::Color(40, 40, 40)); // light black
-	//m_context->window->draw(background);
-
+	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
 	m_context->window->draw(testingEvent);
-	//buttonPlay.drawTo(*m_context->window);
 
 	for (int i = 0; i < (int) buttons.size(); i++) {
 		buttons[i].first.drawTo(*m_context->window);
 		buttons[i].second.drawTo(*m_context->window);
 	}
+	themeButton.drawTo(*m_context->window);
 
 	m_context->window->display();
 }

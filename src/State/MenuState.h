@@ -33,12 +33,24 @@ public:
     void processEvents() override;
     void update(const sf::Time& dt) override;
     void draw() override;
-    std::pair<Button, ImageButton> initButton(char* text, sf::Texture image, sf::Vector2f pos);
 
 	sf::Sprite background;
 	sf::Text title, testingEvent;
 
-    std::vector<std::pair<Button, ImageButton >> buttons;
 private:
 	std::shared_ptr<Context> m_context;
+
+private:
+    sf::Color backgroundColor;
+    sf::Color textColor;
+    sf::Color normalButtonColor;
+    sf::Color hoverButtonColor;
+    std::vector<std::pair<Button, ImageButton >> buttons;
+    int themeType;
+    sf::Vector2f buttonSize;
+    ImageButton themeButton;
+
+public:
+    std::pair<Button, ImageButton> initButton(char* text, sf::Texture& image, sf::Vector2f pos);
+    void switchTheme();
 };

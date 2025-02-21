@@ -16,10 +16,10 @@ public:
 	void drawTo(sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void handleHover(sf::RenderWindow& window, sf::Color normalColor, sf::Color hoverColor);
-	sf::Vector2f getPositon();
-	sf::FloatRect getGlobalBounds();
+	sf::Vector2f getPositon() const;
+	sf::FloatRect getGlobalBounds() const;
 private:
-	sf::RectangleShape button;
+	sf::RectangleShape button; 
 	sf::Text text;
 };
 

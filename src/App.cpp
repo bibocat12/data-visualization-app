@@ -14,10 +14,12 @@ App::App()
 	m_context->assetManager->loadTexture("background", "assets/img/background/light.jpg");
 	m_context->assetManager->loadTexture("buttonPlay", "assets/img/button/buttonPlay.jpg");
 	m_context->assetManager->loadTexture("SinglyLinkedList", "assets/img/button/SinglyLinkedList.png");
-
+	m_context->assetManager->loadTexture("LightTheme", "assets/img/button/LightTheme.png");
+	m_context->assetManager->loadTexture("DarkTheme", "assets/img/button/DarkTheme.png");
 
 
 	m_context->assetManager->loadFont("arial", "assets/font/arial/ARIAL.TTF");
+	m_context->assetManager->loadFont("Oswald", "assets/font/Oswald/static/Oswald-Bold.TTF");
 
 	m_context->stateMachine->addState(std::make_unique<MenuState>(m_context), 0);
 

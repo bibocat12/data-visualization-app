@@ -6,3 +6,8 @@ const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f);
 
 const sf::Color Orange = sf::Color(255, 165, 0);
 const sf::Color Yellow = sf::Color::Yellow;
+const sf::Color LightBlack = sf::Color(40, 40, 40);
+const sf::Color SuperLightPink(255, 230, 240, 40);
+const sf::Color LightBlue(180, 220, 255, 150);
+const sf::Color MediumBlue(120, 180, 255, 180);
+const sf::Color LightOrangeYellow(255, 200, 100);

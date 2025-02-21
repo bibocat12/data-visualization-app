@@ -25,8 +25,8 @@ void Button::setTextColor(sf::Color color) {
 void Button::setPosition(sf::Vector2f pos) {
 	button.setPosition(pos);
 
-	float xPos = (pos.x + button.getGlobalBounds().width / 3) - (text.getGlobalBounds().width / 2);
-	float yPos = (pos.y + button.getGlobalBounds().height / 3) - (text.getGlobalBounds().height / 2);
+	float xPos = pos.x + (button.getGlobalBounds().width - text.getGlobalBounds().width) / 2;
+	float yPos = pos.y + (button.getGlobalBounds().height - text.getCharacterSize()) / 2;
 	text.setPosition(sf::Vector2f{ xPos, yPos });
 }
 
@@ -68,11 +68,11 @@ void Button::handleHover(sf::RenderWindow& window, sf::Color normalColor, sf::Co
 	}
 }
 
-sf::Vector2f Button::getPositon(){
+sf::Vector2f Button::getPositon() const {
 	return button.getPosition();
 }
 
-sf::FloatRect Button::getGlobalBounds() {
+sf::FloatRect Button::getGlobalBounds() const {
 	return button.getGlobalBounds();
 }
 
