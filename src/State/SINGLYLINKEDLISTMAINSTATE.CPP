@@ -1,4 +1,5 @@
 #include "SinglyLinkedListMainState.h"
+#include "../StateMachine/DEFINITION.h"
 
 SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context)
 {
@@ -53,11 +54,11 @@ void SinglyLinkedListMainState::processEvents()
 			m_context->window->close();
 			return;
 		}
-		startButton.handleHover(*m_context->window);
-		insertButton.handleHover(*m_context->window);
-		deleteButton.handleHover(*m_context->window);
-		searchButton.handleHover(*m_context->window);
-		backButton.handleHover(*m_context->window);
+		startButton.handleHover(*m_context->window, Orange, Yellow);
+		insertButton.handleHover(*m_context->window, Orange, Yellow);
+		deleteButton.handleHover(*m_context->window, Orange, Yellow);
+		searchButton.handleHover(*m_context->window, Orange, Yellow);
+		backButton.handleHover(*m_context->window, Orange, Yellow);
 
 		if (event.type == sf::Event::MouseButtonPressed)
 		{
