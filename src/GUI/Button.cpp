@@ -44,19 +44,8 @@ void Button::drawTo(sf::RenderWindow& window){
 }
 
 bool Button::isMouseOver(sf::RenderWindow& window){
-	float mouseX = sf::Mouse::getPosition(window).x;
-	float mouseY = sf::Mouse::getPosition(window).y;
-
-	float buttonPosX = button.getPosition().x;
-	float buttonPosY = button.getPosition().y;
-
-	float buttonxPosWidth = button.getPosition().x + button.getGlobalBounds().width;
-	float buttonyPosHeight = button.getPosition().y + button.getGlobalBounds().height;
-
-	if (buttonPosX < mouseX && mouseX < buttonxPosWidth && buttonPosY < mouseY && mouseY < buttonyPosHeight) {
-		return true;
-	}
-	return false;
+	sf::Vector2i mousePos = sf::Mouse::getPosition(window);
+	return button.getGlobalBounds().contains(static_cast<float>(mousePos.x), static_cast<float>(mousePos.y));
 }
 
 void Button::handleHover(sf::RenderWindow& window, sf::Color normalColor, sf::Color hoverColor) {
@@ -66,6 +55,11 @@ void Button::handleHover(sf::RenderWindow& window, sf::Color normalColor, sf::Co
 	else {
 		setBackColor(normalColor);
 	}
+}
+
+void Button::setText(std::string str)
+{
+	text.setString(str);
 }
 
 sf::Vector2f Button::getPositon() const {

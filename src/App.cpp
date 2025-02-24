@@ -2,7 +2,7 @@
 
 
 App::App()
-	: m_context(std::make_shared<Context>() )
+	: m_context(std::make_shared<Context>())
 {
 	if (m_context->window) {
 		m_context->window->create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Data Visualizer App");

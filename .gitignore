@@ -1,8 +1,6 @@
-data-visualization-app.sln
-/.vs
-data-visualization-app.vcxproj
-data-visualization-app.vcxproj.filters
-data-visualization-app.vcxproj.user
-/data-vis.FCC6E011
-/packages
-packages.config
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/data-visualization-app
+/data-vis.29A9BC05/x64/Debug

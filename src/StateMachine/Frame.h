@@ -12,25 +12,24 @@
 
 namespace Engine
 {
-	class Frame
-	{
-	public:
-		Frame() {}
-		~Frame() {}
+    class Frame {
+    public:
+        Frame() = default;
 
-		void addButton(std::string name, std::unique_ptr<Button> button);
-		void addNode(std::string name, std::unique_ptr<Node> node);
+		void init(Frame frame);
 
-		std::unique_ptr<Button> getButton(std::string name);
-		Node getNode(std::string name);
+        void addButton(std::string name, std::shared_ptr<Button> button);
+        void addNode(std::string name, std::shared_ptr<Node> node);
 
-		void drawAll(sf::RenderWindow& window);
+        std::shared_ptr<Button> getButton(std::string name);
+        std::shared_ptr<Node> getNode(std::string name);
 
+        void drawAll(sf::RenderWindow& window);
 
-	private:
+    private:
+        std::map<std::string, std::shared_ptr<Button>> buttonMap;
+        std::map<std::string, std::shared_ptr<Node>> nodeMap;
+    };
 
-		std::map<std::string, std::unique_ptr<Button>> buttonMap;
-		std::map<std::string, std::unique_ptr<Node>> nodeMap;
-	};
 }
 
