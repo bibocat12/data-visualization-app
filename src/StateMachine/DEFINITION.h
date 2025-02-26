@@ -11,3 +11,15 @@ const sf::Color SuperLightPink(255, 230, 240, 40);
 const sf::Color LightBlue(180, 220, 255, 150);
 const sf::Color MediumBlue(120, 180, 255, 180);
 const sf::Color LightOrangeYellow(255, 200, 100);
+const sf::Color LavenderSoft(180, 150, 255);
+const sf::Color DarkGrey(50, 50, 50);
+const sf::Color DeepSkyBlue(0, 128, 255);
+const sf::Color Silver(192, 192, 192);
+const sf::Color Gunmetal(80, 90, 100);
+const sf::Color LightGray(200, 200, 200);
+const sf::Color RoyalBlue(65, 105, 225);
+const sf::Color Gold(255, 215, 0);
+const sf::Color SoftBlue(70, 130, 180);
+const sf::Color NavyBlue(0, 0, 128);
+const sf::Color GoldenOrange(255, 165, 0); 
+

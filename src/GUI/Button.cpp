@@ -1,7 +1,7 @@
 #include "Button.h"
 
 
-Button::Button(char* st, sf::Vector2f size, int charSize, sf::Color bgColor, sf::Color textColor) {
+Button::Button(std::string st, sf::Vector2f size, int charSize, sf::Color bgColor, sf::Color textColor) {
 	text.setString(st);
 	text.setColor(textColor);
 	text.setCharacterSize(charSize);

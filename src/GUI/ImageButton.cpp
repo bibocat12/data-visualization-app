@@ -42,6 +42,16 @@ bool ImageButton::isMouseOver(sf::RenderWindow& window) {
 	return false;
 }
 
+bool ImageButton::isMouseOverCircle(sf::RenderWindow& window) {
+	float mouseX = sf::Mouse::getPosition(window).x;
+	float mouseY = sf::Mouse::getPosition(window).y;
+	float radius = button.getGlobalBounds().width / 2;
+
+	float dx = mouseX - (button.getPosition().x + radius);
+	float dy = mouseY - (button.getPosition().y + radius);
+	return (dx * dx + dy * dy) <= (radius * radius);
+}
+
 void ImageButton::handleHover(sf::RenderWindow& window, const sf::Texture& normalTexture, const sf::Texture& pressedTexture) {
 	if (isMouseOver(window)) {
 		setBackground(pressedTexture);
@@ -50,5 +60,4 @@ void ImageButton::handleHover(sf::RenderWindow& window, const sf::Texture& norma
 		setBackground(normalTexture);
 	}
 }
-
 

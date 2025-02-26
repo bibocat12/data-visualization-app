@@ -5,6 +5,7 @@ void Engine::AssetManager::loadTexture(std::string name, std::string fileName)
 	std::unique_ptr<sf::Texture> texture = std::make_unique<sf::Texture>();
 	if (texture->loadFromFile(fileName))
 	{
+		texture->setSmooth(true);
 		m_textures[name] = std::move(texture);
 	}
 	else

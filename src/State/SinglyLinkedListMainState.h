@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "../StateMachine/State.h"
 #include "../StateMachine/StateMachine.h"
 #include "../StateMachine/AssetManager.h"
@@ -9,8 +8,12 @@
 
 
 #include "../GUI/Button.h"
+#include "../GUI/ImageButton.h"
 #include "../GUI/Node.h"
 #include "../GUI/Textbox.h"
+#include "../GUI/Label.h"
+#include "../GUI/Slider.h"
+
 
 #include "../App.h"
 #include "MenuState.h"
@@ -34,15 +37,42 @@ public:
 
 	sf::Sprite background;
 
-	Button startButton;
-	Button insertButton;
-	Button deleteButton;
-	Button searchButton;
-	Button backButton;
-
 	std::vector<Engine::Frame> m_frames;
 
 private:
 	std::shared_ptr<Context> m_context;
+
+private:
+	sf::Text title;
+	sf::Color backgroundColor;
+	sf::Color textColor;
+	sf::Color normalButtonColor;
+	sf::Color hoverButtonColor;
+	sf::Vector2f buttonSize;
+	sf::Vector2f panelSize;
+
+	ImageButton themeButton;
+	ImageButton homeButton;
+	Button createButton;
+	Button insertButton;
+	Button deleteButton;
+	Button updateButton;
+	Button searchButton;
+	std::vector<Label> codePanel;
+
+	Slider aniSlider;
+	Slider speedSlider;
+	ImageButton playButton;
+	ImageButton replayButton;
+	ImageButton pauseButton;
+	ImageButton nextButton;
+	ImageButton previousButton;
+	ImageButton rewindButton;
+	ImageButton forwardButton;
+
+public:
+	void initButton(Button& button, char* text, sf::Vector2f pos);
+	void switchTheme();
+	Label initPanel(char* st, sf::Vector2f pos, sf::Color backColor);
 };
 

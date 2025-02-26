@@ -46,9 +46,9 @@ private:
     sf::Color normalButtonColor;
     sf::Color hoverButtonColor;
     std::vector<std::pair<Button, ImageButton >> buttons;
-    int themeType;
     sf::Vector2f buttonSize;
     ImageButton themeButton;
+    int themeType;
 
 public:
     std::pair<Button, ImageButton> initButton(char* text, sf::Texture& image, sf::Vector2f pos);

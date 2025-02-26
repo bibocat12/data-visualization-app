@@ -16,11 +16,23 @@ App::App()
 	m_context->assetManager->loadTexture("SinglyLinkedList", "assets/img/button/SinglyLinkedList.png");
 	m_context->assetManager->loadTexture("LightTheme", "assets/img/button/LightTheme.png");
 	m_context->assetManager->loadTexture("DarkTheme", "assets/img/button/DarkTheme.png");
+	m_context->assetManager->loadTexture("HomeButton", "assets/img/button/HomeButton.png");
+	m_context->assetManager->loadTexture("Play", "assets/img/button/Play.png");
+	m_context->assetManager->loadTexture("Next", "assets/img/button/Next.png");
+	m_context->assetManager->loadTexture("Previous", "assets/img/button/Previous.png");
+	m_context->assetManager->loadTexture("Forward", "assets/img/button/Forward.png");
+	m_context->assetManager->loadTexture("Rewind", "assets/img/button/Rewind.png");
+	m_context->assetManager->loadTexture("Replay", "assets/img/button/Replay.png");
+	m_context->assetManager->loadTexture("Pause", "assets/img/button/Pause.png");
 
 
 	m_context->assetManager->loadFont("arial", "assets/font/arial/ARIAL.TTF");
 	m_context->assetManager->loadFont("Oswald", "assets/font/Oswald/static/Oswald-Bold.TTF");
+	m_context->assetManager->loadFont("Oswald-Light", "assets/font/Oswald/static/Oswald-Light.TTF");
+	m_context->assetManager->loadFont("JetBrainsMono-Regular", "assets/font/JetBrains_Mono/static/JetBrainsMono-Regular.TTF");
+	m_context->assetManager->loadFont("Neon", "assets/font/Neon/Neon.TTF");
 
+	*m_context->themeType = 0;
 	m_context->stateMachine->addState(std::make_unique<MenuState>(m_context), 0);
 
 }

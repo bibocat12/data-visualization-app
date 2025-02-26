@@ -2,12 +2,13 @@
 #define BUTTON_H
 
 #include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
 
 class Button {
 public:
 	Button() {}
-	Button(char* st, sf::Vector2f size, int charSize, sf::Color bgColor, sf::Color textColor);
+	Button(std::string st, sf::Vector2f size, int charSize, sf::Color bgColor, sf::Color textColor);
 	void setFont(sf::Font& font);
 	void setBackColor(sf::Color color);
 	void setTextColor(sf::Color color);

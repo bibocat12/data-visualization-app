@@ -7,11 +7,16 @@
 class Label{
 public:
 	Label() {};
-	Label(char* st, int charSize, sf::Color textColor, sf::Font& font);
+	Label(std::string st, int charSize, sf::Vector2f size, sf::Color backColor, sf::Color textColor, sf::Font& font);
 	void setPosition(sf::Vector2f pos);
+	void setFont(sf::Font& font);
+	void setBackColor(sf::Color color);
+	void setTextColor(sf::Color color);
 	void drawTo(sf::RenderWindow& window);
+	void setText(std::string st);
 	
 private:
+	sf::RectangleShape shape;
 	sf::Text text;
 };
 
