@@ -34,9 +34,9 @@ void MenuState::switchTheme() {
 		normalButtonColor = Orange;
 		hoverButtonColor = LightOrangeYellow;
 		themeButton.setBackground(m_context->assetManager->getTexture("LightTheme"));
-		
+
 		// change text color
-		for (int i = 0; i < (int) buttons.size(); i++) {
+		for (int i = 0; i < (int)buttons.size(); i++) {
 			buttons[i].first.setTextColor(textColor);
 		}
 		title.setFillColor(textColor);
@@ -66,13 +66,13 @@ void MenuState::init()
 	testingEvent.setCharacterSize(24);
 	testingEvent.setFillColor(sf::Color::Black);
 	testingEvent.setPosition(100, 200);
-	
-		
+
+
 	// Init theme
 	themeType = *m_context->themeType;
 	themeButton = ImageButton(m_context->assetManager->getTexture("LightTheme"), 1.0f, 1.0f);
 	switchTheme();
-	
+
 	// Init title
 	title.setFont(m_context->assetManager->getFont("Oswald"));
 	title.setString("DS VISUALIZATION");
@@ -85,6 +85,7 @@ void MenuState::init()
 	buttonSize.y = 200;
 	float spaceX = static_cast<float>((SCREEN_WIDTH - 250 * 3) / 4);
 	float spaceY = 50.f;
+
 	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375}));
 	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
 	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
@@ -92,6 +93,7 @@ void MenuState::init()
 	buttons.push_back(initButton("MST", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
 	buttons.push_back(initButton("Shortest Path", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
 	themeButton.setPosition(sf::Vector2f{ 1450, 30 });
+
 }
 
 void MenuState::pause()
@@ -113,7 +115,7 @@ void MenuState::processEvents()
 			m_context->window->close();
 			return;
 		}
-		
+
 		for (int i = 0; i < (int)buttons.size(); i++) {
 			buttons[i].second.handleHover(*m_context->window, m_context->assetManager->getTexture("SinglyLinkedList"), m_context->assetManager->getTexture("SinglyLinkedList"));
 			buttons[i].first.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -159,7 +161,7 @@ void MenuState::processEvents()
 			std::cerr << "Theme Button\n";
 			switchTheme();
 		}
-		
+
 	}
 }
 
@@ -179,7 +181,7 @@ void MenuState::draw()
 	m_context->window->draw(title);
 	m_context->window->draw(testingEvent);
 
-	for (int i = 0; i < (int) buttons.size(); i++) {
+	for (int i = 0; i < (int)buttons.size(); i++) {
 		buttons[i].first.drawTo(*m_context->window);
 		buttons[i].second.drawTo(*m_context->window);
 	}

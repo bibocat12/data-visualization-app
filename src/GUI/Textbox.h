@@ -9,6 +9,7 @@
 #define ENTER_KEY 13  
 #define ESCAPE_KEY 27  
 
+
 class Textbox {
 public:
 	Textbox() {}
@@ -23,6 +24,8 @@ public:
 	void drawTo(sf::RenderWindow& window);
 	void typedOn(sf::Event input);
 	bool isMouseOver(sf::RenderWindow& window);
+
+
 
 
 private:

@@ -1,5 +1,5 @@
 #include "SinglyLinkedListMainState.h"
-#include "../StateMachine/DEFINITION.h"
+
 
 void SinglyLinkedListMainState::switchTheme() {
 	*m_context->themeType ^= 1;
@@ -57,6 +57,7 @@ void SinglyLinkedListMainState::initButton(Button& button, char* text, sf::Vecto
 
 SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context)
 {
+
 	// Init theme
 	*m_context->themeType ^= 1;
 	themeButton = ImageButton(m_context->assetManager->getTexture("LightTheme"), 1.0f, 1.0f);
@@ -99,6 +100,7 @@ SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& c
 	// Init Animation slider
 	aniSlider = Slider(sf::Vector2f{ buttonSize.x + 50, checkpointY }, sf::Vector2f{ SCREEN_WIDTH - 10 - panelSize.x - buttonSize.x - 100, 20.f }, sf::Vector2f{ 20, 20 });
 	aniSlider.setColor(LightGray, RoyalBlue, Gold);
+
 
 
 	playButton = ImageButton(m_context->assetManager->getTexture("Play"), 1.0f, 1.0f);
@@ -161,6 +163,7 @@ void SinglyLinkedListMainState::processEvents()
 			m_context->window->close();
 			return;
 		}
+
 		createButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 		insertButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 		deleteButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -215,6 +218,7 @@ void SinglyLinkedListMainState::processEvents()
 		std::string st = "1.0x";
 		st[0] = char(speedSlider.getPartIndex() + 1 + '0');
 		speedSlider.setMaxText(st);
+
 	}
 }
 
@@ -225,13 +229,16 @@ void SinglyLinkedListMainState::update(const sf::Time& dt)
 
 void SinglyLinkedListMainState::draw()
 {
+
 	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
 	createButton.drawTo(*m_context->window);
+
 	insertButton.drawTo(*m_context->window);
 	deleteButton.drawTo(*m_context->window);
 	updateButton.drawTo(*m_context->window);
 	searchButton.drawTo(*m_context->window);
+
 
 	themeButton.drawTo(*m_context->window);
 	homeButton.drawTo(*m_context->window);
@@ -249,8 +256,138 @@ void SinglyLinkedListMainState::draw()
 	forwardButton.drawTo(*m_context->window);
 	replayButton.drawTo(*m_context->window);
 	pauseButton.drawTo(*m_context->window);
+  
+	updateFrames();
+
+
 	m_context->window->display();
 
 }
 
+
+void SinglyLinkedListMainState::handleButtonEvents( const  sf::Event& event)
+{
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
+	{
+		std::cerr << "Button pressed\n";
+		if (startButton.isMouseOver(*m_context->window))
+			handleStartButtonEvents(event);
+		else if (insertButton.isMouseOver(*m_context->window))
+			handleInsertButtonEvents(event);
+		else if (deleteButton.isMouseOver(*m_context->window))
+			handleDeleteButtonEvents(event);
+		else if (searchButton.isMouseOver(*m_context->window))
+			handleSearchButtonEvents(event);
+		else if (backButton.isMouseOver(*m_context->window))
+			handleBackButtonEvents(event);
+		else if (randomButton.isMouseOver(*m_context->window))
+		{
+			std::cout << "Random Button:";
+			handleRandomButtonEvents(event);
+		}
+	}
+}
+
+void SinglyLinkedListMainState::handleRandomButtonEvents(sf::Event event)
+{
+	std::cout << "Random Button:";
+	int n;
+	std::cin >> n;
+	std::vector<int> allElements;
+	for (int i = 0; i < n; i++) {
+		allElements.push_back(rand() % 100);
+	}
+
+
+	LinkedList.init(allElements);
+
+	for (int x : LinkedList.getAllElements())
+	{
+		std::cout << x << " ";
+	}
+	std::cout << std::endl;
+
+	initRandomFrames();
+
+}
+
+void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
+{
+}
+
+void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
+{
+}
+
+void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
+{
+}
+
+void SinglyLinkedListMainState::handleBackButtonEvents(sf::Event event)
+{
+}
+
+void SinglyLinkedListMainState::handleStartButtonEvents(sf::Event event)
+{
+}
+
+
+
+void SinglyLinkedListMainState::initRandomFrames()
+{
+	int timeRepeat = 0;
 	
+	std::vector<int> allElements;
+	allElements = LinkedList.getAllElements();
+	Engine::Frame previousframe;
+	for (int i = 0; i < allElements.size(); i++) {
+		Engine::Frame frame;
+		std::shared_ptr<Node> node = std::make_shared<Node>();
+		node->setString(std::to_string(allElements[i]));
+		node->setFillColor(sf::Color::Green);
+		node->setOutlineColor(sf::Color::Black);
+		node->setOutlineThickness(2);
+		node->setRadius(20);
+		node->setPosition(sf::Vector2f(500 + i * 80, 30));
+		if(i != 0)
+			frame.init(previousframe);
+		frame.addNode(std::to_string(allElements[i]), std::move(node));
+		previousframe = frame;
+		for (int j = 0; j < 100; j++)
+			frames.push_back(frame);
+		frames.push_back(frame);
+	}
+
+	numFrames = frames.size();
+	isPlaying = true;
+	currentFrameIndex = 0;
+
+}
+
+void SinglyLinkedListMainState::initInsertFrames()
+{
+}
+
+void SinglyLinkedListMainState::updateFrames()
+{
+	if (isPlaying)
+	{
+		if (numFrames > 0)
+		{
+			if (currentFrameIndex < numFrames)
+			{
+				currentFrame = frames[currentFrameIndex];
+				currentFrameIndex++;
+			}
+			else
+			{
+				currentFrame = frames[currentFrameIndex - 1];
+				isPlaying = false;
+			}
+		}
+	}
+	currentFrame.drawAll(*m_context->window);
+
+}
+
+

@@ -27,18 +27,18 @@ class MenuState :
 public:
     MenuState(std::shared_ptr<Context>& context);
     ~MenuState();
-	void init() override;
+    void init() override;
     void pause() override;
     void resume() override;
     void processEvents() override;
     void update(const sf::Time& dt) override;
     void draw() override;
 
-	sf::Sprite background;
-	sf::Text title, testingEvent;
+    sf::Sprite background;
+    sf::Text title, testingEvent;
 
 private:
-	std::shared_ptr<Context> m_context;
+    std::shared_ptr<Context> m_context;
 
 private:
     sf::Color backgroundColor;

@@ -60,11 +60,13 @@ void Textbox::drawTo(sf::RenderWindow& window) {
 	window.draw(boundingBox);
 	window.draw(textbox);
 
+
 }
 
 void Textbox::typedOn(sf::Event input) {
 
 	if (isSelected) {
+
 
 		int charTyped = input.text.unicode;
 		if (charTyped < 128) {
@@ -85,7 +87,6 @@ void Textbox::typedOn(sf::Event input) {
 
 bool Textbox::isMouseOver(sf::RenderWindow& window)
 {
-
 	float mouseX = sf::Mouse::getPosition(window).x;
 	float mouseY = sf::Mouse::getPosition(window).y;
 	if (boundingBox.getGlobalBounds().contains(mouseX, mouseY))
@@ -98,6 +99,7 @@ bool Textbox::isMouseOver(sf::RenderWindow& window)
 }
 
 void Textbox::inputLogic(int charTyped) {
+
 	if (charTyped != DELETE_KEY && charTyped != ESCAPE_KEY && charTyped != ENTER_KEY) {
 		text << static_cast<char>(charTyped);
 	}
