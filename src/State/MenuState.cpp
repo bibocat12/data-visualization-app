@@ -26,8 +26,9 @@ std::pair<Button, ImageButton> MenuState::initButton(char* text, sf::Texture& im
 }
 
 void MenuState::switchTheme() {
+	*m_context->themeType ^= 1;
 	themeType ^= 1;
-	if (themeType == 1) { // dark mode
+	if (*m_context->themeType == 1) { // dark mode
 		backgroundColor = LightBlack;
 		textColor = sf::Color::White;
 		normalButtonColor = Orange;
@@ -40,7 +41,7 @@ void MenuState::switchTheme() {
 		}
 		title.setFillColor(textColor);
 	}
-	else if (themeType == 0) { // light mode
+	else if (*m_context->themeType == 0) { // light mode
 		backgroundColor = SuperLightPink;
 		textColor = sf::Color::Black;
 		normalButtonColor = LightBlue;
@@ -68,29 +69,31 @@ void MenuState::init()
 
 
 	// Init theme
-	themeType = 0;
+	themeType = *m_context->themeType;
 	themeButton = ImageButton(m_context->assetManager->getTexture("LightTheme"), 1.0f, 1.0f);
 	switchTheme();
 
 	// Init title
 	title.setFont(m_context->assetManager->getFont("Oswald"));
 	title.setString("DS VISUALIZATION");
-	title.setCharacterSize(78);
+	title.setCharacterSize(130);
 	title.setFillColor(textColor);
-	title.setPosition((SCREEN_WIDTH - title.getGlobalBounds().width) / 2, 30);
+	title.setPosition((SCREEN_WIDTH - title.getGlobalBounds().width) / 2, 40);
 
 	//Init Button
 	buttonSize.x = 250;
 	buttonSize.y = 200;
 	float spaceX = static_cast<float>((SCREEN_WIDTH - 250 * 3) / 4);
 	float spaceY = 50.f;
-	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ spaceX, 375 }));
-	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ 2 * spaceX + buttonSize.x, 375 }));
-	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ 3 * spaceX + 2 * buttonSize.x, 375 }));
-	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ spaceX, 375 + spaceY + buttonSize.y }));
-	buttons.push_back(initButton("MST", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ 2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y }));
-	buttons.push_back(initButton("Shortest Path", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{ 3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y }));
-	themeButton.setPosition(sf::Vector2f{ 1450, 80 });
+
+	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375}));
+	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
+	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
+	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("MST", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("Shortest Path", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
+	themeButton.setPosition(sf::Vector2f{ 1450, 30 });
+
 }
 
 void MenuState::pause()
@@ -169,6 +172,10 @@ void MenuState::update(const sf::Time& dt)
 
 void MenuState::draw()
 {
+	if (themeType != *m_context->themeType) {
+		*m_context->themeType ^= 1;
+		switchTheme();
+	}
 
 	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
