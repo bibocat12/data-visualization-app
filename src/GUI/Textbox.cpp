@@ -6,11 +6,17 @@ Textbox::Textbox(int size, sf::Color color, bool sel) {
 	isSelected = sel;
 
 	if (isSelected) {
-		textbox.setString("|");
+		textbox.setString(constText + "|");
 	}
 	else {
-		textbox.setString("");
+		textbox.setString(constText + "");
 	}
+}
+
+void Textbox::setConstText(std::string _text)
+{
+	constText = _text;
+	text << _text;
 }
 
 void Textbox::setFont(sf::Font& font) {
@@ -18,17 +24,19 @@ void Textbox::setFont(sf::Font& font) {
 }
 
 void Textbox::setPosition(sf::Vector2f pos) {
-	textbox.setPosition(pos);
+	this->pos = pos;
 	boundingBox.setPosition(pos);
+	textbox.setPosition(sf::Vector2f{ pos.x,  pos.y + (boundingBox.getGlobalBounds().height - textbox.getCharacterSize()) / 2 });
+	setInvisible();
 }
 
-void Textbox::setSizeBox(sf::Vector2f size)
+void Textbox::setBox(sf::Vector2f size, sf::Color boxColor)
 {
 	boundingBox.setSize(size);
-	boundingBox.setFillColor(sf::Color::White);
+	boundingBox.setFillColor(boxColor);
 	boundingBox.setPosition(textbox.getPosition());
-	boundingBox.setOutlineColor(sf::Color::Black);
-	boundingBox.setOutlineThickness(2);
+	//boundingBox.setOutlineColor(Gunmetal);
+	//boundingBox.setOutlineThickness(2);
 }
 
 void Textbox::setLimit(bool ToF) {
@@ -50,31 +58,60 @@ void Textbox::setSelected(bool sel) {
 		}
 		textbox.setString(newT);
 	}
+	else {
+		textbox.setString(text.str() + "|");
+	}
 }
 
 std::string Textbox::getText() {
-	return text.str();
+	std::string ans = "";
+	for (int i = (int)constText.size(); i < (int)text.str().size(); i++) {
+		ans += text.str()[i];
+	}
+	return ans;
+}
+
+int Textbox::getNum()
+{
+	std::string st = getText();
+	int ans = 0;
+	for (auto ch : st) ans = ans * 10 + ch - '0';
+	return ans;
 }
 
 void Textbox::drawTo(sf::RenderWindow& window) {
 	window.draw(boundingBox);
 	window.draw(textbox);
-
-
 }
 
-void Textbox::typedOn(sf::Event input) {
+void Textbox::typedOnNum(sf::Event event) {
+    if (isSelected) {
+        int charTyped = event.text.unicode;
+        if ((48 <= charTyped && charTyped <= 57 && !(text.str().length() == 0 && charTyped == 48)) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
+            if (hasLimit) {
+                if (text.str().length() <= limit + constText.length()) {
+                    inputLogic(charTyped);
+                }
+                else if (text.str().length() > limit + constText.length() && charTyped == DELETE_KEY) {
+                    deleteLastChar();
+                }
+            }
+            else {
+                inputLogic(charTyped);
+            }
+        }
+    }
+}
 
+void Textbox::typedOnAlpha(sf::Event event) {
 	if (isSelected) {
-
-
-		int charTyped = input.text.unicode;
-		if (charTyped < 128) {
+		int charTyped = event.text.unicode;
+		if ((charTyped >= 65 && charTyped <= 90) || (charTyped >= 97 && charTyped <= 122) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
 			if (hasLimit) {
-				if (text.str().length() <= limit) {
+				if (text.str().length() <= limit + constText.length()) {
 					inputLogic(charTyped);
 				}
-				else if (text.str().length() > limit && charTyped == DELETE_KEY) {
+				else if (text.str().length() > limit + constText.length() && charTyped == DELETE_KEY) {
 					deleteLastChar();
 				}
 			}
@@ -98,18 +135,35 @@ bool Textbox::isMouseOver(sf::RenderWindow& window)
 	return false;
 }
 
+void Textbox::setInvisible()
+{
+	textbox.setPosition(sf::Vector2f {-1000, 1000});
+	boundingBox.setPosition(sf::Vector2f {-1000, 1000});
+}
+
+void Textbox::setVisible()
+{
+	boundingBox.setPosition(pos);
+	textbox.setPosition(sf::Vector2f{ pos.x,  pos.y + (boundingBox.getGlobalBounds().height - textbox.getCharacterSize()) / 2 });
+}
+
 void Textbox::inputLogic(int charTyped) {
 
 	if (charTyped != DELETE_KEY && charTyped != ESCAPE_KEY && charTyped != ENTER_KEY) {
 		text << static_cast<char>(charTyped);
 	}
 	else if (charTyped == DELETE_KEY) {
-		if (text.str().length() > 0) {
+		if (text.str().length() > constText.length()) {
 			deleteLastChar();
 		}
 	}
 
-	textbox.setString(text.str() + "|");
+	if (isSelected) {
+		textbox.setString(text.str() + "|");
+	}
+	else {
+		textbox.setString(text.str());
+	}
 }
 
 void Textbox::deleteLastChar() {
@@ -119,7 +173,25 @@ void Textbox::deleteLastChar() {
 		newT += T[i];
 	}
 
-	text.str("");
+	text.str(constText);
 	text << newT;
 	textbox.setString(text.str());
 }
+
+void Textbox::reset() {
+	while (text.str().length() > constText.length()) {
+		deleteLastChar();
+	}
+}
+
+sf::Vector2f Textbox::getPositon() const
+{
+	return boundingBox.getPosition();
+}
+
+sf::FloatRect Textbox::getGlobalBounds() const
+{
+	return boundingBox.getGlobalBounds();
+}
+
+

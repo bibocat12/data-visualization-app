@@ -24,12 +24,15 @@ App::App()
 	m_context->assetManager->loadTexture("Rewind", "assets/img/button/Rewind.png");
 	m_context->assetManager->loadTexture("Replay", "assets/img/button/Replay.png");
 	m_context->assetManager->loadTexture("Pause", "assets/img/button/Pause.png");
+	m_context->assetManager->loadTexture("Random", "assets/img/button/Random.png");
+	m_context->assetManager->loadTexture("Ok", "assets/img/button/Ok.png");
 
 
 	m_context->assetManager->loadFont("arial", "assets/font/arial/ARIAL.TTF");
 	m_context->assetManager->loadFont("Oswald", "assets/font/Oswald/static/Oswald-Bold.TTF");
 	m_context->assetManager->loadFont("Oswald-Light", "assets/font/Oswald/static/Oswald-Light.TTF");
 	m_context->assetManager->loadFont("JetBrainsMono-Regular", "assets/font/JetBrains_Mono/static/JetBrainsMono-Regular.TTF");
+	m_context->assetManager->loadFont("JetBrainsMono-SemiBold", "assets/font/JetBrains_Mono/static/JetBrainsMono-SemiBold.TTF");
 	m_context->assetManager->loadFont("Neon", "assets/font/Neon/Neon.TTF");
 
 	*m_context->themeType = 0;

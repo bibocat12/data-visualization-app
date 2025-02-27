@@ -16,10 +16,11 @@ public:
 	void setMaxText(std::string maxSt);
 	void setNumPart(int num);
 	int getPartIndex();
+	int getPartIndexMouse(float x);
 	int getNumPart();
 	void setTextColor(sf::Color color);
 	void setPart(int index);
-	void handleEvent(sf::RenderWindow& window);
+	void handleEvent(sf::Event event);
 	void draw(sf::RenderWindow& window);
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
@@ -31,8 +32,13 @@ private:
 	sf::Text minText;
 	sf::Text maxText;
 	std::vector<float> partX;
-	static constexpr float density = 4.f / 10.f;
+
+	bool isPressed = false;
+	bool isDragging = false;
+	sf::Vector2f offset;
+
+
+	static constexpr float density = 2.f / 10.f;
 };
 
 #endif // SLIDER_H
-

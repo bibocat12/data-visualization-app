@@ -22,4 +22,5 @@ const sf::Color Gold(255, 215, 0);
 const sf::Color SoftBlue(70, 130, 180);
 const sf::Color NavyBlue(0, 0, 128);
 const sf::Color GoldenOrange(255, 165, 0); 
+const sf::Color BeigeGrey(164, 151, 137);
 
