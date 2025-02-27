@@ -50,7 +50,7 @@ void Slider::setNumPart(int num) {
 
 int Slider::getPartIndex() {
 	for (int i = 0; i < (int) partX.size(); i++) {
-		if (curBar.getPosition().x + curBar.getGlobalBounds().width == partX[i]) return i;
+		if (knob.getPosition().x <= partX[i]) return i;
 	}
 	return 0;
 }
@@ -77,29 +77,39 @@ void Slider::setPart(int index) {
 	}
 }
 
-void Slider::handleEvent(sf::RenderWindow& window) {
+void Slider::handleEvent(sf::Event event) {
 	float sizePart = bar.getGlobalBounds().width / ((int)partX.size() - 1);
 
-	// click 
-	float mousePosX = sf::Mouse::getPosition(window).x;
-	float mousePosY = sf::Mouse::getPosition(window).y;
+	if (event.type == sf::Event::MouseButtonPressed && isPressed == false) {
 
-	if (bar.getPosition().y <= mousePosY && mousePosY <= bar.getPosition().y + bar.getGlobalBounds().height) {
-		for (int i = 0; i < (int)partX.size(); i++) {
-			if (i == 0) {
-				if (partX[i] <= mousePosX && mousePosX <= partX[i] + density * sizePart) {
-					setPart(i);
-					break;
-				}
-			}
-			else {
-				if (partX[i] - density * sizePart <= mousePosX && mousePosX <= std::min(partX[getNumPart()], partX[i] + density / 3 * sizePart)) {
-					setPart(i);
-					break;
-				}
-			}
+		float mousePosX = event.mouseButton.x;
+		float mousePosY = event.mouseButton.y;
+		if (knob.getGlobalBounds().contains(mousePosX, mousePosY)) {
+			isPressed = true;
+			offset = sf::Vector2f{ mousePosX - knob.getPosition().x, mousePosY - knob.getPosition().y };
 		}
 	}
+	if (event.type == sf::Event::MouseButtonReleased) {
+		isPressed = false;
+		isDragging = false;
+	}
+
+	if (isPressed == true && event.type == sf::Event::MouseMoved) {
+		float mousePosX = event.mouseMove.x;
+		float mousePosY = event.mouseMove.y;
+		if (isPressed) {
+			isDragging = true;
+			knob.setPosition(sf::Vector2f{ mousePosX - offset.x, knob.getPosition().y });
+			if (knob.getPosition().x < bar.getPosition().x) {
+				knob.setPosition(sf::Vector2f{ bar.getPosition().x, knob.getPosition().y });
+			}
+			if (knob.getPosition().x + knob.getGlobalBounds().width > bar.getPosition().x + bar.getGlobalBounds().width) {
+				knob.setPosition(sf::Vector2f{ bar.getPosition().x + bar.getGlobalBounds().width - knob.getGlobalBounds().width, knob.getPosition().y });
+			}
+			curBar.setSize(sf::Vector2f{ knob.getPosition().x - bar.getPosition().x + knob.getGlobalBounds().width, bar.getGlobalBounds().height });
+		}
+	}
+
 }
 
 void Slider::draw(sf::RenderWindow& window) {

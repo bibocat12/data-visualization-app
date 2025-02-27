@@ -37,6 +37,7 @@ public:
 	void draw() override;
 
 	void handleButtonEvents( const sf::Event& event);
+	void handleCreateButtonEvents(const sf::Event event);
 	void handleStartButtonEvents( const sf::Event event);
 	void handleRandomButtonEvents(sf::Event event);
 	void handleInsertButtonEvents(sf::Event event);

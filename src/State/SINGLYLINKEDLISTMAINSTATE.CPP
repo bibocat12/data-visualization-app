@@ -211,10 +211,10 @@ void SinglyLinkedListMainState::processEvents()
 				aniSlider.setPart(0);
 			}
 	
-			aniSlider.handleEvent(*m_context->window);
-			speedSlider.handleEvent(*m_context->window);
+
 		}
-		
+		aniSlider.handleEvent(event);
+		speedSlider.handleEvent(event);
 		std::string st = "1.0x";
 		st[0] = char(speedSlider.getPartIndex() + 1 + '0');
 		speedSlider.setMaxText(st);
@@ -229,7 +229,6 @@ void SinglyLinkedListMainState::update(const sf::Time& dt)
 
 void SinglyLinkedListMainState::draw()
 {
-
 	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
 	createButton.drawTo(*m_context->window);
@@ -269,23 +268,30 @@ void SinglyLinkedListMainState::handleButtonEvents( const  sf::Event& event)
 {
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
 	{
-		std::cerr << "Button pressed\n";
-		if (startButton.isMouseOver(*m_context->window))
-			handleStartButtonEvents(event);
-		else if (insertButton.isMouseOver(*m_context->window))
-			handleInsertButtonEvents(event);
-		else if (deleteButton.isMouseOver(*m_context->window))
-			handleDeleteButtonEvents(event);
-		else if (searchButton.isMouseOver(*m_context->window))
-			handleSearchButtonEvents(event);
-		else if (backButton.isMouseOver(*m_context->window))
-			handleBackButtonEvents(event);
-		else if (randomButton.isMouseOver(*m_context->window))
+		if (createButton.isMouseOver(*m_context->window))
 		{
-			std::cout << "Random Button:";
-			handleRandomButtonEvents(event);
+			handleCreateButtonEvents(event);
 		}
+		else if (insertButton.isMouseOver(*m_context->window))
+		{
+			handleInsertButtonEvents(event);
+		}
+		else if (deleteButton.isMouseOver(*m_context->window))
+		{
+			handleDeleteButtonEvents(event);
+		}
+		else if (searchButton.isMouseOver(*m_context->window))
+		{
+			handleSearchButtonEvents(event);
+		}
+
+		
 	}
+}
+
+void SinglyLinkedListMainState::handleCreateButtonEvents(const sf::Event event)
+{
+	 
 }
 
 void SinglyLinkedListMainState::handleRandomButtonEvents(sf::Event event)

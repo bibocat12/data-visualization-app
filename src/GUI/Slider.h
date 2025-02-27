@@ -19,7 +19,7 @@ public:
 	int getNumPart();
 	void setTextColor(sf::Color color);
 	void setPart(int index);
-	void handleEvent(sf::RenderWindow& window);
+	void handleEvent(sf::Event event);
 	void draw(sf::RenderWindow& window);
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
@@ -31,6 +31,12 @@ private:
 	sf::Text minText;
 	sf::Text maxText;
 	std::vector<float> partX;
+
+	bool isPressed = false;
+	bool isDragging = false;
+	sf::Vector2f offset;
+
+
 	static constexpr float density = 4.f / 10.f;
 };
 

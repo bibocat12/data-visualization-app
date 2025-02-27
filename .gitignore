@@ -4,3 +4,11 @@
 
 /.vs/data-visualization-app
 /data-vis.29A9BC05/x64/Debug
+*.user
+*.filters
+*.vcxproj
+*.sln
+/data-vis.e1636a70
+/data-vis.e1636a70
+data-vis.e1636a70/x64/Debug/App.obj
+/data-vis.e1636a70
