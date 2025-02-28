@@ -13,6 +13,7 @@
 #include "../GUI/Textbox.h"
 #include "../GUI/Label.h"
 #include "../GUI/Slider.h"
+#include "../GUI/Panel.h"
 
 
 #include "SinglyLinkedList.h"
@@ -37,13 +38,18 @@ public:
 	void draw() override;
 
 	void handleButtonEvents( const sf::Event& event);
-	void handleCreateButtonEvents(const sf::Event event);
-	void handleStartButtonEvents( const sf::Event event);
+
+	void handleCreateButtonEvents( const sf::Event event);
+
 	void handleRandomButtonEvents(sf::Event event);
 	void handleInsertButtonEvents(sf::Event event);
 	void handleDeleteButtonEvents(sf::Event event);
 	void handleSearchButtonEvents(sf::Event event);
-	void handleBackButtonEvents(sf::Event event);
+	void handleHomeButtonEvents(sf::Event event);
+	void handleUpdateButtonEvents(sf::Event event);
+	void handleThemeButtonEvents(sf::Event event);
+	void handleAniSliderEvents(sf::Event event);
+	void handleSpeedSliderEvents(sf::Event event);
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
@@ -69,9 +75,8 @@ public:
 
 	std::vector<Engine::Frame> m_frames;
   
-  	void initButton(Button& button, char* text, sf::Vector2f pos);
+  	void initButton(Button& button, std::string text, sf::Vector2f pos);
 	void switchTheme();
-	Label initPanel(char* st, sf::Vector2f pos, sf::Color backColor);
 
 private:
 	std::shared_ptr<Context> m_context;
@@ -82,18 +87,23 @@ private:
 	sf::Color normalButtonColor;
 	sf::Color hoverButtonColor;
 	sf::Vector2f buttonSize;
-	sf::Vector2f panelSize;
 
 	ImageButton themeButton;
 	ImageButton homeButton;
-	Button createButton;
 
+	Button createButton;
 	Button insertButton;
 	Button deleteButton;
 	Button updateButton;
 	Button searchButton;
-	std::vector<Label> codePanel;
 
+	bool isSelectedInsertButton = false;
+	bool isSelectedDeleteButton = false;
+	bool isSelectedSearchButton = false;
+	bool isSelectedCreateButton = false;
+	bool isSelectedUpdateButton = false;
+	
+	Panel codePanel;
 	Slider aniSlider;
 	Slider speedSlider;
 	ImageButton playButton;
@@ -103,10 +113,24 @@ private:
 	ImageButton previousButton;
 	ImageButton rewindButton;
 	ImageButton forwardButton;
+	ImageButton randomButton;
+	ImageButton okButton;
 
+	Textbox insertTextbox;
+	Textbox deleteTextbox;
+	Textbox searchTextbox;
 
-
-
-
+public:
+	void initFunctionButton();
+	void initCodePanel();
+	void initTheme();
+	void initTitle();
+	void initAniSlider();
+	void initSpeedSlider();
+	
+	void initTextbox(Textbox& textbox, int charSize, sf::Color textColor, sf::Font& font, sf::Vector2f pos);
+private:
+	sf::Vector2f labelSize;
+	float checkpointY;
 };
 
