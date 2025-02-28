@@ -33,6 +33,7 @@ private:
 	sf::Text maxText;
 	std::vector<float> partX;
 
+
 	bool isPressed = false;
 	bool isDragging = false;
 	sf::Vector2f offset;

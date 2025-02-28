@@ -51,6 +51,7 @@ void Slider::setNumPart(int num) {
 
 int Slider::getPartIndex() {
 	for (int i = 0; i < (int)partX.size(); i++) {
+
 		if (knob.getPosition().x <= partX[i]) return i;
 	}
 	return getNumPart();
@@ -90,7 +91,6 @@ void Slider::handleEvent(sf::Event event) {
 	float sizePart = bar.getGlobalBounds().width / ((int)partX.size() - 1);
 
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && isPressed == false) {
-
 		float mousePosX = event.mouseButton.x;
 		float mousePosY = event.mouseButton.y;
 		if (knob.getGlobalBounds().contains(mousePosX, mousePosY)) {
@@ -103,6 +103,7 @@ void Slider::handleEvent(sf::Event event) {
 		isPressed = false;
 		isDragging = false;
 	}
+
 
 	if (isPressed == true) {
 		float mousePosX = event.mouseMove.x;
@@ -119,8 +120,10 @@ void Slider::handleEvent(sf::Event event) {
 		float mousePosY = event.mouseButton.y;
 		if (bar.getGlobalBounds().contains(mousePosX, mousePosY)) {
 			setPart(getPartIndexMouse(mousePosX));
+
 		}
 	}
+
 }
 
 void Slider::draw(sf::RenderWindow& window) {

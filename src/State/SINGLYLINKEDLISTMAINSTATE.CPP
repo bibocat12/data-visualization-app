@@ -200,6 +200,7 @@ void SinglyLinkedListMainState::processEvents()
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
 		handleSpeedSliderEvents(event);
+
 	}
 }
 
@@ -210,7 +211,6 @@ void SinglyLinkedListMainState::update(const sf::Time& dt)
 
 void SinglyLinkedListMainState::draw()
 {
-
 	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
 	createButton.drawTo(*m_context->window);
@@ -254,6 +254,11 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox.setPosition(pos);
 	textbox.setBox(sf::Vector2f{200, buttonSize.y}, BeigeGrey);
 	textbox.setLimit(true, 9);
+}
+
+void SinglyLinkedListMainState::handleCreateButtonEvents(const sf::Event event)
+{
+	 
 }
 
 void SinglyLinkedListMainState::handleRandomButtonEvents(sf::Event event)
