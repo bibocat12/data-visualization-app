@@ -14,6 +14,7 @@
 #include "../GUI/Label.h"
 #include "../GUI/Slider.h"
 #include "../GUI/Panel.h"
+#include "../GUI/portable-file-dialogs.h"
 
 
 #include "SinglyLinkedList.h"
@@ -22,6 +23,9 @@
 #include "MenuState.h"
 
 #include <vector>
+#include <fstream>
+#include <cstdlib>
+#include <string>
 
 
 class SinglyLinkedListMainState : public Engine::State 
@@ -113,10 +117,16 @@ private:
 	ImageButton forwardButton;
 	ImageButton randomButton;
 	ImageButton okButton;
+	ImageButton uploadFileButton;
+	Label okButtonBackground;
 
 	Textbox insertTextbox;
 	Textbox deleteTextbox;
 	Textbox searchTextbox;
+	Textbox createTextbox;
+	Textbox updateTextboxX;
+	Textbox updateTextboxV;
+	ImageButton randomUpdateButton;
 
 public:
 	void initFunctionButton();

@@ -59,7 +59,7 @@ void Textbox::setSelected(bool sel) {
 		textbox.setString(newT);
 	}
 	else {
-		textbox.setString(text.str() + "|");
+		textbox.setString(text.str() + (showCursor ? "|":""));
 	}
 }
 
@@ -84,9 +84,20 @@ void Textbox::drawTo(sf::RenderWindow& window) {
 	window.draw(textbox);
 }
 
-void Textbox::typedOnNum(sf::Event event) {
-    if (isSelected) {
+void Textbox::handleCursor() {
+	float timeElapsed = clock.getElapsedTime().asSeconds();
+	showCursor = fmod(timeElapsed, 0.5f * 2) < 0.5f;
+	setSelected(isSelected);
+
+}
+void Textbox::typedOnNum(sf::Event event, sf::RenderWindow& window) {
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		setSelected(isMouseOver(window));
+	}
+
+    if (event.type == sf::Event::TextEntered && isSelected) {
         int charTyped = event.text.unicode;
+
         if ((48 <= charTyped && charTyped <= 57 && !(text.str().length() == 0 && charTyped == 48)) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
             if (hasLimit) {
                 if (text.str().length() <= limit + constText.length()) {
@@ -103,8 +114,12 @@ void Textbox::typedOnNum(sf::Event event) {
     }
 }
 
-void Textbox::typedOnAlpha(sf::Event event) {
-	if (isSelected) {
+void Textbox::typedOnAlpha(sf::Event event, sf::RenderWindow& window) {
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		setSelected(isMouseOver(window));
+	}
+
+	if (event.type == sf::Event::TextEntered && isSelected) {
 		int charTyped = event.text.unicode;
 		if ((charTyped >= 65 && charTyped <= 90) || (charTyped >= 97 && charTyped <= 122) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
 			if (hasLimit) {
@@ -126,13 +141,17 @@ bool Textbox::isMouseOver(sf::RenderWindow& window)
 {
 	float mouseX = sf::Mouse::getPosition(window).x;
 	float mouseY = sf::Mouse::getPosition(window).y;
-	if (boundingBox.getGlobalBounds().contains(mouseX, mouseY))
-	{
-		return true;
-
-	}
-
+	if (boundingBox.getGlobalBounds().contains(mouseX, mouseY)) return true;
 	return false;
+}
+
+void Textbox::insertNum(int num)
+{
+	reset();
+	std::string st = std::to_string(num);
+	for (char ch : st) {
+		inputLogic(ch);
+	}
 }
 
 void Textbox::setInvisible()
@@ -148,7 +167,6 @@ void Textbox::setVisible()
 }
 
 void Textbox::inputLogic(int charTyped) {
-
 	if (charTyped != DELETE_KEY && charTyped != ESCAPE_KEY && charTyped != ENTER_KEY) {
 		text << static_cast<char>(charTyped);
 	}
@@ -157,9 +175,12 @@ void Textbox::inputLogic(int charTyped) {
 			deleteLastChar();
 		}
 	}
+	else if (charTyped == ESCAPE_KEY) {
+		setSelected(false);
+	}
 
 	if (isSelected) {
-		textbox.setString(text.str() + "|");
+		textbox.setString(text.str() + (showCursor ? "|":""));
 	}
 	else {
 		textbox.setString(text.str());
@@ -182,11 +203,12 @@ void Textbox::reset() {
 	while (text.str().length() > constText.length()) {
 		deleteLastChar();
 	}
+	setSelected(true);
 }
 
 sf::Vector2f Textbox::getPositon() const
 {
-	return boundingBox.getPosition();
+	return pos;
 }
 
 sf::FloatRect Textbox::getGlobalBounds() const

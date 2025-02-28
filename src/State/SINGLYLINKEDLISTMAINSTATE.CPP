@@ -51,18 +51,37 @@ void SinglyLinkedListMainState::initFunctionButton() {
 	initButton(searchButton, "Search", sf::Vector2f{ 10, firstButtonY + 4 * buttonSize.y });
 	
 	randomButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
+	randomUpdateButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
+	uploadFileButton = ImageButton(m_context->assetManager->getTexture("UploadFile"), 1.f, 1.f);
 	okButton = ImageButton(m_context->assetManager->getTexture("Ok"), 1.f, 1.f);
+	
+	uploadFileButton.setPosition(sf::Vector2f{ -1000, -1000 });
 	randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+	randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
 	okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+	okButtonBackground = Label("", 0, sf::Vector2f{ 200, buttonSize.y }, DarkBeigeGrey, textColor, m_context->assetManager->getFont("arial"));
+	okButtonBackground.setPosition(sf::Vector2f{ -1000, -1000 });
 
-	initTextbox(insertTextbox, 14, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f {5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y});
+	initTextbox(insertTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f {5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y});
 	insertTextbox.setConstText("v = ");
 
-	initTextbox(deleteTextbox, 14, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+	initTextbox(deleteTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	deleteTextbox.setConstText("v = ");
 
-	initTextbox(searchTextbox, 14, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+	initTextbox(searchTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	searchTextbox.setConstText("v = ");
+
+	initTextbox(createTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+	createTextbox.setConstText("n = ");
+	createTextbox.setLimit(true, 2);
+
+	initTextbox(updateTextboxX, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+	updateTextboxX.setConstText("x = ");
+	updateTextboxX.setLimit(true, 9);
+
+	initTextbox(updateTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, updateTextboxX.getPositon().y + updateTextboxX.getGlobalBounds().height});
+	updateTextboxV.setConstText("v = ");
+	updateTextboxV.setLimit(true, 9);
 }
 
 void SinglyLinkedListMainState::initCodePanel()
@@ -201,6 +220,13 @@ void SinglyLinkedListMainState::processEvents()
 		handleAniSliderEvents(event);
 		handleSpeedSliderEvents(event);
 	}
+	
+	createTextbox.handleCursor();
+	insertTextbox.handleCursor();
+	deleteTextbox.handleCursor();
+	searchTextbox.handleCursor();
+	updateTextboxX.handleCursor();
+	updateTextboxV.handleCursor();
 }
 
 void SinglyLinkedListMainState::update(const sf::Time& dt)
@@ -239,7 +265,13 @@ void SinglyLinkedListMainState::draw()
 	insertTextbox.drawTo(*m_context->window);
 	deleteTextbox.drawTo(*m_context->window);
 	searchTextbox.drawTo(*m_context->window);
+	createTextbox.drawTo(*m_context->window);
+	updateTextboxX.drawTo(*m_context->window);
+	updateTextboxV.drawTo(*m_context->window);
 	randomButton.drawTo(*m_context->window);
+	randomUpdateButton.drawTo(*m_context->window);
+	uploadFileButton.drawTo(*m_context->window);
+	okButtonBackground.drawTo(*m_context->window);
 	okButton.drawTo(*m_context->window);
 	
 	updateFrames();
@@ -249,7 +281,7 @@ void SinglyLinkedListMainState::draw()
 
 void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::Color textColor, sf::Font& font, sf::Vector2f pos)
 {
-	textbox = Textbox(18, textColor, false);
+	textbox = Textbox(charSize, textColor, false);
 	textbox.setFont(m_context->assetManager->getFont("JetBrainsMono-SemiBold"));
 	textbox.setPosition(pos);
 	textbox.setBox(sf::Vector2f{200, buttonSize.y}, BeigeGrey);
@@ -293,16 +325,20 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 	if (isSelectedInsertButton) {
 		insertButton.setBackColor(hoverButtonColor);
 		insertTextbox.setVisible();
-		insertTextbox.setSelected(true);
-		randomButton.setPosition(sf::Vector2f{ insertTextbox.getPositon().x + insertTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width, insertTextbox.getPositon().y});
-		okButton.setPosition(sf::Vector2f {insertTextbox.getPositon().x, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height + 5});
-		if (event.type == sf::Event::TextEntered) {
-			insertTextbox.typedOnNum(event);
+		randomButton.setPosition(sf::Vector2f{ insertTextbox.getPositon().x + insertTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, insertTextbox.getPositon().y});
+		okButtonBackground.setPosition(sf::Vector2f {insertTextbox.getPositon().x, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height});
+		okButton.setPosition(sf::Vector2f {insertTextbox.getPositon().x + (insertTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height});
+		
+		insertTextbox.typedOnNum(event, *m_context->window);
+
+		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			insertTextbox.insertNum(randomNum);
 		}
 
-		if (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+			int num = insertTextbox.getNum();
 			insertTextbox.reset();
-
 			// do sth
 		}
 	}
@@ -312,6 +348,7 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			okButtonBackground.setPosition(sf::Vector2f{ -1000, 1000 });
 		}
 	}
 
@@ -331,16 +368,20 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 	if (isSelectedDeleteButton) {
 		deleteButton.setBackColor(hoverButtonColor);
 		deleteTextbox.setVisible();
-		deleteTextbox.setSelected(true);
-		randomButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x + deleteTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width, deleteTextbox.getPositon().y });
-		okButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x, deleteTextbox.getPositon().y + deleteTextbox.getGlobalBounds().height + 5 });
-		if (event.type == sf::Event::TextEntered) {
-			deleteTextbox.typedOnNum(event);
+		randomButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x + deleteTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, deleteTextbox.getPositon().y });
+		okButtonBackground.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x, deleteTextbox.getPositon().y + deleteTextbox.getGlobalBounds().height });
+		okButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x + (deleteTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, deleteTextbox.getPositon().y + deleteTextbox.getGlobalBounds().height });
+		
+		deleteTextbox.typedOnNum(event, *m_context->window);
+
+		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			deleteTextbox.insertNum(randomNum);
 		}
 
-		if (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+			int num = deleteTextbox.getNum();
 			deleteTextbox.reset();
-
 			// do sth
 		}
 	}
@@ -360,7 +401,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 	if (searchButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
 		isSelectedInsertButton = false;
-		isSelectedDeleteButton ^= false;
+		isSelectedDeleteButton = false;
 		isSelectedSearchButton ^= 1;
 		isSelectedUpdateButton = false;
 	}
@@ -368,17 +409,21 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 	if (isSelectedSearchButton) {
 		searchButton.setBackColor(hoverButtonColor);
 		searchTextbox.setVisible();
-		searchTextbox.setSelected(true);
-		randomButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + searchTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width, searchTextbox.getPositon().y });
-		okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height + 5 });
-		if (event.type == sf::Event::TextEntered) {
-			searchTextbox.typedOnNum(event);
+		randomButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + searchTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, searchTextbox.getPositon().y });
+		okButtonBackground.setPosition(sf::Vector2f{ searchTextbox.getPositon().x, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
+		okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + (searchTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
+		
+		searchTextbox.typedOnNum(event, *m_context->window);
+
+		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			searchTextbox.insertNum(randomNum);
 		}
 
-		if (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+			int num = searchTextbox.getNum();
 			searchTextbox.reset();
-			
-			//do sth
+			// do sth
 		}
 	}
 	else {
@@ -404,16 +449,139 @@ void SinglyLinkedListMainState::handleHomeButtonEvents(sf::Event event)
 void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 {
 	createButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
-	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+	if (createButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		isSelectedCreateButton ^= 1;
+		isSelectedInsertButton = false;
+		isSelectedDeleteButton = false;
+		isSelectedSearchButton = false;
+		isSelectedUpdateButton = false;
+	}
 
+	if (isSelectedCreateButton) {
+		createButton.setBackColor(hoverButtonColor);
+		createTextbox.setVisible();
+		randomButton.setPosition(sf::Vector2f{ createTextbox.getPositon().x + createTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, createTextbox.getPositon().y });
+		uploadFileButton.setPosition(sf::Vector2f{ randomButton.getPosition().x - uploadFileButton.getGlobalBounds().width - 5, createTextbox.getPositon().y});
+		okButtonBackground.setPosition(sf::Vector2f{ createTextbox.getPositon().x, createTextbox.getPositon().y + createTextbox.getGlobalBounds().height });
+		okButton.setPosition(sf::Vector2f{ createTextbox.getPositon().x + (createTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, createTextbox.getPositon().y + createTextbox.getGlobalBounds().height });
+
+		createTextbox.typedOnNum(event, *m_context->window);
+
+		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 20;
+			createTextbox.insertNum(randomNum);
+		}
+
+		// Load file
+		if (uploadFileButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			auto selection = pfd::open_file("Select a file", "", { "All Files", "*" }).result();
+
+			if (!selection.empty()) {  // Check if the user selected a file
+				std::string filename = selection[0];  // Get the file path
+				
+				std::ifstream fileIn(filename);
+
+				if (fileIn.is_open()) {
+					// handle file
+					std::vector<int> nums;
+					int num;
+					while (fileIn >> num) {
+						nums.push_back(num);
+					}
+					for (auto i : nums) std::cerr << i << "\n";
+
+					createTextbox.insertNum((int)nums.size());
+					//handle num list
+
+
+
+				}
+				else {
+					std::cerr << "Cant open the file\n";
+				}
+				fileIn.close();
+			}
+			else {
+				std::cout << "No file selected." << std::endl;
+			}
+		}
+
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+			int num = createTextbox.getNum();
+			createTextbox.reset();
+			// do sth
+		}
+	}
+	else {
+		createTextbox.setSelected(false);
+		createTextbox.setInvisible();
+		uploadFileButton.setPosition(sf::Vector2f{ -1000, -1000 });
+
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+		}
 	}
 }
 
 void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 {
 	updateButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
-	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+	if (updateButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		isSelectedCreateButton = false;
+		isSelectedInsertButton = false;
+		isSelectedDeleteButton = false;
+		isSelectedSearchButton = false;
+		isSelectedUpdateButton ^= 1;
+	}
 
+	if (isSelectedUpdateButton) {
+		updateButton.setBackColor(hoverButtonColor);
+		updateTextboxX.setVisible();
+		updateTextboxV.setVisible();
+
+		randomButton.setPosition(sf::Vector2f{ updateTextboxX.getPositon().x + updateTextboxX.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, updateTextboxX.getPositon().y });
+		randomUpdateButton.setPosition(sf::Vector2f{ updateTextboxV.getPositon().x + updateTextboxV.getGlobalBounds().width - randomUpdateButton.getGlobalBounds().width - 5, updateTextboxV.getPositon().y });
+		okButtonBackground.setPosition(sf::Vector2f{ updateTextboxV.getPositon().x, updateTextboxV.getPositon().y + updateTextboxV.getGlobalBounds().height });
+		okButton.setPosition(sf::Vector2f{ updateTextboxV.getPositon().x + (updateTextboxV.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, updateTextboxV.getPositon().y + updateTextboxV.getGlobalBounds().height });
+
+		updateTextboxX.typedOnNum(event, *m_context->window);
+		updateTextboxV.typedOnNum(event, *m_context->window);
+
+		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			updateTextboxX.insertNum(randomNum);
+		}
+
+		if (randomUpdateButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			updateTextboxV.insertNum(randomNum);
+		}
+
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+			int oldV = updateTextboxX.getNum();
+			updateTextboxX.reset();
+			updateTextboxX.setSelected(false);
+			int newV = updateTextboxV.getNum();
+			updateTextboxV.reset();
+			updateTextboxV.setSelected(false);
+
+			// do sth
+
+
+		}
+	}
+	else {
+		updateTextboxX.setSelected(false);
+		updateTextboxX.setInvisible();
+		updateTextboxV.setSelected(false);
+		updateTextboxV.setInvisible();
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			okButtonBackground.setPosition(sf::Vector2f{ -1000, 1000 });
+		}
 	}
 }
 
@@ -473,11 +641,11 @@ void SinglyLinkedListMainState::handleSpeedSliderEvents(sf::Event event)
 
 void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 {
-	handleCreateButtonEvents(event);
 	handleDeleteButtonEvents(event);
 	handleInsertButtonEvents(event);
 	handleSearchButtonEvents(event);
 	handleUpdateButtonEvents(event);
+	handleCreateButtonEvents(event);
 	handleHomeButtonEvents(event);
 	handleThemeButtonEvents(event);
 
