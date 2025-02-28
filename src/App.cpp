@@ -26,6 +26,7 @@ App::App()
 	m_context->assetManager->loadTexture("Pause", "assets/img/button/Pause.png");
 	m_context->assetManager->loadTexture("Random", "assets/img/button/Random.png");
 	m_context->assetManager->loadTexture("Ok", "assets/img/button/Ok.png");
+	m_context->assetManager->loadTexture("UploadFile", "assets/img/button/UploadFile.png");
 
 
 	m_context->assetManager->loadFont("arial", "assets/font/arial/ARIAL.TTF");
@@ -52,7 +53,7 @@ void App::run()
 
 
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
-
+	srand(time(NULL));
 	while (m_context->window->isOpen())
 	{
 

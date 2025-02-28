@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <memory>
 #include <stack>
+#include <ctime>
 
 #include "StateMachine/StateMachine.h"
 #include "StateMachine/AssetManager.h"

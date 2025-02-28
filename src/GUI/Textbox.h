@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>  
 #include <iostream>  
 #include <sstream>  
+#include <cmath>
 
 #include "../StateMachine/DEFINITION.h"
 
@@ -26,16 +27,15 @@ public:
 	std::string getText();
 	int getNum();
 	void drawTo(sf::RenderWindow& window);
-	void typedOnNum(sf::Event event);
-	void typedOnAlpha(sf::Event event);
+	void typedOnNum(sf::Event event, sf::RenderWindow& window);
+	void typedOnAlpha(sf::Event event, sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
+	void insertNum(int num);
 	void setInvisible();
 	void setVisible();
 	void reset();
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
-
-
 
 private:
 	sf::Text textbox;
@@ -49,6 +49,13 @@ private:
 
 	void inputLogic(int charTyped);
 	void deleteLastChar();
+
+private:
+	sf::Clock clock;
+	bool showCursor = false;
+
+public:
+	void handleCursor();
 };
 
 #endif // TEXTBOX_H
