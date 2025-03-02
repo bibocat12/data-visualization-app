@@ -1,53 +1,81 @@
 #include "Frame.h"
 
-#include "Frame.h"
-
-void Engine::Frame::init(Frame frame)
+namespace Engine
 {
-	buttonMap = frame.buttonMap;
-	nodeMap = frame.nodeMap;
-}
-
-void Engine::Frame::addButton(std::string name, std::shared_ptr<Button> button)
-{
-    buttonMap[name] = button;
-}
-
-void Engine::Frame::addNode(std::string name, std::shared_ptr<Node> node)
-{
-    nodeMap[name] = node;
-}
-
-std::shared_ptr<Button> Engine::Frame::getButton(std::string name)
-{
-    auto it = buttonMap.find(name);
-    if (it != buttonMap.end())
+    void Frame::init(const Frame& frame)
     {
-        return it->second;  
+        buttonMap = frame.buttonMap;
+        nodeMap = frame.nodeMap;
+        edgeMap = frame.edgeMap;
     }
-    return nullptr;
-}
 
-std::shared_ptr<Node> Engine::Frame::getNode(std::string name)
-{
-    auto it = nodeMap.find(name);
-    if (it != nodeMap.end())
+    void Frame::addButton(const std::string& name, const Button& button)
     {
-        return it->second;
+        buttonMap[name] = button;
     }
-    return nullptr;
-}
 
-void Engine::Frame::drawAll(sf::RenderWindow& window)
-{
-    for (auto& pair : buttonMap)
+    void Frame::addNode(const std::string& name, const Node& node)
     {
-        pair.second->drawTo(window);
+        nodeMap[name] = node;
     }
-    for (auto& pair : nodeMap)
+
+    void Frame::addEdge(const std::string& name, const Edge& edge)
     {
-        pair.second->drawTo(window);
+        edgeMap[name] = edge;
+    }
+
+    void Frame::addText(const std::string& name, const sf::Text& text)
+    {
+		textMap[name] = text;
+    }
+
+    void Frame::addPanel(const std::string& name, const Panel& panel)
+    {
+		panelMap[name] = panel;
+    }
+
+    Button& Frame::getButton(const std::string& name)
+    {
+        return buttonMap.at(name);
+    }
+
+    Node& Frame::getNode(const std::string& name)
+    {
+        return nodeMap.at(name);
+    }
+
+    Edge& Frame::getEdge(const std::string& name)
+    {
+        return edgeMap.at(name);
+    }
+
+    sf::Text& Frame::getText(const std::string& name)
+    {
+		return textMap.at(name);
+    }
+
+    Panel& Frame::getPanel(const std::string& name)
+    {
+		return panelMap.at(name);
+    }
+
+    void Frame::drawAll(sf::RenderWindow& window)
+    {
+		for (auto& button : buttonMap)
+			button.second.drawTo(window);
+		
+        for (auto& edge : edgeMap)
+            edge.second.drawTo(window);
+
+		for (auto& node : nodeMap)
+			node.second.drawTo(window);
+        
+		for (auto& text : textMap)
+			window.draw(text.second);
+
+		for (auto& panel : panelMap)
+			panel.second.draw(window);
+
+
     }
 }
-
-

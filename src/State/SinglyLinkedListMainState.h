@@ -15,7 +15,7 @@
 #include "../GUI/Slider.h"
 #include "../GUI/Panel.h"
 #include "../GUI/portable-file-dialogs.h"
-
+#include "../GUI/Edge.h"
 
 #include "SinglyLinkedList.h"
 
@@ -28,10 +28,24 @@
 #include <string>
 
 
+
+
 class SinglyLinkedListMainState : public Engine::State 
 {
 
 public:
+
+	const float EDGE_Y = 410;
+	const float NODE_Y = 400;
+	const float PADDING_X = 80;
+	const float DISTANCE_X = 80;
+
+	const sf::Color B_NODE_COLOR = sf::Color::White;
+	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
+	const sf::Color W_NODE_COLOR = sf::Color::White;
+	const sf::Color W_NODE_COLOR_HOVER = Orange;
+
+
 	SinglyLinkedListMainState(std::shared_ptr<Context>& context);
 	~SinglyLinkedListMainState();
 	void init() override;
@@ -45,7 +59,7 @@ public:
 
 	void handleCreateButtonEvents( const sf::Event event);
 
-	void handleRandomButtonEvents(sf::Event event);
+
 	void handleInsertButtonEvents(sf::Event event);
 	void handleDeleteButtonEvents(sf::Event event);
 	void handleSearchButtonEvents(sf::Event event);
@@ -57,19 +71,39 @@ public:
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
-	std::vector<Engine::Frame> frames;
 	bool isShowing = false;
+	bool isPaused = false;
 	bool isPlaying = false;
+
 	Engine::Frame currentFrame;
+	Engine::Frame b_currentFrame;
+	Engine::Frame w_currentFrame;
+	Engine::Frame b_nextFrame;
+	Engine::Frame w_nextFrame;
 	Engine::Frame staticFrame;
   
-  	Node node[18];
+	Node b_nodes[18];
+	Edge b_edges[18];
+	Node w_nodes[18];
+	Edge w_edges[18];
+
+
+	void initNode();
+	void initEdge();
 
 	SinglyLinkedList LinkedList;
 	SinglyLinkedList LinkedList2;
 
-	void initRandomFrames();
-	void initInsertFrames();
+	void moveNodeEdge(int index,int index1, int index2, sf::Vector2f start, sf::Vector2f end);
+
+	void changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to);
+	void changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to);
+
+
+	void deleteAllFrames();
+	void initRandomFrames(std::vector<int> elements);
+	void initInsertFrames(int num);
+	void initSearchFrames(int num);
 
 	void updateFrames();
 
@@ -77,7 +111,8 @@ public:
 	sf::Sprite background;
 
 
-	std::vector<Engine::Frame> m_frames;
+	std::vector<Engine::Frame> b_frames;
+	std::vector<Engine::Frame> w_frames;
   
   	void initButton(Button& button, std::string text, sf::Vector2f pos);
 	void switchTheme();

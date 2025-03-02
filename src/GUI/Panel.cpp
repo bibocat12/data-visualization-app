@@ -24,6 +24,11 @@ void Panel::setText(std::string text, int lineIndex) {
 	panel[lineIndex].setText(text);
 }
 
+void Panel::setLineColor(int lineIndex, sf::Color color)
+{
+	panel[lineIndex].setBackColor(color);
+}
+
 void Panel::setTextColor(sf::Color color) {
 	for (int i = 0; i < (int)panel.size(); i++) {
 		panel[i].setTextColor(color);

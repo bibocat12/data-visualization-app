@@ -13,6 +13,7 @@ public:
 	Panel(sf::Vector2f pos, sf::Vector2f labelSize, sf::Color _textColor, sf::Color _panelColor, sf::Font& _font, int charSize);
 	void add(std::string text);
 	void setText(std::string text, int lineIndex);
+	void setLineColor(int lineIndex, sf::Color color);
 	void setTextColor(sf::Color color);
 	void draw(sf::RenderWindow& window);
 

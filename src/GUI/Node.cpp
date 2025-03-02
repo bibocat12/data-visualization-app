@@ -26,12 +26,20 @@ void Node::setCharacterSize(int size)
 
 void Node::setPosition(sf::Vector2f pos)
 {
+	this->position = pos;
+	shape.setOrigin(shape.getRadius()/2, shape.getRadius()/2);
 	shape.setPosition(pos);
-	text.setPosition(pos);
+	sf::FloatRect textBounds = text.getLocalBounds();
+	sf::FloatRect shapeBounds = shape.getGlobalBounds();
+	text.setOrigin(textBounds.left + textBounds.width / 2.0f,
+		textBounds.top + textBounds.height / 2.0f);
+	text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
+		shapeBounds.top + shapeBounds.height / 2.0f);
 }
 
 void Node::drawTo(sf::RenderWindow& window)
 {
+	this->setPosition(position);
 	window.draw(shape);
 	window.draw(text);
 }
@@ -82,6 +90,11 @@ void Node::setOutlineThickness(float thickness)
 void Node::setString(std::string str)
 {
 	text.setString(str);
+}
+
+void Node::setTextColor(sf::Color color)
+{
+	text.setFillColor(color);
 }
 
 

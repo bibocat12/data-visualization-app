@@ -1,4 +1,4 @@
-#include "SinglyLinkedListMainState.h"
+﻿#include "SinglyLinkedListMainState.h"
 
 
 void SinglyLinkedListMainState::switchTheme() {
@@ -181,6 +181,10 @@ SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& c
 	
 	// Init speed slider
 	initSpeedSlider();
+
+	// Init node and edge
+	initNode();
+	initEdge();
 }
 
 SinglyLinkedListMainState::~SinglyLinkedListMainState()
@@ -232,11 +236,12 @@ void SinglyLinkedListMainState::processEvents()
 
 void SinglyLinkedListMainState::update(const sf::Time& dt)
 {
-
+	updateFrames();
 }
 
 void SinglyLinkedListMainState::draw()
 {
+
 	m_context->window->clear(backgroundColor);
 	m_context->window->draw(title);
 	createButton.drawTo(*m_context->window);
@@ -249,7 +254,7 @@ void SinglyLinkedListMainState::draw()
 
 	themeButton.drawTo(*m_context->window);
 	homeButton.drawTo(*m_context->window);
-	codePanel.draw(*m_context->window);
+	//codePanel.draw(*m_context->window);
 
 	aniSlider.draw(*m_context->window);
 	speedSlider.draw(*m_context->window);
@@ -273,8 +278,11 @@ void SinglyLinkedListMainState::draw()
 	uploadFileButton.drawTo(*m_context->window);
 	okButtonBackground.drawTo(*m_context->window);
 	okButton.drawTo(*m_context->window);
+
+	std::cerr << "currentframe index" << currentFrameIndex << std::endl;
+	std::cerr << "currentframe size" << b_frames.size() << std::endl;
+	currentFrame.drawAll(*m_context->window);
 	
-	updateFrames();
 	m_context->window->display();
 
 }
@@ -288,33 +296,7 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox.setLimit(true, 9);
 }
 
-void SinglyLinkedListMainState::handleCreateButtonEvents(const sf::Event event)
-{
-	 
-}
 
-void SinglyLinkedListMainState::handleRandomButtonEvents(sf::Event event)
-{
-	std::cout << "Random Button:";
-	int n;
-	std::cin >> n;
-	std::vector<int> allElements;
-	for (int i = 0; i < n; i++) {
-		allElements.push_back(rand() % 100);
-	}
-
-
-	LinkedList.init(allElements);
-
-	for (int x : LinkedList.getAllElements())
-	{
-		std::cout << x << " ";
-	}
-	std::cout << std::endl;
-
-	initRandomFrames();
-
-}
 
 void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 {
@@ -344,7 +326,7 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = insertTextbox.getNum();
 			insertTextbox.reset();
-			// do sth
+			initInsertFrames(num);
 		}
 	}
 	else {
@@ -428,7 +410,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = searchTextbox.getNum();
 			searchTextbox.reset();
-			// do sth
+			initSearchFrames(num);
 		}
 	}
 	else {
@@ -498,7 +480,7 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 					createTextbox.insertNum((int)nums.size());
 					//handle num list
 
-
+					initRandomFrames(nums);
 
 				}
 				else {
@@ -513,8 +495,14 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = createTextbox.getNum();
+			std::cerr << "Random:" << num << std::endl;
 			createTextbox.reset();
 			// do sth
+			std::vector<int> allElements;
+			for (int i = 0; i < num; i++) {
+				allElements.push_back(rand() % 100);
+			}
+			initRandomFrames(allElements);
 		}
 	}
 	else {
@@ -655,60 +643,323 @@ void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 	handleThemeButtonEvents(event);
 
 }
-void SinglyLinkedListMainState::initRandomFrames()
+void SinglyLinkedListMainState::initNode()
+{
+	for (int i = 0; i < 18; i++)
+	{
+		Node node;
+
+        node.setFillColor(sf::Color::White);			// set color for node in white theme
+        node.setOutlineColor(sf::Color::Red);
+        node.setOutlineThickness(5);
+        node.setRadius(20);
+        node.setPosition(sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
+        node.setCharacterSize(20);
+        node.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
+        node.setTextColor(sf::Color::Black);
+
+        b_nodes[i] = node;
+
+        node.setFillColor(sf::Color::White);			// set color for node in black theme
+        node.setOutlineColor(Orange);
+        w_nodes[i] = node;
+	}
+}
+void SinglyLinkedListMainState::initEdge()
+{
+	for (int i = 0; i < 18; i++)
+	{
+		Edge edge;
+		edge.setColor(sf::Color::Black);			// set color for edge in white theme
+		edge.setThickness(5);
+		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
+		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
+		b_edges[i] = edge;
+		edge.setColor(sf::Color::White);			// set color for edge in black theme
+		edge.setThickness(5);
+		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
+		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
+		w_edges[i] = edge;
+	}
+}
+void SinglyLinkedListMainState::moveNodeEdge(int index, int index1, int index2, sf::Vector2f start, sf::Vector2f end)
+{
+	for (int i = index1; i <= index2; i++)
+	{
+		sf::Vector2f pos;
+		pos.x = start.x + (i-index1) * (end.x - start.x) / (index2 - index1);
+		pos.y = start.y + (i-index1) * (end.y - start.y) / (index2 - index1);
+
+		sf::Vector2f posEndEdge;
+		posEndEdge.x = start.x + (i - index1) * (end.x - start.x) / (index2 - index1);
+		posEndEdge.y = EDGE_Y;
+
+		b_nodes[index].setPosition(pos);
+		w_nodes[index].setPosition(pos);
+		b_edges[index].setStart(sf::Vector2f(start.x, EDGE_Y));
+		w_edges[index].setStart(sf::Vector2f(start.x, EDGE_Y));
+		b_edges[index].setEnd(posEndEdge);
+		w_edges[index].setEnd(posEndEdge);
+
+
+		b_frames[i].init(b_frames[i - 1]);
+		w_frames[i].init(w_frames[i - 1]);
+		b_frames[i].addNode("1bnodes" + std::to_string(index), b_nodes[index]);
+		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
+		b_frames[i].addEdge("2bedges" + std::to_string(index), b_edges[index]);
+		w_frames[i].addEdge("2wedges" + std::to_string(index), w_edges[index]);
+		std::cout << "Frame " << i << " Position: " << pos.x << ", " << pos.y << std::endl;
+
+	}
+}
+void SinglyLinkedListMainState::changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to)
+{
+
+	float step =  (index2 - index1);
+	float vR = (to.r - from.r)/step;
+	float vG = (to.g - from.g) / step;
+	float vB = (to.b - from.b) / step;
+
+	for (int i = index1; i <= index2; i++)
+	{
+		sf::Color color;
+		color.r = from.r + vR * (i - index1);
+		color.g = from.g + vG * (i - index1);
+		color.b = from.b + vB * (i - index1);
+		b_nodes[index].setFillColor(color);
+		if (i > 0)
+			b_frames[i].init(b_frames[i - 1]);
+		b_frames[i].addNode("bnodes" + std::to_string(index), b_nodes[index]);
+	}
+}
+void SinglyLinkedListMainState::changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to)
+{
+	float step = (index2 - index1);
+	float vR = (to.r - from.r) / step;
+	float vG = (to.g - from.g) / step;
+	float vB = (to.b - from.b) / step;
+	for (int i = index1; i <= index2; i++)
+	{
+		sf::Color color;
+		color.r = from.r + vR * (i - index1);
+		color.g = from.g + vG * (i - index1);
+		color.b = from.b + vB * (i - index1);
+		w_nodes[index].setFillColor(color);
+		w_frames[i].init(w_frames[i - 1]);
+		w_frames[i].addNode("wnodes" + std::to_string(index), w_nodes[index]);
+	}
+}
+void SinglyLinkedListMainState::deleteAllFrames()
+{
+	b_frames.clear();
+	w_frames.clear();
+	numFrames = 0;
+	currentFrameIndex = 0;
+	isPlaying = false;
+}
+
+void SinglyLinkedListMainState::initRandomFrames(std::vector<int> elements)
 {
 	int timeRepeat = 0;
-	
+	deleteAllFrames();
+	LinkedList.removeAll();
+
+	for (int x : elements)
+		LinkedList.insert(x);
+
+	codePanel.setText("for x in elements", 0);
+	codePanel.setText("    insert(x)", 1);
+	codePanel.setText("return", 2);
+
 	std::vector<int> allElements;
+	std::cerr << "NumElements: " << elements.size() << std::endl;
 	allElements = LinkedList.getAllElements();
-	Engine::Frame previousframe;
-	for (int i = 0; i < allElements.size(); i++) {
-		Engine::Frame frame;
-		std::shared_ptr<Node> node = std::make_shared<Node>();
-		node->setString(std::to_string(allElements[i]));
-		node->setFillColor(sf::Color::Green);
-		node->setOutlineColor(sf::Color::Black);
-		node->setOutlineThickness(2);
-		node->setRadius(20);
-		node->setPosition(sf::Vector2f(500 + i * 80, 30));
-		if(i != 0)
-			frame.init(previousframe);
-		frame.addNode(std::to_string(allElements[i]), std::move(node));
-		previousframe = frame;
-		for (int j = 0; j < 100; j++)
-			frames.push_back(frame);
-		frames.push_back(frame);
+	initNode();
+	initEdge();
+
+
+	for(int i = 0;i < 60;i++)
+	{
+		Engine::Frame b_frame, w_frame;
+		b_nodes[0].setString(std::to_string(allElements[0]));
+		w_nodes[0].setString(std::to_string(allElements[0]));
+		b_frame.addNode("1bnodes0", b_nodes[0]);
+		w_frame.addNode("1swnodes0", w_nodes[0]);
+		b_frame.addPanel("3bcodePanel", codePanel);
+		w_frame.addPanel("3wcodePanel", codePanel);
+
+		b_frames.push_back(b_frame);
+		w_frames.push_back(w_frame);
+	}
+	for (int i = 1; i < allElements.size(); i++)
+	{
+		int firstIndex = b_frames.size() ;
+		int lastIndex = b_frames.size() + 120 - 1;
+		for (int j = 0; j < 120; j++)
+		{
+			Engine::Frame b_frame, w_frame;
+			b_nodes[i].setString(std::to_string(allElements[i]));
+			w_nodes[i].setString(std::to_string(allElements[i]));
+
+			b_frame.init(b_frames[b_frames.size() - 1]);
+			w_frame.init(w_frames[w_frames.size() - 1]);
+			b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
+			w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
+			b_frame.addPanel("3bcodePanel", codePanel);
+			w_frame.addPanel("3wcodePanel", codePanel);
+
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+
+		moveNodeEdge(i, firstIndex, lastIndex, sf::Vector2f(PADDING_X + (i - 1) * DISTANCE_X, 400), sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
 	}
 
-	numFrames = frames.size();
 	isPlaying = true;
+	numFrames = b_frames.size();
+	std::cerr << "NumFrames: " << numFrames << std::endl;
 	currentFrameIndex = 0;
 
 }
-
-void SinglyLinkedListMainState::initInsertFrames()
+void SinglyLinkedListMainState::initInsertFrames(int num)
 {
+	std::vector<int> allElements;
+	allElements = LinkedList.getAllElements();
+
+	deleteAllFrames();
+	Engine::Frame b_frame, w_frame;
+
+	for(int i = 0;i < allElements.size();i++)
+	{
+		int x = allElements[i];
+		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
+		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
+		b_frame.addEdge("2bedges" + std::to_string(i), b_edges[i]);
+		w_frame.addEdge("2wedges" + std::to_string(i), w_edges[i]);
+	}
+
+
+
+	 
+}
+void SinglyLinkedListMainState::initSearchFrames(int num)
+{
+	std::vector<int> allElements = LinkedList.getAllElements();
+	deleteAllFrames();
+	Engine::Frame b_frame, w_frame;
+
+	codePanel.setText("current = head", 0);
+	codePanel.setText("while current != NULL and current->data != " + std::to_string(num), 1);
+	codePanel.setText("    current = current->next", 2);
+	codePanel.setText("if current == NULL", 3);
+	codePanel.setText("    return false", 4);
+	codePanel.setText("return true", 5);
+
+	initNode();
+	initEdge();
+
+	// Khởi tạo khung hình ban đầu
+	for (int i = 0; i < allElements.size(); i++)
+	{
+		int x = allElements[i];
+		b_nodes[i].setString(std::to_string(x));
+		w_nodes[i].setString(std::to_string(x));
+		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
+		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
+		if (i > 0)
+		{
+			b_frame.addEdge("2bedges" + std::to_string(i - 1), b_edges[i - 1]);
+			w_frame.addEdge("2wedges" + std::to_string(i - 1), w_edges[i - 1]);
+		}
+	}
+	b_frames.push_back(b_frame);
+	w_frames.push_back(w_frame);
+
+	// Tạo hiệu ứng di chuyển từng node
+	for (int i = 0; i < allElements.size(); i++)
+	{
+		int first = b_frames.size();
+		int last = first + 120 - 1;
+		for (int step = 0; step < 120; step++)
+		{
+			Engine::Frame b_frame, w_frame;
+			b_frame.init(b_frames.back());
+			w_frame.init(w_frames.back());
+
+
+			//if (i > 0)
+			//{
+			//	changeBEdgeColor(i - 1, step, 30, sf::Color::White, sf::Color::Blue);
+			//	changeWEdgeColor(i - 1, step, 30, sf::Color::White, sf::Color::Blue);
+			//}
+
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+
+		changeBColor(i, first, last, sf::Color::White, sf::Color::Blue);
+		changeWColor(i, first, last, sf::Color::White, sf::Color::Blue);
+
+
+		if (allElements[i] == num)
+		{
+			int firstIndex = b_frames.size();
+			int lastIndex = b_frames.size() + 120 - 1;
+			for (int step = 0; step < 120; step++)
+			{
+				Engine::Frame b_frame, w_frame;
+				b_frame.init(b_frames.back());
+				w_frame.init(w_frames.back());
+
+
+				b_frames.push_back(b_frame);
+				w_frames.push_back(w_frame);
+			}
+			changeBColor(i, firstIndex, lastIndex, sf::Color::Blue, sf::Color::Green);
+			changeWColor(i, firstIndex, lastIndex, sf::Color::Blue, sf::Color::Green);
+			break;
+		}
+	}
+
+	isPlaying = true;
+	numFrames = b_frames.size();
 }
 
 void SinglyLinkedListMainState::updateFrames()
 {
 	if (isPlaying)
 	{
+		b_nextFrame = b_frames.back();
+		w_nextFrame = w_frames.back();
 		if (numFrames > 0)
 		{
+			//std::cerr << currentFrameIndex << std::endl;
 			if (currentFrameIndex < numFrames)
 			{
-				currentFrame = frames[currentFrameIndex];
+
+				b_currentFrame = b_frames[currentFrameIndex];
+				w_currentFrame = w_frames[currentFrameIndex];
+
+				if (*m_context->themeType == 0)
+					currentFrame = b_currentFrame;
+				else
+					currentFrame = w_currentFrame;
+				
 				currentFrameIndex++;
+
 			}
 			else
 			{
-				currentFrame = frames[currentFrameIndex - 1];
-				isPlaying = false;
+				if (*m_context->themeType == 0)
+					currentFrame = b_frames[currentFrameIndex - 1];
+				else
+					currentFrame = w_frames[currentFrameIndex - 1];
 			}
 		}
 	}
-	currentFrame.drawAll(*m_context->window);
+	
+
+
 
 }
 

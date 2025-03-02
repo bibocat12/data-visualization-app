@@ -27,6 +27,7 @@ public:
 	void setOutlineColor(sf::Color color);
 	void setOutlineThickness(float thickness);
 	void setString(std::string str);
+	void setTextColor(sf::Color color);
 
 	
 
