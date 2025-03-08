@@ -19,11 +19,11 @@ namespace Engine
         void init(const Frame& frame);
 
 
-        void addButton(const std::string& name, const Button& button);
-        void addNode(const std::string& name, const Node& node);
-        void addEdge(const std::string& name, const Edge& edge);
-		void addText(const std::string& name, const sf::Text& text);
-		void addPanel(const std::string& name, const Panel& panel);
+        void addButton(const std::string& name, const Button button);
+        void addNode(const std::string& name, const Node node);
+        void addEdge(const std::string& name, const Edge edge);
+		void addText(const std::string& name, const sf::Text text);
+		void addPanel(const std::string& name, const Panel panel);
 
 
         Button& getButton(const std::string& name);

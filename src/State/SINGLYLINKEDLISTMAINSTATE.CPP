@@ -62,8 +62,11 @@ void SinglyLinkedListMainState::initFunctionButton() {
 	okButtonBackground = Label("", 0, sf::Vector2f{ 200, buttonSize.y }, DarkBeigeGrey, textColor, m_context->assetManager->getFont("arial"));
 	okButtonBackground.setPosition(sf::Vector2f{ -1000, -1000 });
 
-	initTextbox(insertTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f {5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y});
-	insertTextbox.setConstText("v = ");
+	initTextbox(insertTextboxK, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f {5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y});
+	insertTextboxK.setConstText("k = ");
+
+	initTextbox(insertTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, insertTextboxK.getPositon().y + insertTextboxK.getGlobalBounds().height });
+	insertTextboxV.setConstText("v = ");
 
 	initTextbox(deleteTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	deleteTextbox.setConstText("v = ");
@@ -219,7 +222,15 @@ void SinglyLinkedListMainState::processEvents()
 			m_context->window->close();
 			return;
 		}
+		if (event.type == sf::Event::KeyPressed)
+		{
+			if (event.key.code == sf::Keyboard::Space)
+			{
+				if(isEnd == false)
+					isPaused ^= 1;
+			}
 
+		}
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
 		handleSpeedSliderEvents(event);
@@ -227,7 +238,8 @@ void SinglyLinkedListMainState::processEvents()
 	}
 	
 	createTextbox.handleCursor();
-	insertTextbox.handleCursor();
+	insertTextboxK.handleCursor();
+	insertTextboxV.handleCursor();
 	deleteTextbox.handleCursor();
 	searchTextbox.handleCursor();
 	updateTextboxX.handleCursor();
@@ -236,6 +248,30 @@ void SinglyLinkedListMainState::processEvents()
 
 void SinglyLinkedListMainState::update(const sf::Time& dt)
 {
+
+	pauseButton.setPosition(sf::Vector2f(-1000, -1000));
+	playButton.setPosition(sf::Vector2f(-1000, -1000));
+	replayButton.setPosition(sf::Vector2f(-1000, -1000));
+
+	if (isEnd == true)
+		replayButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - replayButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
+	else if (isPaused == true)
+		playButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - playButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
+	else
+		pauseButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - pauseButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
+
+
+	
+
+	if (isPaused == false && isPlaying == true)
+		aniSlider.setPart(currentFrameIndex);
+
+	if (isPaused == true && isPlaying == true)
+	{
+		int part = aniSlider.getPartIndex();
+		currentFrameIndex = part;
+
+	}
 	updateFrames();
 }
 
@@ -267,7 +303,8 @@ void SinglyLinkedListMainState::draw()
 	replayButton.drawTo(*m_context->window);
 	pauseButton.drawTo(*m_context->window);
 	
-	insertTextbox.drawTo(*m_context->window);
+	insertTextboxK.drawTo(*m_context->window);
+	insertTextboxV.drawTo(*m_context->window);
 	deleteTextbox.drawTo(*m_context->window);
 	searchTextbox.drawTo(*m_context->window);
 	createTextbox.drawTo(*m_context->window);
@@ -279,10 +316,12 @@ void SinglyLinkedListMainState::draw()
 	okButtonBackground.drawTo(*m_context->window);
 	okButton.drawTo(*m_context->window);
 
-	std::cerr << "currentframe index" << currentFrameIndex << std::endl;
-	std::cerr << "currentframe size" << b_frames.size() << std::endl;
+	//std::cerr << "currentframe index" << currentFrameIndex << std::endl;
+	//std::cerr << "currentframe size" << b_frames.size() << std::endl;
+	//for (int x : breakpoints) std::cerr << x << " ";
+	//std::cerr << std::endl;
 	currentFrame.drawAll(*m_context->window);
-	
+
 	m_context->window->display();
 
 }
@@ -295,7 +334,47 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox.setBox(sf::Vector2f{200, buttonSize.y}, BeigeGrey);
 	textbox.setLimit(true, 9);
 }
+void SinglyLinkedListMainState::initNode()
+{
+	for (int i = 0; i < 18; i++)
+	{
+		Node node;
 
+		node.setFillColor(sf::Color::White);			// set color for node in white theme
+		node.setOutlineColor(sf::Color::Red);
+		node.setOutlineThickness(5);
+		node.setRadius(RADIUS);
+		node.setPosition(sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
+		node.setCharacterSize(20);
+		node.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
+		node.setTextColor(sf::Color::Black);
+
+
+		b_nodes[i] = node;
+
+		node.setFillColor(sf::Color::White);			// set color for node in black theme
+		node.setOutlineColor(Orange);
+		w_nodes[i] = node;
+	}
+}
+void SinglyLinkedListMainState::initEdge()
+{
+	for (int i = 0; i < 18; i++)
+	{
+		Edge edge;
+		edge.setColor(sf::Color::Black);			// set color for edge in white theme
+		edge.setThickness(5);
+		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
+		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
+		b_edges[i] = edge;
+		edge.setColor(sf::Color::White);			// set color for edge in black theme
+		edge.setThickness(5);
+		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
+		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
+		edge.setDirected(true);
+		w_edges[i] = edge;
+	}
+}
 
 
 void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
@@ -311,35 +390,56 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 
 	if (isSelectedInsertButton) {
 		insertButton.setBackColor(hoverButtonColor);
-		insertTextbox.setVisible();
-		randomButton.setPosition(sf::Vector2f{ insertTextbox.getPositon().x + insertTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, insertTextbox.getPositon().y});
-		okButtonBackground.setPosition(sf::Vector2f {insertTextbox.getPositon().x, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height});
-		okButton.setPosition(sf::Vector2f {insertTextbox.getPositon().x + (insertTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height});
-		
-		insertTextbox.typedOnNum(event, *m_context->window);
+		insertTextboxK.setVisible();
+		insertTextboxV.setVisible();
+
+		randomButton.setPosition(sf::Vector2f{ insertTextboxK.getPositon().x + insertTextboxK.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, insertTextboxK.getPositon().y });
+		randomUpdateButton.setPosition(sf::Vector2f{ insertTextboxV.getPositon().x + insertTextboxV.getGlobalBounds().width - randomUpdateButton.getGlobalBounds().width - 5, insertTextboxV.getPositon().y });
+		okButtonBackground.setPosition(sf::Vector2f{ insertTextboxV.getPositon().x, insertTextboxV.getPositon().y + insertTextboxV.getGlobalBounds().height });
+		okButton.setPosition(sf::Vector2f{ insertTextboxV.getPositon().x + (insertTextboxV.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, insertTextboxV.getPositon().y + insertTextboxV.getGlobalBounds().height });
+
+		insertTextboxK.typedOnNum(event, *m_context->window);
+		insertTextboxV.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 			int randomNum = std::rand() % 100 + 1;
-			insertTextbox.insertNum(randomNum);
+			insertTextboxK.insertNum(randomNum);
 		}
 
-		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
-			int num = insertTextbox.getNum();
-			insertTextbox.reset();
-			initInsertFrames(num);
+		if (randomUpdateButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+			int randomNum = std::rand() % 100 + 1;
+			insertTextboxV.insertNum(randomNum);
+		}
+
+		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
+			(okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+
+			int pos = insertTextboxK.getNum();
+			insertTextboxK.reset();
+			insertTextboxK.setSelected(false);
+
+			int value = insertTextboxV.getNum();
+			insertTextboxV.reset();
+			insertTextboxV.setSelected(false);
+
+			initInsertFrames(pos, value);
 		}
 	}
 	else {
-		insertTextbox.setSelected(false);
-		insertTextbox.setInvisible();
+		insertTextboxK.setSelected(false);
+		insertTextboxK.setInvisible();
+		insertTextboxV.setSelected(false);
+		insertTextboxV.setInvisible();
+
 		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButtonBackground.setPosition(sf::Vector2f{ -1000, 1000 });
 		}
 	}
-
 }
+
 
 void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 {
@@ -559,7 +659,7 @@ void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 			updateTextboxV.reset();
 			updateTextboxV.setSelected(false);
 
-			// do sth
+			initUpdateFrames(oldV, newV);
 
 
 		}
@@ -589,35 +689,63 @@ void SinglyLinkedListMainState::handleThemeButtonEvents(sf::Event event)
 
 void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 {
-	if (aniSlider.getPartIndex() == aniSlider.getNumPart()) {
-		pauseButton.setPosition(sf::Vector2f({ -1000, 1000 }));
-		playButton.setPosition(sf::Vector2f({ -1000, 1000 }));
-		replayButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - replayButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
-	}
-	else {
-		pauseButton.setPosition(sf::Vector2f({ -1000, 1000 }));
-		replayButton.setPosition(sf::Vector2f({ -1000, 1000 }));
-		playButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - playButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
-	}
-	if (sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+	if (b_frames.size() == 0) return;
+	aniSlider.setNumPart(b_frames.size());
+
+	if (isPlaying == false)
+		return;
+
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		if (nextButton.isMouseOverCircle(*m_context->window)) {
-			aniSlider.setPart(aniSlider.getPartIndex() + 1);
+			isPaused = true;
+			for (int x : breakpoints) 
+				if (x > currentFrameIndex) {
+					currentFrameIndex = x;
+					break;
+				}
+			aniSlider.setPart(currentFrameIndex);
 		}
-
 		if (previousButton.isMouseOverCircle(*m_context->window)) {
-			aniSlider.setPart(aniSlider.getPartIndex() - 1);
-		}
+			isPaused = true;
+			for (int i = breakpoints.size() - 1; i >= 0; i--) {
+				if (breakpoints[i] < currentFrameIndex) {
+					currentFrameIndex = breakpoints[i];
+					break;
+				}
+			}
+			aniSlider.setPart(currentFrameIndex);
 
+		}
 		if (forwardButton.isMouseOverCircle(*m_context->window)) {
-			aniSlider.setPart(aniSlider.getNumPart());
+			isPaused = true;
+			currentFrameIndex = b_frames.size() - 1;
+			aniSlider.setPart(b_frames.size() - 1);
 		}
-
 		if (rewindButton.isMouseOverCircle(*m_context->window)) {
+			isPaused = true;
+			currentFrameIndex = 0;
 			aniSlider.setPart(0);
 		}
-
-		if (replayButton.isMouseOverCircle(*m_context->window)) {
+		if (pauseButton.isMouseOverCircle(*m_context->window))
+		{
+			isPaused = true;
+		}
+		if (playButton.isMouseOverCircle(*m_context->window))
+		{
+			isPaused = false;
+		}
+		if (replayButton.isMouseOverCircle(*m_context->window))
+		{
+			isEnd = false;
+			isPaused = false;
+			currentFrameIndex = 0;
 			aniSlider.setPart(0);
+		}
+		if (aniSlider.isMouseOverWindow(*m_context->window) == true)
+		{
+			isPaused = true; 
+			aniSlider.handleEvent(event);
+			return;
 		}
 	}
 
@@ -643,45 +771,7 @@ void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 	handleThemeButtonEvents(event);
 
 }
-void SinglyLinkedListMainState::initNode()
-{
-	for (int i = 0; i < 18; i++)
-	{
-		Node node;
 
-        node.setFillColor(sf::Color::White);			// set color for node in white theme
-        node.setOutlineColor(sf::Color::Red);
-        node.setOutlineThickness(5);
-        node.setRadius(20);
-        node.setPosition(sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
-        node.setCharacterSize(20);
-        node.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
-        node.setTextColor(sf::Color::Black);
-
-        b_nodes[i] = node;
-
-        node.setFillColor(sf::Color::White);			// set color for node in black theme
-        node.setOutlineColor(Orange);
-        w_nodes[i] = node;
-	}
-}
-void SinglyLinkedListMainState::initEdge()
-{
-	for (int i = 0; i < 18; i++)
-	{
-		Edge edge;
-		edge.setColor(sf::Color::Black);			// set color for edge in white theme
-		edge.setThickness(5);
-		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
-		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
-		b_edges[i] = edge;
-		edge.setColor(sf::Color::White);			// set color for edge in black theme
-		edge.setThickness(5);
-		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
-		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
-		w_edges[i] = edge;
-	}
-}
 void SinglyLinkedListMainState::moveNodeEdge(int index, int index1, int index2, sf::Vector2f start, sf::Vector2f end)
 {
 	for (int i = index1; i <= index2; i++)
@@ -691,7 +781,7 @@ void SinglyLinkedListMainState::moveNodeEdge(int index, int index1, int index2, 
 		pos.y = start.y + (i-index1) * (end.y - start.y) / (index2 - index1);
 
 		sf::Vector2f posEndEdge;
-		posEndEdge.x = start.x + (i - index1) * (end.x - start.x) / (index2 - index1);
+		posEndEdge.x = start.x + (i - index1) * (end.x - start.x) / (index2 - index1) - RADIUS*3/4;
 		posEndEdge.y = EDGE_Y;
 
 		b_nodes[index].setPosition(pos);
@@ -708,8 +798,6 @@ void SinglyLinkedListMainState::moveNodeEdge(int index, int index1, int index2, 
 		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
 		b_frames[i].addEdge("2bedges" + std::to_string(index), b_edges[index]);
 		w_frames[i].addEdge("2wedges" + std::to_string(index), w_edges[index]);
-		std::cout << "Frame " << i << " Position: " << pos.x << ", " << pos.y << std::endl;
-
 	}
 }
 void SinglyLinkedListMainState::changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to)
@@ -726,10 +814,8 @@ void SinglyLinkedListMainState::changeBColor(int index, int index1, int index2, 
 		color.r = from.r + vR * (i - index1);
 		color.g = from.g + vG * (i - index1);
 		color.b = from.b + vB * (i - index1);
-		b_nodes[index].setFillColor(color);
-		if (i > 0)
-			b_frames[i].init(b_frames[i - 1]);
-		b_frames[i].addNode("bnodes" + std::to_string(index), b_nodes[index]);
+		b_nodes[index].setTextColor(color);
+		b_frames[i].addNode("1bnodes" + std::to_string(index), b_nodes[index]);
 	}
 }
 void SinglyLinkedListMainState::changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to)
@@ -744,15 +830,15 @@ void SinglyLinkedListMainState::changeWColor(int index, int index1, int index2, 
 		color.r = from.r + vR * (i - index1);
 		color.g = from.g + vG * (i - index1);
 		color.b = from.b + vB * (i - index1);
-		w_nodes[index].setFillColor(color);
-		w_frames[i].init(w_frames[i - 1]);
-		w_frames[i].addNode("wnodes" + std::to_string(index), w_nodes[index]);
+		w_nodes[index].setTextColor(color);
+		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
 	}
 }
 void SinglyLinkedListMainState::deleteAllFrames()
 {
 	b_frames.clear();
 	w_frames.clear();
+	breakpoints.clear();
 	numFrames = 0;
 	currentFrameIndex = 0;
 	isPlaying = false;
@@ -776,6 +862,7 @@ void SinglyLinkedListMainState::initRandomFrames(std::vector<int> elements)
 	allElements = LinkedList.getAllElements();
 	initNode();
 	initEdge();
+	breakpoints.push_back(0);
 
 
 	for(int i = 0;i < 60;i++)
@@ -791,15 +878,20 @@ void SinglyLinkedListMainState::initRandomFrames(std::vector<int> elements)
 		b_frames.push_back(b_frame);
 		w_frames.push_back(w_frame);
 	}
+	breakpoints.push_back(b_frames.size());
+
 	for (int i = 1; i < allElements.size(); i++)
 	{
 		int firstIndex = b_frames.size() ;
-		int lastIndex = b_frames.size() + 120 - 1;
-		for (int j = 0; j < 120; j++)
+		int lastIndex = b_frames.size() + 60 - 1;
+		for (int j = 0; j < 60; j++)
 		{
 			Engine::Frame b_frame, w_frame;
 			b_nodes[i].setString(std::to_string(allElements[i]));
 			w_nodes[i].setString(std::to_string(allElements[i]));
+			codePanel.setLineColor(1, LavenderSoft);
+			codePanel.setLineColor(2, LavenderSoft);
+
 
 			b_frame.init(b_frames[b_frames.size() - 1]);
 			w_frame.init(w_frames[w_frames.size() - 1]);
@@ -813,23 +905,94 @@ void SinglyLinkedListMainState::initRandomFrames(std::vector<int> elements)
 		}
 
 		moveNodeEdge(i, firstIndex, lastIndex, sf::Vector2f(PADDING_X + (i - 1) * DISTANCE_X, 400), sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
+		breakpoints.push_back(b_frames.size() - 1);
 	}
-
+	aniSlider.setNumPart(b_frames.size());
+	aniSlider.setBreakpoints(breakpoints);
 	isPlaying = true;
+	isPaused = false;
+	isEnd = false;
 	numFrames = b_frames.size();
 	std::cerr << "NumFrames: " << numFrames << std::endl;
 	currentFrameIndex = 0;
 
 }
-void SinglyLinkedListMainState::initInsertFrames(int num)
+void SinglyLinkedListMainState::initInsertFrames(int k, int v)
 {
-	std::vector<int> allElements;
-	allElements = LinkedList.getAllElements();
-
+	std::vector<int> allElements = LinkedList.getAllElements();
 	deleteAllFrames();
 	Engine::Frame b_frame, w_frame;
 
-	for(int i = 0;i < allElements.size();i++)
+	for (int i = 0; i < allElements.size(); i++)
+	{
+		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
+		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
+		b_frame.addEdge("2bedges" + std::to_string(i), b_edges[i]);
+		w_frame.addEdge("2wedges" + std::to_string(i), w_edges[i]);
+	}
+
+	codePanel.setText("current = head", 0);
+	codePanel.setText("while k > 0", 1);
+	codePanel.setText("    current = current->next", 2);
+	codePanel.setText("    k--", 3);
+	codePanel.setText("insert v after current", 4);
+
+	b_frame.addPanel("3bcodePanel", codePanel);
+	w_frame.addPanel("3wcodePanel", codePanel);
+	b_frames.push_back(b_frame);
+	w_frames.push_back(w_frame);
+
+	for (int i = 0; i < 60; i++)
+	{
+		Engine::Frame b_frame, w_frame;
+		b_frame.init(b_frames.back());
+		w_frame.init(w_frames.back());
+		codePanel.setLineColor(1, sf::Color::Red);
+		b_frame.addPanel("3bcodePanel", codePanel);
+		w_frame.addPanel("3wcodePanel", codePanel);
+		b_frames.push_back(b_frame);
+		w_frames.push_back(w_frame);
+	}
+
+	LinkedList.insert(k, v);
+	allElements = LinkedList.getAllElements();
+	initNode();
+	initEdge();
+
+	int firstIndex = b_frames.size();
+	int lastIndex = firstIndex + 60 - 1;
+	for (int i = 0; i < 60; i++)
+	{
+		Engine::Frame b_frame, w_frame;
+		b_frame.init(b_frames.back());
+		w_frame.init(w_frames.back());
+		codePanel.setLineColor(4, sf::Color::Red);
+		b_frame.addPanel("3bcodePanel", codePanel);
+		w_frame.addPanel("3wcodePanel", codePanel);
+		b_frames.push_back(b_frame);
+		w_frames.push_back(w_frame);
+	}
+
+	changeBColor(k, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+	changeWColor(k, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+
+	breakpoints.push_back(b_frames.size() - 1);
+	aniSlider.setNumPart(b_frames.size());
+	aniSlider.setBreakpoints(breakpoints);
+	isPlaying = true;
+	isPaused = false;
+	isEnd = false;
+	numFrames = b_frames.size();
+	currentFrameIndex = 0;
+}
+
+void SinglyLinkedListMainState::initUpdateFrames(int oldV, int newV)
+{
+	std::vector<int> allElements;
+	allElements = LinkedList.getAllElements();
+	deleteAllFrames();
+	Engine::Frame b_frame, w_frame;
+	for (int i = 0; i < allElements.size(); i++)
 	{
 		int x = allElements[i];
 		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
@@ -838,9 +1001,97 @@ void SinglyLinkedListMainState::initInsertFrames(int num)
 		w_frame.addEdge("2wedges" + std::to_string(i), w_edges[i]);
 	}
 
+	codePanel.setText("current = head", 0);
+	codePanel.setText("while current != NULL", 1);
+	codePanel.setText("    if current->data == x", 2);
+	codePanel.setText("        current->data = v", 3);
+	codePanel.setText("    current = current->next", 4);
 
 
-	 
+	b_frame.addPanel("3bcodePanel", codePanel);
+	w_frame.addPanel("3wcodePanel", codePanel);
+
+	b_frames.push_back(b_frame);
+	w_frames.push_back(w_frame);
+
+	for (int i = 0;i < allElements.size();i++)
+	{
+		int x = allElements[i];	
+		int firstIndex = b_frames.size();
+		int lastIndex = firstIndex + 120 - 1;
+		for (int i = 0; i < 60; i++)
+		{
+			Engine::Frame b_frame, w_frame;
+			b_frame.init(b_frames.back());
+			w_frame.init(w_frames.back());
+			codePanel.setLineColor(0, LavenderSoft);
+			codePanel.setLineColor(1, sf::Color::Red);
+			codePanel.setLineColor(2, LavenderSoft);
+			codePanel.setLineColor(3, LavenderSoft);
+			codePanel.setLineColor(4, LavenderSoft);
+			codePanel.setLineColor(5, LavenderSoft);
+			b_frame.addPanel("3bcodePanel", codePanel);
+			w_frame.addPanel("3wcodePanel", codePanel);
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+		changeBColor(i, firstIndex, lastIndex - 90, sf::Color::Black, sf::Color::Blue);
+		changeWColor(i, firstIndex, lastIndex - 90, sf::Color::Black, sf::Color::Blue);
+		changeBColor(i, lastIndex - 90 + 1, lastIndex - 60, sf::Color::Blue, sf::Color::Blue);
+		changeWColor(i, lastIndex - 90 + 1, lastIndex - 60, sf::Color::Blue, sf::Color::Blue);
+		if (x == oldV)
+		{
+			int firstIndex = b_frames.size();
+			int lastIndex = b_frames.size() + 60 - 1;
+			for (int step = 0; step < 60; step++)
+			{
+				Engine::Frame b_frame, w_frame;
+				b_frame.init(b_frames.back());
+				w_frame.init(w_frames.back());
+				b_nodes[i].setString(std::to_string(newV));
+				w_nodes[i].setString(std::to_string(newV));
+				codePanel.setLineColor(1, LavenderSoft);
+				codePanel.setLineColor(2, sf::Color::Red);
+				codePanel.setLineColor(3, sf::Color::Red);
+				codePanel.setLineColor(4, LavenderSoft);
+				codePanel.setLineColor(5, LavenderSoft);
+				b_frame.addPanel("3bcodePanel", codePanel);
+				w_frame.addPanel("3wcodePanel", codePanel);
+				b_frames.push_back(b_frame);
+				w_frames.push_back(w_frame);
+			}
+			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+			breakpoints.push_back(b_frames.size() - 1);
+			break;
+		}
+
+		for (int i = 0; i < 60; i++)
+		{
+			Engine::Frame b_frame, w_frame;
+			b_frame.init(b_frames.back());
+			w_frame.init(w_frames.back());
+			codePanel.setLineColor(1, LavenderSoft);
+			codePanel.setLineColor(4, sf::Color::Red);
+			b_frame.addPanel("3bcodePanel", codePanel);
+			w_frame.addPanel("3wcodePanel", codePanel);
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+		breakpoints.push_back(b_frames.size() - 1);
+
+	}
+	LinkedList.update(oldV, newV);
+	breakpoints.push_back(b_frames.size() - 1);
+	aniSlider.setNumPart(b_frames.size());
+	aniSlider.setBreakpoints(breakpoints);
+	isPlaying = true;
+	isPaused = false;
+	isEnd = false;
+	numFrames = b_frames.size();
+	currentFrameIndex = 0;
+
+
 }
 void SinglyLinkedListMainState::initSearchFrames(int num)
 {
@@ -854,11 +1105,11 @@ void SinglyLinkedListMainState::initSearchFrames(int num)
 	codePanel.setText("if current == NULL", 3);
 	codePanel.setText("    return false", 4);
 	codePanel.setText("return true", 5);
-
+	
 	initNode();
 	initEdge();
 
-	// Khởi tạo khung hình ban đầu
+	codePanel.setLineColor(1, sf::Color::Red);
 	for (int i = 0; i < allElements.size(); i++)
 	{
 		int x = allElements[i];
@@ -872,71 +1123,122 @@ void SinglyLinkedListMainState::initSearchFrames(int num)
 			w_frame.addEdge("2wedges" + std::to_string(i - 1), w_edges[i - 1]);
 		}
 	}
+
 	b_frames.push_back(b_frame);
 	w_frames.push_back(w_frame);
+	bool isFound = false;
 
-	// Tạo hiệu ứng di chuyển từng node
 	for (int i = 0; i < allElements.size(); i++)
 	{
 		int first = b_frames.size();
 		int last = first + 120 - 1;
-		for (int step = 0; step < 120; step++)
+
+		for (int step = 0; step < 60; step++)
 		{
 			Engine::Frame b_frame, w_frame;
+
 			b_frame.init(b_frames.back());
 			w_frame.init(w_frames.back());
 
+			codePanel.setLineColor(1, sf::Color::Red);
+			codePanel.setLineColor(2, LavenderSoft);
+			b_frame.addPanel("3bcodePanel", codePanel);
+			w_frame.addPanel("3wcodePanel", codePanel);
 
-			//if (i > 0)
-			//{
-			//	changeBEdgeColor(i - 1, step, 30, sf::Color::White, sf::Color::Blue);
-			//	changeWEdgeColor(i - 1, step, 30, sf::Color::White, sf::Color::Blue);
-			//}
 
 			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
 		}
 
-		changeBColor(i, first, last, sf::Color::White, sf::Color::Blue);
-		changeWColor(i, first, last, sf::Color::White, sf::Color::Blue);
+		changeBColor(i, first, last - 90, sf::Color::Black, sf::Color::Blue);
+		changeWColor(i, first, last - 90, sf::Color::Black, sf::Color::Blue);
+		changeBColor(i, last - 90 + 1, last - 60, sf::Color::Blue , sf::Color::Blue);
+		changeWColor(i, last - 90 + 1, last - 60, sf::Color::Blue, sf::Color::Blue);
 
 
 		if (allElements[i] == num)
 		{
 			int firstIndex = b_frames.size();
-			int lastIndex = b_frames.size() + 120 - 1;
-			for (int step = 0; step < 120; step++)
+			int lastIndex = b_frames.size() + 60 - 1;
+			for (int step = 0; step < 60; step++)
 			{
 				Engine::Frame b_frame, w_frame;
 				b_frame.init(b_frames.back());
 				w_frame.init(w_frames.back());
+				codePanel.setLineColor(1, LavenderSoft);
+				codePanel.setLineColor(2, LavenderSoft);
+				codePanel.setLineColor(5, sf::Color::Red);
+				b_frame.addPanel("3bcodePanel", codePanel);
+				w_frame.addPanel("3wcodePanel", codePanel);
 
 
 				b_frames.push_back(b_frame);
 				w_frames.push_back(w_frame);
 			}
-			changeBColor(i, firstIndex, lastIndex, sf::Color::Blue, sf::Color::Green);
-			changeWColor(i, firstIndex, lastIndex, sf::Color::Blue, sf::Color::Green);
+			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
+			breakpoints.push_back(b_frames.size() - 1);
+			isFound = true;
 			break;
 		}
-	}
+		
+		for (int step = 0; step < 60; step++)
+		{
+			Engine::Frame b_frame, w_frame;
+			b_frame.init(b_frames.back());
+			w_frame.init(w_frames.back());
 
+			codePanel.setLineColor(1, LavenderSoft);
+			codePanel.setLineColor(2, sf::Color::Red);
+
+			b_frame.addPanel("3bcodePanel", codePanel);
+			w_frame.addPanel("3wcodePanel", codePanel);
+
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+		changeBColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
+		changeWColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
+		breakpoints.push_back(b_frames.size() - 1);
+	}
+	
+	if (isFound == false)
+	{
+
+		codePanel.setLineColor(2, LavenderSoft);
+		codePanel.setLineColor(3, sf::Color::Red);
+		codePanel.setLineColor(4, sf::Color::Red);
+
+		b_frames.back().addPanel("3bcodePanel", codePanel);
+		w_frames.back().addPanel("3wcodePanel", codePanel);
+	}
+	codePanel.setLineColor(0, LavenderSoft);
+	codePanel.setLineColor(1, LavenderSoft);
+	codePanel.setLineColor(2, LavenderSoft);
+	codePanel.setLineColor(3, LavenderSoft);
+	codePanel.setLineColor(4, LavenderSoft);
+	codePanel.setLineColor(5, LavenderSoft);
 	isPlaying = true;
+	isPaused = false;
+	isEnd = false;
+	currentFrameIndex = 0;
 	numFrames = b_frames.size();
+	aniSlider.setNumPart(b_frames.size());
+	aniSlider.setBreakpoints(breakpoints);
 }
 
 void SinglyLinkedListMainState::updateFrames()
 {
+	numFrames = b_frames.size();
 	if (isPlaying)
 	{
-		b_nextFrame = b_frames.back();
-		w_nextFrame = w_frames.back();
+
 		if (numFrames > 0)
 		{
 			//std::cerr << currentFrameIndex << std::endl;
-			if (currentFrameIndex < numFrames)
+			if (currentFrameIndex < numFrames-1)
 			{
-
+				isEnd = false;
 				b_currentFrame = b_frames[currentFrameIndex];
 				w_currentFrame = w_frames[currentFrameIndex];
 
@@ -944,16 +1246,23 @@ void SinglyLinkedListMainState::updateFrames()
 					currentFrame = b_currentFrame;
 				else
 					currentFrame = w_currentFrame;
-				
-				currentFrameIndex++;
+
+				if(isPaused == false)
+					currentFrameIndex++;
+
 
 			}
 			else
 			{
+				isEnd = true;
+				isPaused = true;
+				currentFrameIndex = numFrames - 1;
+				aniSlider.setPart(currentFrameIndex);
 				if (*m_context->themeType == 0)
-					currentFrame = b_frames[currentFrameIndex - 1];
+					currentFrame = b_frames.back();
 				else
-					currentFrame = w_frames[currentFrameIndex - 1];
+					currentFrame = w_frames.back();
+			
 			}
 		}
 	}

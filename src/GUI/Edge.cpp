@@ -61,11 +61,20 @@ void Edge::drawTo(sf::RenderWindow& window)
 	window.draw(line);
 	if (isDirected)
 	{
-		sf::CircleShape arrow(5, 3);
-		arrow.setFillColor(color);
-		arrow.setPosition(end);
-		arrow.setRotation(atan2(end.y - start.y, end.x - start.x) * 180 / 3.14159265);
-		window.draw(arrow);
+		float length = thickness;
+		sf::VertexArray triangle(sf::Triangles, 3);
+		float angle = atan2(end.y - start.y, end.x - start.x);
+		sf::Vector2f direction = sf::Vector2f(cos(angle), sin(angle));
+		sf::Vector2f normal = sf::Vector2f(-direction.y, direction.x);
+		sf::Vector2f p1 = end; 
+		sf::Vector2f p2 = end - direction * length + normal * (length*2 );
+		sf::Vector2f p3 = end - direction * length - normal * (length*2 );
+		
+		triangle[0].position = p1;
+		triangle[1].position = p2;
+		triangle[2].position = p3;
+
+		window.draw(triangle);
 	}
 	if (isWeight)
 	{

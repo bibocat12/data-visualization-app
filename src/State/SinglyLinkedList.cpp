@@ -36,6 +36,25 @@ void SinglyLinkedList::insert(int element)
 	size++;
 }
 
+void SinglyLinkedList::insert(int k, int v)
+{
+	Node* newNode = new Node();
+	newNode->data = v;
+	if (k == 0) {
+		newNode->next = head;
+		head = newNode;
+	}
+	else {
+		Node* temp = head;
+		for (int i = 0; i < k - 1; i++) {
+			temp = temp->next;
+		}
+		newNode->next = temp->next;
+		temp->next = newNode;
+	}
+	size++;
+}
+
 void SinglyLinkedList::deleteElement(int element)
 {
 	Node* temp = head;
@@ -86,6 +105,19 @@ void SinglyLinkedList::removeAll()
 int SinglyLinkedList::getSize()
 {
 	return size;
+}
+
+void SinglyLinkedList::update(int oldV, int newV)
+{
+	Node* temp = head;
+	while (temp != nullptr) {
+		if (temp->data == oldV) {
+			temp->data = newV;
+			break;
+		}
+		temp = temp->next;
+	}
+	return;
 }
 
 std::vector<int> SinglyLinkedList::getAllElements()

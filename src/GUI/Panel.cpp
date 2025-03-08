@@ -29,6 +29,14 @@ void Panel::setLineColor(int lineIndex, sf::Color color)
 	panel[lineIndex].setBackColor(color);
 }
 
+
+sf::Color Panel::getLineColor(int lineIndex)
+{
+	return panel[lineIndex].getBackColor();
+}
+
+
+
 void Panel::setTextColor(sf::Color color) {
 	for (int i = 0; i < (int)panel.size(); i++) {
 		panel[i].setTextColor(color);

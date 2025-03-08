@@ -6,7 +6,10 @@ Slider::Slider(sf::Vector2f pos, sf::Vector2f barSize, sf::Vector2f knobBarSize)
 	bar.setSize(barSize);
 	curBar.setPosition(pos);
 
+
+	
 	knob.setSize(knobBarSize);
+	//knob.setOrigin(sf::Vector2f{ knobBarSize.x , 0 });
 	knob.setPosition(sf::Vector2f{ pos.x, pos.y - (knobBarSize.y - barSize.y) / 2 });
 	setNumPart(1);
 }
@@ -49,7 +52,21 @@ void Slider::setNumPart(int num) {
 	}
 }
 
+void Slider::setBreakpoints(std::vector<int> breakpoints)
+{
+	this->breakpoints = breakpoints;
+	breakpointsLine.clear();
+	for (int i = 0; i < breakpoints.size(); i++) {
+		sf::RectangleShape line;
+		line.setSize(sf::Vector2f{ 1, bar.getGlobalBounds().height });
+		line.setPosition(sf::Vector2f{ partX[breakpoints[i]], bar.getPosition().y });
+		line.setFillColor(sf::Color::Black);
+		breakpointsLine.push_back(line);
+	}
+}
+
 int Slider::getPartIndex() {
+	return currentPartIndex;
 	for (int i = 0; i < (int)partX.size(); i++) {
 
 		if (knob.getPosition().x <= partX[i]) return i;
@@ -60,7 +77,11 @@ int Slider::getPartIndex() {
 int Slider::getPartIndexMouse(float x) {
 	if (x <= partX[0] + density * (partX[1] - partX[0])) return 0;
 	for (int i = 1; i < (int)partX.size(); i++) {
-		if (x <= partX[i]) return i;
+		if (x <= partX[i])
+		{
+			currentPartIndex = i;
+			return i;
+		}
 	}
 	return getNumPart();
 }
@@ -77,14 +98,22 @@ void Slider::setTextColor(sf::Color color) {
 void Slider::setPart(int index) {
 	if (index < 0) index = 0;
 	if (index >= (int)partX.size()) index = (int)partX.size() - 1;
-
+	currentPartIndex = index;
 	curBar.setSize(sf::Vector2f{ partX[index] - bar.getPosition().x, bar.getGlobalBounds().height });
+
 	if (index == 0) {
 		knob.setPosition(sf::Vector2f{ bar.getPosition().x, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2 });
 	}
 	else {
 		knob.setPosition(sf::Vector2f{ partX[index] - knob.getGlobalBounds().width, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2 });
 	}
+}
+
+bool Slider::isMouseOverWindow(sf::RenderWindow& window)
+{
+	float mousePosX = sf::Mouse::getPosition(window).x;
+	float mousePosY = sf::Mouse::getPosition(window).y;
+	return bar.getGlobalBounds().contains(mousePosX, mousePosY) || knob.getGlobalBounds().contains(mousePosX, mousePosY);
 }
 
 void Slider::handleEvent(sf::Event event) {
@@ -111,7 +140,7 @@ void Slider::handleEvent(sf::Event event) {
 		if (sf::Event::MouseMoved) {
 			isDragging = true;
 			knob.setPosition(sf::Vector2f{ mousePosX - offset.x, knob.getPosition().y });
-			setPart(getPartIndex());
+			setPart(getPartIndexMouse(knob.getPosition().x));
 		} 
 	}
 	
@@ -129,9 +158,13 @@ void Slider::handleEvent(sf::Event event) {
 void Slider::draw(sf::RenderWindow& window) {
 	window.draw(bar);
 	window.draw(curBar);
+	
 	window.draw(knob);
 	window.draw(minText);
 	window.draw(maxText);
+	for (int i = 0; i < (int)breakpointsLine.size(); i++) {
+		window.draw(breakpointsLine[i]);
+	}
 }
 
 sf::Vector2f Slider::getPositon() const {

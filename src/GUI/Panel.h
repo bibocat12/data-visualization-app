@@ -14,6 +14,7 @@ public:
 	void add(std::string text);
 	void setText(std::string text, int lineIndex);
 	void setLineColor(int lineIndex, sf::Color color);
+	sf::Color getLineColor(int lineIndex);
 	void setTextColor(sf::Color color);
 	void draw(sf::RenderWindow& window);
 

@@ -15,11 +15,13 @@ public:
 	void setText(std::string minSt, std::string maxSt, int size, sf::Font& font, sf::Color color);
 	void setMaxText(std::string maxSt);
 	void setNumPart(int num);
+	void setBreakpoints(std::vector<int> breakpoints);
 	int getPartIndex();
 	int getPartIndexMouse(float x);
 	int getNumPart();
 	void setTextColor(sf::Color color);
 	void setPart(int index);
+	bool isMouseOverWindow(sf::RenderWindow& window);
 	void handleEvent(sf::Event event);
 	void draw(sf::RenderWindow& window);
 	sf::Vector2f getPositon() const;
@@ -29,9 +31,13 @@ private:
 	sf::RectangleShape bar;
 	sf::RectangleShape curBar;
 	sf::RectangleShape knob;
+	std::vector<sf::RectangleShape> breakpointsLine;
 	sf::Text minText;
 	sf::Text maxText;
 	std::vector<float> partX;
+	std::vector<int> breakpoints;
+
+	int currentPartIndex = 0;
 
 
 	bool isPressed = false;

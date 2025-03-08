@@ -39,6 +39,7 @@ public:
 	const float NODE_Y = 400;
 	const float PADDING_X = 80;
 	const float DISTANCE_X = 80;
+	const float RADIUS = 20;
 
 	const sf::Color B_NODE_COLOR = sf::Color::White;
 	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
@@ -74,6 +75,9 @@ public:
 	bool isShowing = false;
 	bool isPaused = false;
 	bool isPlaying = false;
+	bool isEnd = false;
+
+	std::vector<int> breakpoints;
 
 	Engine::Frame currentFrame;
 	Engine::Frame b_currentFrame;
@@ -102,7 +106,8 @@ public:
 
 	void deleteAllFrames();
 	void initRandomFrames(std::vector<int> elements);
-	void initInsertFrames(int num);
+	void initInsertFrames(int k,int v);
+	void initUpdateFrames(int oldV, int newV);
 	void initSearchFrames(int num);
 
 	void updateFrames();
@@ -157,7 +162,8 @@ private:
 	ImageButton uploadFileButton;
 	Label okButtonBackground;
 
-	Textbox insertTextbox;
+	Textbox insertTextboxK;
+	Textbox insertTextboxV;
 	Textbox deleteTextbox;
 	Textbox searchTextbox;
 	Textbox createTextbox;
