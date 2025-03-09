@@ -868,6 +868,7 @@ void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 void SinglyLinkedListMainState::updateFrames()
 {
 	numFrames = b_frames.size();
+	speed = speedSlider.getPartIndex() + 1;
 	if (isPlaying)
 	{
 
@@ -886,7 +887,7 @@ void SinglyLinkedListMainState::updateFrames()
 					currentFrame = w_currentFrame;
 
 				if(isPaused == false)
-					currentFrameIndex++;
+					currentFrameIndex += speed;
 
 
 			}

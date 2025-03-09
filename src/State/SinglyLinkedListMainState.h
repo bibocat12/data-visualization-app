@@ -78,6 +78,8 @@ public:
 	bool isPlaying = false;
 	bool isEnd = false;
 
+
+
 	std::vector<int> breakpoints;
 
 	Engine::Frame currentFrame;
@@ -85,6 +87,8 @@ public:
 	Engine::Frame w_currentFrame;
 	std::vector<Engine::Frame> b_frames;
 	std::vector<Engine::Frame> w_frames;
+
+	int speed = 1;
 
 	
 
