@@ -1,12 +1,9 @@
 #pragma once
-
 #include "../StateMachine/State.h"
 #include "../StateMachine/StateMachine.h"
 #include "../StateMachine/AssetManager.h"
 #include "../StateMachine/DEFINITION.h"
 #include "../StateMachine/Frame.h"
-
-
 #include "../GUI/Button.h"
 #include "../GUI/ImageButton.h"
 #include "../GUI/Node.h"
@@ -17,10 +14,13 @@
 #include "../GUI/portable-file-dialogs.h"
 #include "../GUI/Edge.h"
 
+
 #include "SinglyLinkedList.h"
+#include "SinglyLinkedListFrame.h"
 
 #include "../App.h"
 #include "MenuState.h"
+
 
 #include <vector>
 #include <fstream>
@@ -40,6 +40,7 @@ public:
 	const float PADDING_X = 80;
 	const float DISTANCE_X = 80;
 	const float RADIUS = 20;
+	const float CHARACTER_SIZE = 20;
 
 	const sf::Color B_NODE_COLOR = sf::Color::White;
 	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
@@ -82,9 +83,12 @@ public:
 	Engine::Frame currentFrame;
 	Engine::Frame b_currentFrame;
 	Engine::Frame w_currentFrame;
-	Engine::Frame b_nextFrame;
-	Engine::Frame w_nextFrame;
-	Engine::Frame staticFrame;
+	std::vector<Engine::Frame> b_frames;
+	std::vector<Engine::Frame> w_frames;
+
+	
+
+
   
 	Node b_nodes[18];
 	Edge b_edges[18];
@@ -94,7 +98,7 @@ public:
 
 	void initNode();
 	void initEdge();
-
+	SinglyLinkedListFrame m_frames;
 	SinglyLinkedList LinkedList;
 	SinglyLinkedList LinkedList2;
 
@@ -102,11 +106,12 @@ public:
 
 	void changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to);
 	void changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to);
+	void changeBEdge(int index, int index1, int index2, sf::Color from, sf::Color to);
+	void changeWEdge(int index, int index1, int index2, sf::Color from, sf::Color to);
+
 
 
 	void deleteAllFrames();
-	void initRandomFrames(std::vector<int> elements);
-	void initInsertFrames(int k,int v);
 	void initUpdateFrames(int oldV, int newV);
 	void initSearchFrames(int num);
 
@@ -116,14 +121,15 @@ public:
 	sf::Sprite background;
 
 
-	std::vector<Engine::Frame> b_frames;
-	std::vector<Engine::Frame> w_frames;
+
   
   	void initButton(Button& button, std::string text, sf::Vector2f pos);
 	void switchTheme();
 
 private:
 	std::shared_ptr<Context> m_context;
+
+
 
 	sf::Text title;
 	sf::Color backgroundColor;

@@ -1,5 +1,6 @@
 #include "App.h"
 
+#include "State/MenuState.h"
 
 App::App()
 	: m_context(std::make_shared<Context>())

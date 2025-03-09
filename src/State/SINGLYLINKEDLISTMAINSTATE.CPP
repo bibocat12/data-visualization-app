@@ -164,9 +164,10 @@ void SinglyLinkedListMainState::initButton(Button& button, std::string text, sf:
 	button.setPosition(pos);
 }
 
-SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context)
+SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context), m_frames(context)
 {
-
+	// Init context
+	
 	// Init theme
 	initTheme();
 
@@ -334,6 +335,7 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox.setBox(sf::Vector2f{200, buttonSize.y}, BeigeGrey);
 	textbox.setLimit(true, 9);
 }
+
 void SinglyLinkedListMainState::initNode()
 {
 	for (int i = 0; i < 18; i++)
@@ -422,7 +424,21 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 			insertTextboxV.reset();
 			insertTextboxV.setSelected(false);
 
-			initInsertFrames(pos, value);
+			m_frames.setLinkedList(LinkedList);
+			m_frames.initInsertFrames(pos, value);
+			currentFrameIndex = 0;
+			b_frames = m_frames.getBFrames();
+			w_frames = m_frames.getWFrames();
+			breakpoints = m_frames.getBreakpoints();
+			isPlaying = true;
+			isEnd = false;
+			isPaused = false;
+
+			aniSlider.setNumPart(b_frames.size());
+			aniSlider.setPart(0);
+			aniSlider.setBreakpoints(breakpoints);
+
+			LinkedList.insert(pos, value);
 		}
 	}
 	else {
@@ -469,7 +485,22 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = deleteTextbox.getNum();
 			deleteTextbox.reset();
-			// do sth
+			
+			m_frames.setLinkedList(LinkedList);
+			m_frames.initDeleteFrames(num);
+			currentFrameIndex = 0;
+			b_frames = m_frames.getBFrames();
+			w_frames = m_frames.getWFrames();
+			breakpoints = m_frames.getBreakpoints();
+			isPlaying = true;
+			isEnd = false;
+			isPaused = false;
+
+			aniSlider.setNumPart(b_frames.size());
+			aniSlider.setPart(0);
+			aniSlider.setBreakpoints(breakpoints);
+			
+			LinkedList.deleteElement(num);
 		}
 	}
 	else {
@@ -510,7 +541,22 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = searchTextbox.getNum();
 			searchTextbox.reset();
-			initSearchFrames(num);
+			
+			m_frames.setLinkedList(LinkedList);
+			m_frames.initSearchFrames(num);
+			currentFrameIndex = 0;
+			b_frames = m_frames.getBFrames();
+			w_frames = m_frames.getWFrames();
+			breakpoints = m_frames.getBreakpoints();
+			isPlaying = true;
+			isEnd = false;
+			isPaused = false;
+
+			aniSlider.setNumPart(b_frames.size());
+			aniSlider.setPart(0);
+			aniSlider.setBreakpoints(breakpoints);
+
+			
 		}
 	}
 	else {
@@ -575,13 +621,28 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 					while (fileIn >> num) {
 						nums.push_back(num);
 					}
-					for (auto i : nums) std::cerr << i << "\n";
 
-					createTextbox.insertNum((int)nums.size());
-					//handle num list
 
-					initRandomFrames(nums);
+					LinkedList.removeAll();
+					for (int x : nums) {
+						LinkedList.insert(x);
+					}
 
+					m_frames.setLinkedList(LinkedList);
+
+					m_frames.initCreateFrames();
+					b_frames = m_frames.getBFrames();
+					w_frames = m_frames.getWFrames();
+					breakpoints = m_frames.getBreakpoints();
+
+					isPlaying = true;
+					isEnd = false;
+					isEnd = false;
+
+					currentFrameIndex = 0;
+					aniSlider.setNumPart(b_frames.size());
+					aniSlider.setPart(0);
+					aniSlider.setBreakpoints(breakpoints);
 				}
 				else {
 					std::cerr << "Cant open the file\n";
@@ -598,11 +659,28 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 			std::cerr << "Random:" << num << std::endl;
 			createTextbox.reset();
 			// do sth
+			LinkedList.removeAll();
 			std::vector<int> allElements;
 			for (int i = 0; i < num; i++) {
-				allElements.push_back(rand() % 100);
+				int x = rand() % 100;
+				LinkedList.insert(x);
 			}
-			initRandomFrames(allElements);
+			m_frames.setLinkedList(LinkedList);
+
+			m_frames.initCreateFrames();
+			b_frames = m_frames.getBFrames();
+			w_frames = m_frames.getWFrames();
+			breakpoints = m_frames.getBreakpoints();
+
+			isPlaying = true;
+			isEnd = false;
+			isEnd = false;
+
+			currentFrameIndex = 0;
+			aniSlider.setNumPart(b_frames.size());
+			aniSlider.setPart(0);
+			aniSlider.setBreakpoints(breakpoints);
+
 		}
 	}
 	else {
@@ -659,7 +737,21 @@ void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 			updateTextboxV.reset();
 			updateTextboxV.setSelected(false);
 
-			initUpdateFrames(oldV, newV);
+			m_frames.setLinkedList(LinkedList);
+			m_frames.initUpdateFrames(oldV, newV);
+			currentFrameIndex = 0;
+			b_frames = m_frames.getBFrames();
+			w_frames = m_frames.getWFrames();
+			breakpoints = m_frames.getBreakpoints();
+			isPlaying = true;
+			isEnd = false;
+			isPaused = false;
+
+			aniSlider.setNumPart(b_frames.size());
+			aniSlider.setPart(0);
+			aniSlider.setBreakpoints(breakpoints);
+
+			LinkedList.update(oldV, newV);
 
 
 		}
@@ -772,460 +864,6 @@ void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 
 }
 
-void SinglyLinkedListMainState::moveNodeEdge(int index, int index1, int index2, sf::Vector2f start, sf::Vector2f end)
-{
-	for (int i = index1; i <= index2; i++)
-	{
-		sf::Vector2f pos;
-		pos.x = start.x + (i-index1) * (end.x - start.x) / (index2 - index1);
-		pos.y = start.y + (i-index1) * (end.y - start.y) / (index2 - index1);
-
-		sf::Vector2f posEndEdge;
-		posEndEdge.x = start.x + (i - index1) * (end.x - start.x) / (index2 - index1) - RADIUS*3/4;
-		posEndEdge.y = EDGE_Y;
-
-		b_nodes[index].setPosition(pos);
-		w_nodes[index].setPosition(pos);
-		b_edges[index].setStart(sf::Vector2f(start.x, EDGE_Y));
-		w_edges[index].setStart(sf::Vector2f(start.x, EDGE_Y));
-		b_edges[index].setEnd(posEndEdge);
-		w_edges[index].setEnd(posEndEdge);
-
-
-		b_frames[i].init(b_frames[i - 1]);
-		w_frames[i].init(w_frames[i - 1]);
-		b_frames[i].addNode("1bnodes" + std::to_string(index), b_nodes[index]);
-		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
-		b_frames[i].addEdge("2bedges" + std::to_string(index), b_edges[index]);
-		w_frames[i].addEdge("2wedges" + std::to_string(index), w_edges[index]);
-	}
-}
-void SinglyLinkedListMainState::changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to)
-{
-
-	float step =  (index2 - index1);
-	float vR = (to.r - from.r)/step;
-	float vG = (to.g - from.g) / step;
-	float vB = (to.b - from.b) / step;
-
-	for (int i = index1; i <= index2; i++)
-	{
-		sf::Color color;
-		color.r = from.r + vR * (i - index1);
-		color.g = from.g + vG * (i - index1);
-		color.b = from.b + vB * (i - index1);
-		b_nodes[index].setTextColor(color);
-		b_frames[i].addNode("1bnodes" + std::to_string(index), b_nodes[index]);
-	}
-}
-void SinglyLinkedListMainState::changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to)
-{
-	float step = (index2 - index1);
-	float vR = (to.r - from.r) / step;
-	float vG = (to.g - from.g) / step;
-	float vB = (to.b - from.b) / step;
-	for (int i = index1; i <= index2; i++)
-	{
-		sf::Color color;
-		color.r = from.r + vR * (i - index1);
-		color.g = from.g + vG * (i - index1);
-		color.b = from.b + vB * (i - index1);
-		w_nodes[index].setTextColor(color);
-		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
-	}
-}
-void SinglyLinkedListMainState::deleteAllFrames()
-{
-	b_frames.clear();
-	w_frames.clear();
-	breakpoints.clear();
-	numFrames = 0;
-	currentFrameIndex = 0;
-	isPlaying = false;
-}
-
-void SinglyLinkedListMainState::initRandomFrames(std::vector<int> elements)
-{
-	int timeRepeat = 0;
-	deleteAllFrames();
-	LinkedList.removeAll();
-
-	for (int x : elements)
-		LinkedList.insert(x);
-
-	codePanel.setText("for x in elements", 0);
-	codePanel.setText("    insert(x)", 1);
-	codePanel.setText("return", 2);
-
-	std::vector<int> allElements;
-	std::cerr << "NumElements: " << elements.size() << std::endl;
-	allElements = LinkedList.getAllElements();
-	initNode();
-	initEdge();
-	breakpoints.push_back(0);
-
-
-	for(int i = 0;i < 60;i++)
-	{
-		Engine::Frame b_frame, w_frame;
-		b_nodes[0].setString(std::to_string(allElements[0]));
-		w_nodes[0].setString(std::to_string(allElements[0]));
-		b_frame.addNode("1bnodes0", b_nodes[0]);
-		w_frame.addNode("1swnodes0", w_nodes[0]);
-		b_frame.addPanel("3bcodePanel", codePanel);
-		w_frame.addPanel("3wcodePanel", codePanel);
-
-		b_frames.push_back(b_frame);
-		w_frames.push_back(w_frame);
-	}
-	breakpoints.push_back(b_frames.size());
-
-	for (int i = 1; i < allElements.size(); i++)
-	{
-		int firstIndex = b_frames.size() ;
-		int lastIndex = b_frames.size() + 60 - 1;
-		for (int j = 0; j < 60; j++)
-		{
-			Engine::Frame b_frame, w_frame;
-			b_nodes[i].setString(std::to_string(allElements[i]));
-			w_nodes[i].setString(std::to_string(allElements[i]));
-			codePanel.setLineColor(1, LavenderSoft);
-			codePanel.setLineColor(2, LavenderSoft);
-
-
-			b_frame.init(b_frames[b_frames.size() - 1]);
-			w_frame.init(w_frames[w_frames.size() - 1]);
-			b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
-			w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-
-			b_frames.push_back(b_frame);
-			w_frames.push_back(w_frame);
-		}
-
-		moveNodeEdge(i, firstIndex, lastIndex, sf::Vector2f(PADDING_X + (i - 1) * DISTANCE_X, 400), sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
-		breakpoints.push_back(b_frames.size() - 1);
-	}
-	aniSlider.setNumPart(b_frames.size());
-	aniSlider.setBreakpoints(breakpoints);
-	isPlaying = true;
-	isPaused = false;
-	isEnd = false;
-	numFrames = b_frames.size();
-	std::cerr << "NumFrames: " << numFrames << std::endl;
-	currentFrameIndex = 0;
-
-}
-void SinglyLinkedListMainState::initInsertFrames(int k, int v)
-{
-	std::vector<int> allElements = LinkedList.getAllElements();
-	deleteAllFrames();
-	Engine::Frame b_frame, w_frame;
-
-	for (int i = 0; i < allElements.size(); i++)
-	{
-		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
-		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
-		b_frame.addEdge("2bedges" + std::to_string(i), b_edges[i]);
-		w_frame.addEdge("2wedges" + std::to_string(i), w_edges[i]);
-	}
-
-	codePanel.setText("current = head", 0);
-	codePanel.setText("while k > 0", 1);
-	codePanel.setText("    current = current->next", 2);
-	codePanel.setText("    k--", 3);
-	codePanel.setText("insert v after current", 4);
-
-	b_frame.addPanel("3bcodePanel", codePanel);
-	w_frame.addPanel("3wcodePanel", codePanel);
-	b_frames.push_back(b_frame);
-	w_frames.push_back(w_frame);
-
-	for (int i = 0; i < 60; i++)
-	{
-		Engine::Frame b_frame, w_frame;
-		b_frame.init(b_frames.back());
-		w_frame.init(w_frames.back());
-		codePanel.setLineColor(1, sf::Color::Red);
-		b_frame.addPanel("3bcodePanel", codePanel);
-		w_frame.addPanel("3wcodePanel", codePanel);
-		b_frames.push_back(b_frame);
-		w_frames.push_back(w_frame);
-	}
-
-	LinkedList.insert(k, v);
-	allElements = LinkedList.getAllElements();
-	initNode();
-	initEdge();
-
-	int firstIndex = b_frames.size();
-	int lastIndex = firstIndex + 60 - 1;
-	for (int i = 0; i < 60; i++)
-	{
-		Engine::Frame b_frame, w_frame;
-		b_frame.init(b_frames.back());
-		w_frame.init(w_frames.back());
-		codePanel.setLineColor(4, sf::Color::Red);
-		b_frame.addPanel("3bcodePanel", codePanel);
-		w_frame.addPanel("3wcodePanel", codePanel);
-		b_frames.push_back(b_frame);
-		w_frames.push_back(w_frame);
-	}
-
-	changeBColor(k, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-	changeWColor(k, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-
-	breakpoints.push_back(b_frames.size() - 1);
-	aniSlider.setNumPart(b_frames.size());
-	aniSlider.setBreakpoints(breakpoints);
-	isPlaying = true;
-	isPaused = false;
-	isEnd = false;
-	numFrames = b_frames.size();
-	currentFrameIndex = 0;
-}
-
-void SinglyLinkedListMainState::initUpdateFrames(int oldV, int newV)
-{
-	std::vector<int> allElements;
-	allElements = LinkedList.getAllElements();
-	deleteAllFrames();
-	Engine::Frame b_frame, w_frame;
-	for (int i = 0; i < allElements.size(); i++)
-	{
-		int x = allElements[i];
-		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
-		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
-		b_frame.addEdge("2bedges" + std::to_string(i), b_edges[i]);
-		w_frame.addEdge("2wedges" + std::to_string(i), w_edges[i]);
-	}
-
-	codePanel.setText("current = head", 0);
-	codePanel.setText("while current != NULL", 1);
-	codePanel.setText("    if current->data == x", 2);
-	codePanel.setText("        current->data = v", 3);
-	codePanel.setText("    current = current->next", 4);
-
-
-	b_frame.addPanel("3bcodePanel", codePanel);
-	w_frame.addPanel("3wcodePanel", codePanel);
-
-	b_frames.push_back(b_frame);
-	w_frames.push_back(w_frame);
-
-	for (int i = 0;i < allElements.size();i++)
-	{
-		int x = allElements[i];	
-		int firstIndex = b_frames.size();
-		int lastIndex = firstIndex + 120 - 1;
-		for (int i = 0; i < 60; i++)
-		{
-			Engine::Frame b_frame, w_frame;
-			b_frame.init(b_frames.back());
-			w_frame.init(w_frames.back());
-			codePanel.setLineColor(0, LavenderSoft);
-			codePanel.setLineColor(1, sf::Color::Red);
-			codePanel.setLineColor(2, LavenderSoft);
-			codePanel.setLineColor(3, LavenderSoft);
-			codePanel.setLineColor(4, LavenderSoft);
-			codePanel.setLineColor(5, LavenderSoft);
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-			b_frames.push_back(b_frame);
-			w_frames.push_back(w_frame);
-		}
-		changeBColor(i, firstIndex, lastIndex - 90, sf::Color::Black, sf::Color::Blue);
-		changeWColor(i, firstIndex, lastIndex - 90, sf::Color::Black, sf::Color::Blue);
-		changeBColor(i, lastIndex - 90 + 1, lastIndex - 60, sf::Color::Blue, sf::Color::Blue);
-		changeWColor(i, lastIndex - 90 + 1, lastIndex - 60, sf::Color::Blue, sf::Color::Blue);
-		if (x == oldV)
-		{
-			int firstIndex = b_frames.size();
-			int lastIndex = b_frames.size() + 60 - 1;
-			for (int step = 0; step < 60; step++)
-			{
-				Engine::Frame b_frame, w_frame;
-				b_frame.init(b_frames.back());
-				w_frame.init(w_frames.back());
-				b_nodes[i].setString(std::to_string(newV));
-				w_nodes[i].setString(std::to_string(newV));
-				codePanel.setLineColor(1, LavenderSoft);
-				codePanel.setLineColor(2, sf::Color::Red);
-				codePanel.setLineColor(3, sf::Color::Red);
-				codePanel.setLineColor(4, LavenderSoft);
-				codePanel.setLineColor(5, LavenderSoft);
-				b_frame.addPanel("3bcodePanel", codePanel);
-				w_frame.addPanel("3wcodePanel", codePanel);
-				b_frames.push_back(b_frame);
-				w_frames.push_back(w_frame);
-			}
-			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			breakpoints.push_back(b_frames.size() - 1);
-			break;
-		}
-
-		for (int i = 0; i < 60; i++)
-		{
-			Engine::Frame b_frame, w_frame;
-			b_frame.init(b_frames.back());
-			w_frame.init(w_frames.back());
-			codePanel.setLineColor(1, LavenderSoft);
-			codePanel.setLineColor(4, sf::Color::Red);
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-			b_frames.push_back(b_frame);
-			w_frames.push_back(w_frame);
-		}
-		breakpoints.push_back(b_frames.size() - 1);
-
-	}
-	LinkedList.update(oldV, newV);
-	breakpoints.push_back(b_frames.size() - 1);
-	aniSlider.setNumPart(b_frames.size());
-	aniSlider.setBreakpoints(breakpoints);
-	isPlaying = true;
-	isPaused = false;
-	isEnd = false;
-	numFrames = b_frames.size();
-	currentFrameIndex = 0;
-
-
-}
-void SinglyLinkedListMainState::initSearchFrames(int num)
-{
-	std::vector<int> allElements = LinkedList.getAllElements();
-	deleteAllFrames();
-	Engine::Frame b_frame, w_frame;
-
-	codePanel.setText("current = head", 0);
-	codePanel.setText("while current != NULL and current->data != " + std::to_string(num), 1);
-	codePanel.setText("    current = current->next", 2);
-	codePanel.setText("if current == NULL", 3);
-	codePanel.setText("    return false", 4);
-	codePanel.setText("return true", 5);
-	
-	initNode();
-	initEdge();
-
-	codePanel.setLineColor(1, sf::Color::Red);
-	for (int i = 0; i < allElements.size(); i++)
-	{
-		int x = allElements[i];
-		b_nodes[i].setString(std::to_string(x));
-		w_nodes[i].setString(std::to_string(x));
-		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
-		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
-		if (i > 0)
-		{
-			b_frame.addEdge("2bedges" + std::to_string(i - 1), b_edges[i - 1]);
-			w_frame.addEdge("2wedges" + std::to_string(i - 1), w_edges[i - 1]);
-		}
-	}
-
-	b_frames.push_back(b_frame);
-	w_frames.push_back(w_frame);
-	bool isFound = false;
-
-	for (int i = 0; i < allElements.size(); i++)
-	{
-		int first = b_frames.size();
-		int last = first + 120 - 1;
-
-		for (int step = 0; step < 60; step++)
-		{
-			Engine::Frame b_frame, w_frame;
-
-			b_frame.init(b_frames.back());
-			w_frame.init(w_frames.back());
-
-			codePanel.setLineColor(1, sf::Color::Red);
-			codePanel.setLineColor(2, LavenderSoft);
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-
-
-			b_frames.push_back(b_frame);
-			w_frames.push_back(w_frame);
-		}
-
-		changeBColor(i, first, last - 90, sf::Color::Black, sf::Color::Blue);
-		changeWColor(i, first, last - 90, sf::Color::Black, sf::Color::Blue);
-		changeBColor(i, last - 90 + 1, last - 60, sf::Color::Blue , sf::Color::Blue);
-		changeWColor(i, last - 90 + 1, last - 60, sf::Color::Blue, sf::Color::Blue);
-
-
-		if (allElements[i] == num)
-		{
-			int firstIndex = b_frames.size();
-			int lastIndex = b_frames.size() + 60 - 1;
-			for (int step = 0; step < 60; step++)
-			{
-				Engine::Frame b_frame, w_frame;
-				b_frame.init(b_frames.back());
-				w_frame.init(w_frames.back());
-				codePanel.setLineColor(1, LavenderSoft);
-				codePanel.setLineColor(2, LavenderSoft);
-				codePanel.setLineColor(5, sf::Color::Red);
-				b_frame.addPanel("3bcodePanel", codePanel);
-				w_frame.addPanel("3wcodePanel", codePanel);
-
-
-				b_frames.push_back(b_frame);
-				w_frames.push_back(w_frame);
-			}
-			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			breakpoints.push_back(b_frames.size() - 1);
-			isFound = true;
-			break;
-		}
-		
-		for (int step = 0; step < 60; step++)
-		{
-			Engine::Frame b_frame, w_frame;
-			b_frame.init(b_frames.back());
-			w_frame.init(w_frames.back());
-
-			codePanel.setLineColor(1, LavenderSoft);
-			codePanel.setLineColor(2, sf::Color::Red);
-
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-
-			b_frames.push_back(b_frame);
-			w_frames.push_back(w_frame);
-		}
-		changeBColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
-		changeWColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
-		breakpoints.push_back(b_frames.size() - 1);
-	}
-	
-	if (isFound == false)
-	{
-
-		codePanel.setLineColor(2, LavenderSoft);
-		codePanel.setLineColor(3, sf::Color::Red);
-		codePanel.setLineColor(4, sf::Color::Red);
-
-		b_frames.back().addPanel("3bcodePanel", codePanel);
-		w_frames.back().addPanel("3wcodePanel", codePanel);
-	}
-	codePanel.setLineColor(0, LavenderSoft);
-	codePanel.setLineColor(1, LavenderSoft);
-	codePanel.setLineColor(2, LavenderSoft);
-	codePanel.setLineColor(3, LavenderSoft);
-	codePanel.setLineColor(4, LavenderSoft);
-	codePanel.setLineColor(5, LavenderSoft);
-	isPlaying = true;
-	isPaused = false;
-	isEnd = false;
-	currentFrameIndex = 0;
-	numFrames = b_frames.size();
-	aniSlider.setNumPart(b_frames.size());
-	aniSlider.setBreakpoints(breakpoints);
-}
 
 void SinglyLinkedListMainState::updateFrames()
 {

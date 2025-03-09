@@ -66,6 +66,9 @@ void Edge::drawTo(sf::RenderWindow& window)
 		float angle = atan2(end.y - start.y, end.x - start.x);
 		sf::Vector2f direction = sf::Vector2f(cos(angle), sin(angle));
 		sf::Vector2f normal = sf::Vector2f(-direction.y, direction.x);
+		triangle[0].color = color;
+		triangle[1].color = color;
+		triangle[2].color = color;
 		sf::Vector2f p1 = end; 
 		sf::Vector2f p2 = end - direction * length + normal * (length*2 );
 		sf::Vector2f p3 = end - direction * length - normal * (length*2 );

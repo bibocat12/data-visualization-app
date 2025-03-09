@@ -20,6 +20,7 @@ public:
 	void setFillColor(sf::Color color);
 	void setCharacterSize(int size);
 	void setPosition(sf::Vector2f pos);
+	sf::Vector2f getPosition();
 	void drawTo(sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void handleHover(sf::RenderWindow& window);

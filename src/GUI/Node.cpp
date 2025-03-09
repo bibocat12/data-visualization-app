@@ -27,7 +27,7 @@ void Node::setCharacterSize(int size)
 void Node::setPosition(sf::Vector2f pos)
 {
 	this->position = pos;
-	shape.setOrigin(shape.getRadius()/2, shape.getRadius()/2);
+	shape.setOrigin(shape.getRadius(), shape.getRadius());
 	shape.setPosition(pos);
 	sf::FloatRect textBounds = text.getLocalBounds();
 	sf::FloatRect shapeBounds = shape.getGlobalBounds();
@@ -35,6 +35,11 @@ void Node::setPosition(sf::Vector2f pos)
 		textBounds.top + textBounds.height / 2.0f);
 	text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
 		shapeBounds.top + shapeBounds.height / 2.0f);
+}
+
+sf::Vector2f Node::getPosition()
+{
+	return position;
 }
 
 void Node::drawTo(sf::RenderWindow& window)
