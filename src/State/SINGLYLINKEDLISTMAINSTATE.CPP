@@ -189,6 +189,13 @@ SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& c
 	// Init node and edge
 	initNode();
 	initEdge();
+
+
+	warningText.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
+	warningText.setCharacterSize(20);
+	warningText.setFillColor(sf::Color::Red);
+	warningText.setString("Invalid input! Please enter a number.");
+	warningText.setPosition(sf::Vector2f{ 10, 620 });
 }
 
 SinglyLinkedListMainState::~SinglyLinkedListMainState()
@@ -317,10 +324,8 @@ void SinglyLinkedListMainState::draw()
 	okButtonBackground.drawTo(*m_context->window);
 	okButton.drawTo(*m_context->window);
 
-	//std::cerr << "currentframe index" << currentFrameIndex << std::endl;
-	//std::cerr << "currentframe size" << b_frames.size() << std::endl;
-	//for (int x : breakpoints) std::cerr << x << " ";
-	//std::cerr << std::endl;
+	if (isWarning)
+		(*m_context->window).draw(warningText);
 	currentFrame.drawAll(*m_context->window);
 
 	m_context->window->display();
@@ -334,6 +339,19 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox.setPosition(pos);
 	textbox.setBox(sf::Vector2f{ 200, buttonSize.y }, BeigeGrey);
 	textbox.setLimit(true, 9);
+}
+
+int SinglyLinkedListMainState::checkNumber(std::string str)
+{
+	int num = 0;
+	for (int i = 0; i < str.size(); i++)
+	{
+		num = num * 10 + (str[i] - '0');
+		if (str[i] < '0' || str[i] > '9')
+			return -1;
+	}
+	return num;
+
 }
 
 void SinglyLinkedListMainState::initNode()
@@ -455,8 +473,6 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 		}
 	}
 }
-
-
 void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 {
 	deleteButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -512,7 +528,6 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 {
 	searchButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -568,7 +583,6 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleHomeButtonEvents(sf::Event event)
 {
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -578,7 +592,6 @@ void SinglyLinkedListMainState::handleHomeButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 {
 	createButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -694,7 +707,6 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 {
 	updateButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
@@ -769,7 +781,6 @@ void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleThemeButtonEvents(sf::Event event)
 {
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -778,7 +789,6 @@ void SinglyLinkedListMainState::handleThemeButtonEvents(sf::Event event)
 		}
 	}
 }
-
 void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 {
 	if (b_frames.size() == 0) return;
@@ -843,7 +853,6 @@ void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 
 	aniSlider.handleEvent(event);
 }
-
 void SinglyLinkedListMainState::handleSpeedSliderEvents(sf::Event event)
 {
 	speedSlider.handleEvent(event);
@@ -851,9 +860,12 @@ void SinglyLinkedListMainState::handleSpeedSliderEvents(sf::Event event)
 	st[0] = char(speedSlider.getPartIndex() + 1 + '0');
 	speedSlider.setMaxText(st);
 }
-
 void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 {
+	if (event.type == sf::Event::MouseButtonPressed)
+	{
+		isWarning = false;
+	}
 	handleDeleteButtonEvents(event);
 	handleInsertButtonEvents(event);
 	handleSearchButtonEvents(event);
