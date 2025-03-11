@@ -30,7 +30,7 @@
 
 
 
-class SinglyLinkedListMainState : public Engine::State 
+class SinglyLinkedListMainState : public Engine::State
 {
 
 public:
@@ -57,9 +57,9 @@ public:
 	void update(const sf::Time& dt) override;
 	void draw() override;
 
-	void handleButtonEvents( const sf::Event& event);
+	void handleButtonEvents(const sf::Event& event);
 
-	void handleCreateButtonEvents( const sf::Event event);
+	void handleCreateButtonEvents(const sf::Event event);
 
 
 	void handleInsertButtonEvents(sf::Event event);
@@ -90,10 +90,10 @@ public:
 
 	int speed = 1;
 
-	
 
 
-  
+
+
 	Node b_nodes[18];
 	Edge b_edges[18];
 	Node w_nodes[18];
@@ -106,7 +106,7 @@ public:
 	SinglyLinkedList LinkedList;
 	SinglyLinkedList LinkedList2;
 
-	void moveNodeEdge(int index,int index1, int index2, sf::Vector2f start, sf::Vector2f end);
+	void moveNodeEdge(int index, int index1, int index2, sf::Vector2f start, sf::Vector2f end);
 
 	void changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to);
 	void changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to);
@@ -126,8 +126,8 @@ public:
 
 
 
-  
-  	void initButton(Button& button, std::string text, sf::Vector2f pos);
+
+	void initButton(Button& button, std::string text, sf::Vector2f pos);
 	void switchTheme();
 
 private:
@@ -156,7 +156,7 @@ private:
 	bool isSelectedSearchButton = false;
 	bool isSelectedCreateButton = false;
 	bool isSelectedUpdateButton = false;
-	
+
 	Panel codePanel;
 	Slider aniSlider;
 	Slider speedSlider;
@@ -188,10 +188,9 @@ public:
 	void initTitle();
 	void initAniSlider();
 	void initSpeedSlider();
-	
+
 	void initTextbox(Textbox& textbox, int charSize, sf::Color textColor, sf::Font& font, sf::Vector2f pos);
 private:
 	sf::Vector2f labelSize;
 	float checkpointY;
 };
-

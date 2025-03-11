@@ -1,5 +1,6 @@
 #include "MenuState.h"
 #include "SinglyLinkedListMainState.h"
+#include "HeapMainState.h"
 MenuState::MenuState(std::shared_ptr<Context>& context) : m_context(context)
 {
 
@@ -90,8 +91,8 @@ void MenuState::init()
 	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
 	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
 	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375 + spaceY + buttonSize.y}));
-	buttons.push_back(initButton("MST", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
-	buttons.push_back(initButton("Shortest Path", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("2-3-4 Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("Graph", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
 	themeButton.setPosition(sf::Vector2f{ 1450, 30 });
 
 }
@@ -121,14 +122,14 @@ void MenuState::processEvents()
 			buttons[i].first.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 
 			if (i == 0 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-				std::cerr << "Button " << i << "\n";
+				std::cerr << "Singly linked list\n";
 				m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
 				break;
 			}
 
 			if (i == 1 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-				std::cerr << "Button " << i << "\n";
-				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				std::cerr << "Heap\n";
+				m_context->stateMachine->addState(std::make_unique<HeapMainState>(m_context), 0);
 				break;
 			}
 

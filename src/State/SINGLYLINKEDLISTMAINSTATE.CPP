@@ -49,12 +49,12 @@ void SinglyLinkedListMainState::initFunctionButton() {
 	initButton(deleteButton, "Delete", sf::Vector2f{ 10, firstButtonY + 2 * buttonSize.y });
 	initButton(updateButton, "Update", sf::Vector2f{ 10, firstButtonY + 3 * buttonSize.y });
 	initButton(searchButton, "Search", sf::Vector2f{ 10, firstButtonY + 4 * buttonSize.y });
-	
+
 	randomButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
 	randomUpdateButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
 	uploadFileButton = ImageButton(m_context->assetManager->getTexture("UploadFile"), 1.f, 1.f);
 	okButton = ImageButton(m_context->assetManager->getTexture("Ok"), 1.f, 1.f);
-	
+
 	uploadFileButton.setPosition(sf::Vector2f{ -1000, -1000 });
 	randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 	randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
@@ -62,7 +62,7 @@ void SinglyLinkedListMainState::initFunctionButton() {
 	okButtonBackground = Label("", 0, sf::Vector2f{ 200, buttonSize.y }, DarkBeigeGrey, textColor, m_context->assetManager->getFont("arial"));
 	okButtonBackground.setPosition(sf::Vector2f{ -1000, -1000 });
 
-	initTextbox(insertTextboxK, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f {5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y});
+	initTextbox(insertTextboxK, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	insertTextboxK.setConstText("k = ");
 
 	initTextbox(insertTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, insertTextboxK.getPositon().y + insertTextboxK.getGlobalBounds().height });
@@ -82,7 +82,7 @@ void SinglyLinkedListMainState::initFunctionButton() {
 	updateTextboxX.setConstText("x = ");
 	updateTextboxX.setLimit(true, 9);
 
-	initTextbox(updateTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, updateTextboxX.getPositon().y + updateTextboxX.getGlobalBounds().height});
+	initTextbox(updateTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, updateTextboxX.getPositon().y + updateTextboxX.getGlobalBounds().height });
 	updateTextboxV.setConstText("v = ");
 	updateTextboxV.setLimit(true, 9);
 }
@@ -167,7 +167,7 @@ void SinglyLinkedListMainState::initButton(Button& button, std::string text, sf:
 SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context), m_frames(context)
 {
 	// Init context
-	
+
 	// Init theme
 	initTheme();
 
@@ -179,10 +179,10 @@ SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& c
 
 	// Init code panel
 	initCodePanel();
-	
+
 	// Init Animation slider
 	initAniSlider();
-	
+
 	// Init speed slider
 	initSpeedSlider();
 
@@ -227,7 +227,7 @@ void SinglyLinkedListMainState::processEvents()
 		{
 			if (event.key.code == sf::Keyboard::Space)
 			{
-				if(isEnd == false)
+				if (isEnd == false)
 					isPaused ^= 1;
 			}
 
@@ -237,7 +237,7 @@ void SinglyLinkedListMainState::processEvents()
 		handleSpeedSliderEvents(event);
 
 	}
-	
+
 	createTextbox.handleCursor();
 	insertTextboxK.handleCursor();
 	insertTextboxV.handleCursor();
@@ -262,7 +262,7 @@ void SinglyLinkedListMainState::update(const sf::Time& dt)
 		pauseButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - pauseButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
 
 
-	
+
 
 	if (isPaused == false && isPlaying == true)
 		aniSlider.setPart(currentFrameIndex);
@@ -303,7 +303,7 @@ void SinglyLinkedListMainState::draw()
 	forwardButton.drawTo(*m_context->window);
 	replayButton.drawTo(*m_context->window);
 	pauseButton.drawTo(*m_context->window);
-	
+
 	insertTextboxK.drawTo(*m_context->window);
 	insertTextboxV.drawTo(*m_context->window);
 	deleteTextbox.drawTo(*m_context->window);
@@ -332,7 +332,7 @@ void SinglyLinkedListMainState::initTextbox(Textbox& textbox, int charSize, sf::
 	textbox = Textbox(charSize, textColor, false);
 	textbox.setFont(m_context->assetManager->getFont("JetBrainsMono-SemiBold"));
 	textbox.setPosition(pos);
-	textbox.setBox(sf::Vector2f{200, buttonSize.y}, BeigeGrey);
+	textbox.setBox(sf::Vector2f{ 200, buttonSize.y }, BeigeGrey);
 	textbox.setLimit(true, 9);
 }
 
@@ -474,7 +474,7 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 		randomButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x + deleteTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, deleteTextbox.getPositon().y });
 		okButtonBackground.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x, deleteTextbox.getPositon().y + deleteTextbox.getGlobalBounds().height });
 		okButton.setPosition(sf::Vector2f{ deleteTextbox.getPositon().x + (deleteTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, deleteTextbox.getPositon().y + deleteTextbox.getGlobalBounds().height });
-		
+
 		deleteTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -485,7 +485,7 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = deleteTextbox.getNum();
 			deleteTextbox.reset();
-			
+
 			m_frames.setLinkedList(LinkedList);
 			m_frames.initDeleteFrames(num);
 			currentFrameIndex = 0;
@@ -499,7 +499,7 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 			aniSlider.setNumPart(b_frames.size());
 			aniSlider.setPart(0);
 			aniSlider.setBreakpoints(breakpoints);
-			
+
 			LinkedList.deleteElement(num);
 		}
 	}
@@ -530,7 +530,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 		randomButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + searchTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, searchTextbox.getPositon().y });
 		okButtonBackground.setPosition(sf::Vector2f{ searchTextbox.getPositon().x, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
 		okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + (searchTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
-		
+
 		searchTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -541,7 +541,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 			int num = searchTextbox.getNum();
 			searchTextbox.reset();
-			
+
 			m_frames.setLinkedList(LinkedList);
 			m_frames.initSearchFrames(num);
 			currentFrameIndex = 0;
@@ -556,7 +556,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 			aniSlider.setPart(0);
 			aniSlider.setBreakpoints(breakpoints);
 
-			
+
 		}
 	}
 	else {
@@ -594,7 +594,7 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 		createButton.setBackColor(hoverButtonColor);
 		createTextbox.setVisible();
 		randomButton.setPosition(sf::Vector2f{ createTextbox.getPositon().x + createTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, createTextbox.getPositon().y });
-		uploadFileButton.setPosition(sf::Vector2f{ randomButton.getPosition().x - uploadFileButton.getGlobalBounds().width - 5, createTextbox.getPositon().y});
+		uploadFileButton.setPosition(sf::Vector2f{ randomButton.getPosition().x - uploadFileButton.getGlobalBounds().width - 5, createTextbox.getPositon().y });
 		okButtonBackground.setPosition(sf::Vector2f{ createTextbox.getPositon().x, createTextbox.getPositon().y + createTextbox.getGlobalBounds().height });
 		okButton.setPosition(sf::Vector2f{ createTextbox.getPositon().x + (createTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, createTextbox.getPositon().y + createTextbox.getGlobalBounds().height });
 
@@ -611,7 +611,7 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 
 			if (!selection.empty()) {  // Check if the user selected a file
 				std::string filename = selection[0];  // Get the file path
-				
+
 				std::ifstream fileIn(filename);
 
 				if (fileIn.is_open()) {
@@ -790,7 +790,7 @@ void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		if (nextButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
-			for (int x : breakpoints) 
+			for (int x : breakpoints)
 				if (x > currentFrameIndex) {
 					currentFrameIndex = x;
 					break;
@@ -835,7 +835,7 @@ void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 		}
 		if (aniSlider.isMouseOverWindow(*m_context->window) == true)
 		{
-			isPaused = true; 
+			isPaused = true;
 			aniSlider.handleEvent(event);
 			return;
 		}
@@ -875,7 +875,7 @@ void SinglyLinkedListMainState::updateFrames()
 		if (numFrames > 0)
 		{
 			//std::cerr << currentFrameIndex << std::endl;
-			if (currentFrameIndex < numFrames-1)
+			if (currentFrameIndex < numFrames - 1)
 			{
 				isEnd = false;
 				b_currentFrame = b_frames[currentFrameIndex];
@@ -886,7 +886,7 @@ void SinglyLinkedListMainState::updateFrames()
 				else
 					currentFrame = w_currentFrame;
 
-				if(isPaused == false)
+				if (isPaused == false)
 					currentFrameIndex += speed;
 
 
@@ -901,14 +901,12 @@ void SinglyLinkedListMainState::updateFrames()
 					currentFrame = b_frames.back();
 				else
 					currentFrame = w_frames.back();
-			
+
 			}
 		}
 	}
-	
+
 
 
 
 }
-
-

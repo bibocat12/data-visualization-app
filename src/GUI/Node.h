@@ -29,12 +29,11 @@ public:
 	void setOutlineThickness(float thickness);
 	void setString(std::string str);
 	void setTextColor(sf::Color color);
+	std::string getString();
 
-	
 
 private:
-	
 
-	
+
+
 };
-

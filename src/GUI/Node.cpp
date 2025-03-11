@@ -22,7 +22,7 @@ void Node::setFillColor(sf::Color color)
 void Node::setCharacterSize(int size)
 {
 	text.setCharacterSize(size);
-}	
+}
 
 void Node::setPosition(sf::Vector2f pos)
 {
@@ -85,7 +85,7 @@ void Node::setOutlineColor(sf::Color color)
 {
 	shape.setOutlineColor(color);
 	outlineColor = color;
-}	
+}
 
 void Node::setOutlineThickness(float thickness)
 {
@@ -102,4 +102,7 @@ void Node::setTextColor(sf::Color color)
 	text.setFillColor(color);
 }
 
-
+std::string Node::getString()
+{
+	return text.getString();
+}
