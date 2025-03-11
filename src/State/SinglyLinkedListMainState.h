@@ -37,15 +37,15 @@ public:
 
 	const float EDGE_Y = 410;
 	const float NODE_Y = 400;
-	const float PADDING_X = 50;
-	const float DISTANCE_X = 60;
+	const float PADDING_X = 80;
+	const float DISTANCE_X = 80;
 	const float RADIUS = 20;
-	const float CHARACTER_SIZE = 15;
+	const float CHARACTER_SIZE = 20;
 
 	const sf::Color B_NODE_COLOR = sf::Color::White;
 	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
 	const sf::Color W_NODE_COLOR = sf::Color::White;
-	const sf::Color W_NODE_COLOR_HOVER = sf::Color::Red;
+	const sf::Color W_NODE_COLOR_HOVER = Orange;
 
 
 	SinglyLinkedListMainState(std::shared_ptr<Context>& context);
@@ -77,8 +77,6 @@ public:
 	bool isPaused = false;
 	bool isPlaying = false;
 	bool isEnd = false;
-	bool isWarning = false;
-	sf::Text warningText;
 
 
 
@@ -92,12 +90,7 @@ public:
 
 	int speed = 1;
 
-<<<<<<< Updated upstream
 
-=======
-	
-	int checkNumber(std::string str);
->>>>>>> Stashed changes
 
 
 
@@ -113,35 +106,19 @@ public:
 	SinglyLinkedList LinkedList;
 	SinglyLinkedList LinkedList2;
 
-<<<<<<< Updated upstream
-	void moveNodeEdge(int index, int index1, int index2, sf::Vector2f start, sf::Vector2f end);
-
-	void changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to);
-	void changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to);
-	void changeBEdge(int index, int index1, int index2, sf::Color from, sf::Color to);
-	void changeWEdge(int index, int index1, int index2, sf::Color from, sf::Color to);
+	sf::Text warningText;
+	bool isWarning = false;
 
 
-
-	void deleteAllFrames();
-	void initUpdateFrames(int oldV, int newV);
-	void initSearchFrames(int num);
-
-=======
->>>>>>> Stashed changes
 	void updateFrames();
+
 
 	sf::Sprite background;
 
-<<<<<<< Updated upstream
 
 
 
 	void initButton(Button& button, std::string text, sf::Vector2f pos);
-=======
-  
-  	void initButton(Button& button, std::string text, sf::Vector2f pos);
->>>>>>> Stashed changes
 	void switchTheme();
 
 private:
@@ -204,6 +181,7 @@ public:
 	void initSpeedSlider();
 
 	void initTextbox(Textbox& textbox, int charSize, sf::Color textColor, sf::Font& font, sf::Vector2f pos);
+	int checkNumber(std::string str);
 private:
 	sf::Vector2f labelSize;
 	float checkpointY;
