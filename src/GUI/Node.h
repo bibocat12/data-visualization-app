@@ -15,6 +15,12 @@ public:
 	sf::Color fillColor;
 	sf::Color outlineColor;
 
+	sf::Text textUnder;
+
+	bool isSetTextUnder = false;
+
+	void setTextUnder(std::string s, int sizeFont, sf::Color color);
+
 
 	void setFont(sf::Font& font);
 	void setFillColor(sf::Color color);

@@ -7,10 +7,9 @@ Slider::Slider(sf::Vector2f pos, sf::Vector2f barSize, sf::Vector2f knobBarSize)
 	curBar.setPosition(pos);
 
 
-	
 	knob.setSize(knobBarSize);
 	//knob.setOrigin(sf::Vector2f{ knobBarSize.x , 0 });
-	knob.setPosition(sf::Vector2f{ pos.x, pos.y - (knobBarSize.y - barSize.y) / 2 });
+	knob.setPosition(sf::Vector2f{ pos.x, pos.y - (knobBarSize.y - barSize.y) / 2.f });
 	setNumPart(1);
 }
 
@@ -45,10 +44,10 @@ void Slider::setMaxText(std::string maxSt) {
 
 void Slider::setNumPart(int num) {
 	partX.clear();
-	float sizePart = bar.getGlobalBounds().width / num;
+	float sizePart = bar.getGlobalBounds().width / static_cast<float> (num);
 	partX.push_back(bar.getPosition().x);
 	for (int i = 1; i <= num; i++) {
-		partX.push_back(static_cast<float>(bar.getPosition().x + sizePart * i));
+		partX.push_back(bar.getPosition().x + sizePart * static_cast<float> (i));
 	}
 }
 
@@ -102,10 +101,10 @@ void Slider::setPart(int index) {
 	curBar.setSize(sf::Vector2f{ partX[index] - bar.getPosition().x, bar.getGlobalBounds().height });
 
 	if (index == 0) {
-		knob.setPosition(sf::Vector2f{ bar.getPosition().x, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2 });
+		knob.setPosition(sf::Vector2f{ bar.getPosition().x, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2.f });
 	}
 	else {
-		knob.setPosition(sf::Vector2f{ partX[index] - knob.getGlobalBounds().width, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2 });
+		knob.setPosition(sf::Vector2f{ partX[index] - knob.getGlobalBounds().width, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2.f });
 	}
 }
 
