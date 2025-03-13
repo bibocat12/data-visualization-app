@@ -1,6 +1,7 @@
 #include "MenuState.h"
 #include "SinglyLinkedListMainState.h"
 #include "HeapMainState.h"
+#include "AVL/AVLMainState.h"
 MenuState::MenuState(std::shared_ptr<Context>& context) : m_context(context)
 {
 
@@ -135,7 +136,7 @@ void MenuState::processEvents()
 
 			if (i == 2 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 				std::cerr << "Button " << i << "\n";
-				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				m_context->stateMachine->addState(std::make_unique<AVLMainState>(m_context), 0);
 				break;
 			}
 
