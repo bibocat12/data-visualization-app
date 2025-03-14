@@ -15,7 +15,7 @@ void Node::setTextUnder(std::string s, int sizeFont, sf::Color color)
 	textUnder.setFillColor(color);
 	textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
 	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
-	
+
 	isSetTextUnder = true;
 }
 
@@ -62,6 +62,7 @@ void Node::drawTo(sf::RenderWindow& window)
 	window.draw(text);
 	if (isSetTextUnder)
 		window.draw(textUnder); 
+
 }
 
 bool Node::isMouseOver(sf::RenderWindow& window)
