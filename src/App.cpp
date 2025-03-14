@@ -5,8 +5,10 @@
 App::App()
 	: m_context(std::make_shared<Context>())
 {
+	sf::ContextSettings settings;
+	settings.antialiasingLevel = 8;
 	if (m_context->window) {
-		m_context->window->create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Data Visualizer App");
+		m_context->window->create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Data Visualizer App", sf::Style::Default, settings);
 	}
 	else {
 		std::cout << "Error cannot create a window";
