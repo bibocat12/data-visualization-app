@@ -908,7 +908,7 @@ void SinglyLinkedListMainState::updateFrames()
 				isEnd = true;
 				isPaused = true;
 				currentFrameIndex = numFrames - 1;
-				aniSlider.setPart(currentFrameIndex);
+				aniSlider.setPart(currentFrameIndex + 1);
 				if (*m_context->themeType == 0)
 					currentFrame = b_frames.back();
 				else

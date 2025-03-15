@@ -32,12 +32,10 @@ class HeapMainState : public Engine::State
 {
 
 public:
-	const float maxRADIUS = 25;
-	const float minRADIUS = 15;
-	float RADIUS = 25;
-	const float spaceX = 380;
-	const float spaceY = 20;
-	const float minSpaceX = 65;
+	const float RADIUS = 20;
+	const float spaceX = 400;
+	const float spaceY = 15;
+	const float minSpaceX = 30;
 
 	const sf::Color B_NODE_COLOR = sf::Color::White;
 	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
@@ -59,7 +57,7 @@ public:
 	void handleCreateButtonEvents(const sf::Event event);
 	void handleInsertButtonEvents(sf::Event event);
 	void handleDeleteButtonEvents(sf::Event event);
-	void handleSearchButtonEvents(sf::Event event);
+	void handleExtractButtonEvents(sf::Event event);
 	void handleHomeButtonEvents(sf::Event event);
 	void handleUpdateButtonEvents(sf::Event event);
 	void handleThemeButtonEvents(sf::Event event);
@@ -94,7 +92,6 @@ public:
 
 
 	void initNode();
-	void resetNodePosRad();
 	void initEdge();
 
 	MinHeap heap = MinHeap(maxNodes);
@@ -108,10 +105,11 @@ public:
 
 
 	void deleteAllFrames();
-	void initCreateFrames(std::vector<int> elements);
+	void initCreateFrames(std::vector<int> elements, bool isInitState = false);
 	void initInsertFrames(int value);
 	void initUpdateFrames(int id, int newV);
 	void initDeleteFrames(int id);
+	void initExtractFrames();
 
 	void updateFrames();
 
@@ -143,11 +141,11 @@ private:
 	Button insertButton;
 	Button deleteButton;
 	Button updateButton;
-	Button searchButton;
+	Button extractButton;
 
 	bool isSelectedInsertButton = false;
 	bool isSelectedDeleteButton = false;
-	bool isSelectedSearchButton = false;
+	bool isSelectedExtractButton = false;
 	bool isSelectedCreateButton = false;
 	bool isSelectedUpdateButton = false;
 
@@ -168,7 +166,6 @@ private:
 
 	Textbox insertTextbox;
 	Textbox deleteTextbox;
-	Textbox searchTextbox;
 	Textbox createTextbox;
 	Textbox updateTextboxX;
 	Textbox updateTextboxV;
