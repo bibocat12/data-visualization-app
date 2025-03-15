@@ -67,7 +67,8 @@ void Node::drawTo(sf::RenderWindow& window)
 	window.draw(shape);
 	window.draw(text);
 	if (isSetTextUnder)
-		window.draw(textUnder);
+		window.draw(textUnder); 
+
 }
 
 bool Node::isMouseOver(sf::RenderWindow& window)
