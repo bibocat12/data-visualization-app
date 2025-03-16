@@ -118,6 +118,16 @@ void Node::setTextColor(sf::Color color)
 	text.setFillColor(color);
 }
 
+sf::Color Node::getFillColor()
+{
+	return fillColor;
+}
+
+sf::Color Node::getOutlineColor()
+{
+	return outlineColor;
+}
+
 std::string Node::getString()
 {
 	return text.getString();
