@@ -8,17 +8,11 @@ Node::~Node()
 {
 }
 
-void Node::initTextUnder(sf::Color color, int size)
-{
-	textSizeUnder = size;
-	textColorUnder = color;
-}
-
-void Node::setTextUnder(std::string s)
+void Node::setTextUnder(std::string s, int sizeFont, sf::Color color)
 {
 	textUnder.setString(s);
-	textUnder.setCharacterSize(textSizeUnder);
-	textUnder.setFillColor(textColorUnder);
+	textUnder.setCharacterSize(sizeFont);
+	textUnder.setFillColor(color);
 	textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
 	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 
@@ -137,9 +131,4 @@ sf::Color Node::getOutlineColor()
 std::string Node::getString()
 {
 	return text.getString();
-}
-
-std::string Node::getStringUnder()
-{
-	return textUnder.getString();
 }
