@@ -241,6 +241,8 @@ void SinglyLinkedListFrame::initCreateFrames()
 		b_frames.push_back(b_frame);
 		w_frames.push_back(w_frame);
 	}
+	breakpoints.push_back(static_cast<int>(b_frames.size()));
+
 	for (int i = 1; i < allElements.size(); i++)
 	{
 		int firstIndex = b_frames.size();
@@ -262,7 +264,7 @@ void SinglyLinkedListFrame::initCreateFrames()
 			w_frames.push_back(w_frame);
 		}
 		moveNodeEdge(i, firstIndex, lastIndex, sf::Vector2f(PADDING_X + (i - 1) * DISTANCE_X, NODE_Y), sf::Vector2f(PADDING_X + i * DISTANCE_X, NODE_Y));
-		breakpoints.push_back(b_frames.size() - 1);
+		breakpoints.push_back(b_frames.size());
 	}
 
 }
@@ -275,6 +277,7 @@ void SinglyLinkedListFrame::initInsertFrames(int k, int v)
 	initNode();
 	initEdge();
 	initCodePanel();
+	breakpoints.push_back(0);
 	
 	for (int i = 0; i < size; i++)
 	{
@@ -331,7 +334,7 @@ void SinglyLinkedListFrame::initInsertFrames(int k, int v)
 		}
 		changeBColor(i, firstIndex, lastIndex, sf::Color::Black, sf::Color::Blue);
 		changeWColor(i, firstIndex, lastIndex, sf::Color::Black, sf::Color::Blue);
-		breakpoints.push_back(b_frames.size() - 1);
+		breakpoints.push_back(b_frames.size());
 	}
 
 	Node& b_newNode = b_nodes[20];
@@ -464,7 +467,7 @@ void SinglyLinkedListFrame::initInsertFrames(int k, int v)
 	}
 	moveNode(20, firstIndex, lastIndex, 
 		sf::Vector2f(PADDING_X + k * DISTANCE_X, NODE_Y + DISTANCE_X), sf::Vector2f(PADDING_X + k * DISTANCE_X, NODE_Y));
-	breakpoints.push_back(b_frames.size() - 1);
+	breakpoints.push_back(b_frames.size());
 }
 
 void SinglyLinkedListFrame::initDeleteFrames(int v)
@@ -488,6 +491,7 @@ void SinglyLinkedListFrame::initDeleteFrames(int v)
 	initNode();
 	initEdge();
 	initCodePanel();
+	breakpoints.push_back(0);
 	for (int i = 0; i < size; i++)
 	{
 		b_nodes[i].setString(std::to_string(allElements[i]));
@@ -542,7 +546,7 @@ void SinglyLinkedListFrame::initDeleteFrames(int v)
 		}
 		changeBColor(i, b_frames.size() - 120, b_frames.size() - 1, sf::Color::Black, sf::Color::Blue);
 		changeWColor(i, w_frames.size() - 120, w_frames.size() - 1, sf::Color::Black, sf::Color::Blue);
-		breakpoints.push_back(b_frames.size() - 1);
+		breakpoints.push_back(b_frames.size());
 	}
 
 	int deletionStart = b_frames.size();
@@ -601,7 +605,7 @@ void SinglyLinkedListFrame::initDeleteFrames(int v)
 		sf::Vector2f posEnd(PADDING_X + deleteIndex * DISTANCE_X - RADIUS, EDGE_Y);
 		moveEdge(deleteIndex - 1, shiftStart, shiftEnd, posStart, posStart, posEnd, posEnd);
 	}
-	breakpoints.push_back(b_frames.size() - 1);
+	breakpoints.push_back(b_frames.size());
 }
 
 void SinglyLinkedListFrame::initUpdateFrames(int oldV, int newV)
@@ -612,6 +616,7 @@ void SinglyLinkedListFrame::initUpdateFrames(int oldV, int newV)
 	initCodePanel();
 	initNode();
 	initEdge();
+	breakpoints.push_back(0);
 	int size = allElements.size();
 	Engine::Frame b_frame, w_frame;
 	for (int i = 0; i < allElements.size(); i++)
@@ -689,7 +694,7 @@ void SinglyLinkedListFrame::initUpdateFrames(int oldV, int newV)
 			}
 			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
 			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			breakpoints.push_back(b_frames.size() - 1);
+			breakpoints.push_back(b_frames.size());
 			break;
 		}
 
@@ -705,7 +710,7 @@ void SinglyLinkedListFrame::initUpdateFrames(int oldV, int newV)
 			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
 		}
-		breakpoints.push_back(b_frames.size() - 1);
+		breakpoints.push_back(b_frames.size());
 
 	}
 }
@@ -720,6 +725,7 @@ void SinglyLinkedListFrame::initSearchFrames(int num)
 	initNode();
 	initEdge();
 	Engine::Frame b_frame, w_frame;
+	breakpoints.push_back(0);
 
 	codePanel.setText("current = head", 0);
 	codePanel.setText("while current != NULL and current->data != " + std::to_string(num), 1);
@@ -799,7 +805,7 @@ void SinglyLinkedListFrame::initSearchFrames(int num)
 			}
 			changeBColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
 			changeWColor(i, firstIndex, lastIndex, sf::Color::Red, sf::Color::Green);
-			breakpoints.push_back(b_frames.size() - 1);
+			breakpoints.push_back(b_frames.size());
 			isFound = true;
 			break;
 		}
@@ -821,7 +827,7 @@ void SinglyLinkedListFrame::initSearchFrames(int num)
 		}
 		changeBColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
 		changeWColor(i, last - 60 + 1, last, sf::Color::Blue, sf::Color::Red);
-		breakpoints.push_back(b_frames.size() - 1);
+		breakpoints.push_back(b_frames.size());
 	}
 
 	if (isFound == false)

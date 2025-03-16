@@ -14,12 +14,15 @@ public:
 	sf::Vector2f position;
 	sf::Color fillColor;
 	sf::Color outlineColor;
+	sf::Color textColorUnder;
+	int textSizeUnder;
 
 	sf::Text textUnder;
 
 	bool isSetTextUnder = false;
 
-	void setTextUnder(std::string s, int sizeFont, sf::Color color);
+	void initTextUnder(sf::Color color, int size);
+	void setTextUnder(std::string s);
 
 
 	void setFont(sf::Font& font);
@@ -40,6 +43,7 @@ public:
 	sf::Color getFillColor();
 	sf::Color getOutlineColor();
 	std::string getString();
+	std::string getStringUnder();
 
 
 private:
