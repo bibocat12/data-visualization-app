@@ -15,7 +15,7 @@ void HeapMainState::switchTheme() {
 		insertButton.setTextColor(textColor);
 		deleteButton.setTextColor(textColor);
 		updateButton.setTextColor(textColor);
-		searchButton.setTextColor(textColor);
+		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
 		codePanel.setTextColor(textColor);
@@ -32,7 +32,7 @@ void HeapMainState::switchTheme() {
 		insertButton.setTextColor(textColor);
 		deleteButton.setTextColor(textColor);
 		updateButton.setTextColor(textColor);
-		searchButton.setTextColor(textColor);
+		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
 		codePanel.setTextColor(textColor);
@@ -48,7 +48,7 @@ void HeapMainState::initFunctionButton() {
 	initButton(insertButton, "Insert", sf::Vector2f{ 10, firstButtonY + buttonSize.y });
 	initButton(deleteButton, "Delete", sf::Vector2f{ 10, firstButtonY + 2 * buttonSize.y });
 	initButton(updateButton, "Update", sf::Vector2f{ 10, firstButtonY + 3 * buttonSize.y });
-	initButton(searchButton, "Search", sf::Vector2f{ 10, firstButtonY + 4 * buttonSize.y });
+	initButton(extractButton, "Extract", sf::Vector2f{ 10, firstButtonY + 4 * buttonSize.y });
 
 	randomButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
 	randomUpdateButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
@@ -66,17 +66,14 @@ void HeapMainState::initFunctionButton() {
 	insertTextbox.setConstText("v = ");
 
 	initTextbox(deleteTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
-	deleteTextbox.setConstText("k = ");
-
-	initTextbox(searchTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
-	searchTextbox.setConstText("v = ");
+	deleteTextbox.setConstText("id = ");
 
 	initTextbox(createTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	createTextbox.setConstText("n = ");
-	createTextbox.setLimit(true, 2);
+	createTextbox.setLimit(true, 3);
 
 	initTextbox(updateTextboxX, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
-	updateTextboxX.setConstText("k = ");
+	updateTextboxX.setConstText("id = ");
 	updateTextboxX.setLimit(true, 9);
 
 	initTextbox(updateTextboxV, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, updateTextboxX.getPositon().y + updateTextboxX.getGlobalBounds().height });
@@ -183,7 +180,6 @@ HeapMainState::HeapMainState(std::shared_ptr<Context>& context) : m_context(cont
 	initSpeedSlider();
 
 	// Init node and edge
-	RADIUS = maxRADIUS;
 
 	std::vector<int> nums;
 	for (int i = 0; i < 15; i++) {
@@ -191,7 +187,7 @@ HeapMainState::HeapMainState(std::shared_ptr<Context>& context) : m_context(cont
 	}
 	heap.create(nums);
 	nums = heap.getAllElements();
-	initCreateFrames(nums);
+	initCreateFrames(nums, 1);
 }
 
 HeapMainState::~HeapMainState()
@@ -244,7 +240,6 @@ void HeapMainState::processEvents()
 	createTextbox.handleCursor();
 	insertTextbox.handleCursor();
 	deleteTextbox.handleCursor();
-	searchTextbox.handleCursor();
 	updateTextboxX.handleCursor();
 	updateTextboxV.handleCursor();
 }
@@ -288,7 +283,7 @@ void HeapMainState::draw()
 	insertButton.drawTo(*m_context->window);
 	deleteButton.drawTo(*m_context->window);
 	updateButton.drawTo(*m_context->window);
-	searchButton.drawTo(*m_context->window);
+	extractButton.drawTo(*m_context->window);
 
 
 	themeButton.drawTo(*m_context->window);
@@ -308,7 +303,6 @@ void HeapMainState::draw()
 
 	insertTextbox.drawTo(*m_context->window);
 	deleteTextbox.drawTo(*m_context->window);
-	searchTextbox.drawTo(*m_context->window);
 	createTextbox.drawTo(*m_context->window);
 	updateTextboxX.drawTo(*m_context->window);
 	updateTextboxV.drawTo(*m_context->window);
@@ -345,7 +339,7 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 		isSelectedCreateButton = false;
 		isSelectedInsertButton ^= 1;
 		isSelectedDeleteButton = false;
-		isSelectedSearchButton = false;
+		isSelectedExtractButton = false;
 		isSelectedUpdateButton = false;
 	}
 
@@ -380,7 +374,7 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 		insertTextbox.setSelected(false);
 		insertTextbox.setInvisible();
 
-		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
@@ -392,12 +386,13 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 
 void HeapMainState::handleDeleteButtonEvents(sf::Event event)
 {
+	deleteTextbox.setLimNum(heap.Size() - 1);
 	deleteButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (deleteButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
 		isSelectedInsertButton = false;
 		isSelectedDeleteButton ^= 1;
-		isSelectedSearchButton = false;
+		isSelectedExtractButton = false;
 		isSelectedUpdateButton = false;
 	}
 
@@ -426,48 +421,36 @@ void HeapMainState::handleDeleteButtonEvents(sf::Event event)
 	else {
 		deleteTextbox.setSelected(false);
 		deleteTextbox.setInvisible();
-		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
 		}
 	}
 }
 
-void HeapMainState::handleSearchButtonEvents(sf::Event event)
+void HeapMainState::handleExtractButtonEvents(sf::Event event)
 {
-	searchButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
-	if (searchButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+	extractButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
+	if (extractButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
 		isSelectedInsertButton = false;
 		isSelectedDeleteButton = false;
-		isSelectedSearchButton ^= 1;
+		isSelectedExtractButton ^= 1;
 		isSelectedUpdateButton = false;
 	}
 
-	if (isSelectedSearchButton) {
-		searchButton.setBackColor(hoverButtonColor);
-		searchTextbox.setVisible();
-		randomButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + searchTextbox.getGlobalBounds().width - randomButton.getGlobalBounds().width - 5, searchTextbox.getPositon().y });
-		okButtonBackground.setPosition(sf::Vector2f{ searchTextbox.getPositon().x, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
-		okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + (searchTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, searchTextbox.getPositon().y + searchTextbox.getGlobalBounds().height });
+	if (isSelectedExtractButton) {
+		extractButton.setBackColor(hoverButtonColor);
+		okButtonBackground.setPosition(sf::Vector2f{ sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y } });
+		okButton.setPosition(sf::Vector2f{deleteTextbox.getPositon().x + (deleteTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, createButton.getPositon().y});
 
-		searchTextbox.typedOnNum(event, *m_context->window);
 
-		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % 100 + 1;
-			searchTextbox.insertNum(randomNum);
-		}
-
-		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
-			int num = searchTextbox.getNum();
-			searchTextbox.reset();
-			//initSearchFrames(num);
+		if (((okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left))) {
+			initExtractFrames();
 		}
 	}
 	else {
-		searchTextbox.setSelected(false);
-		searchTextbox.setInvisible();
-		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
 		}
@@ -486,12 +469,13 @@ void HeapMainState::handleHomeButtonEvents(sf::Event event)
 
 void HeapMainState::handleCreateButtonEvents(sf::Event event)
 {
+	createTextbox.setLimNum(63);
 	createButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (createButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton ^= 1;
 		isSelectedInsertButton = false;
 		isSelectedDeleteButton = false;
-		isSelectedSearchButton = false;
+		isSelectedExtractButton = false;
 		isSelectedUpdateButton = false;
 	}
 
@@ -527,10 +511,12 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 						nums.push_back(num);
 					}
 					for (auto i : nums) std::cerr << i << "\n";
-
+					while ((int) nums.size() > 63) {
+						nums.pop_back();
+					}
 					createTextbox.insertNum((int)nums.size());
 					//handle num list
-
+					createTextbox.setSelected(false);
 					initCreateFrames(nums);
 
 				}
@@ -563,7 +549,7 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 		createTextbox.setInvisible();
 		uploadFileButton.setPosition(sf::Vector2f{ -1000, -1000 });
 
-		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
 		}
@@ -572,12 +558,13 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 
 void HeapMainState::handleUpdateButtonEvents(sf::Event event)
 {
+	updateTextboxX.setLimNum(heap.Size() - 1);
 	updateButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (updateButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
 		isSelectedInsertButton = false;
 		isSelectedDeleteButton = false;
-		isSelectedSearchButton = false;
+		isSelectedExtractButton = false;
 		isSelectedUpdateButton ^= 1;
 	}
 
@@ -622,7 +609,7 @@ void HeapMainState::handleUpdateButtonEvents(sf::Event event)
 		updateTextboxX.setInvisible();
 		updateTextboxV.setSelected(false);
 		updateTextboxV.setInvisible();
-		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedUpdateButton) {
+		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			okButton.setPosition(sf::Vector2f{ -1000, -1000 });
@@ -717,7 +704,7 @@ void HeapMainState::handleButtonEvents(const sf::Event& event)
 {
 	handleDeleteButtonEvents(event);
 	handleInsertButtonEvents(event);
-	handleSearchButtonEvents(event);
+	handleExtractButtonEvents(event);
 	handleUpdateButtonEvents(event);
 	handleCreateButtonEvents(event);
 	handleHomeButtonEvents(event);
@@ -727,9 +714,6 @@ void HeapMainState::handleButtonEvents(const sf::Event& event)
 
 void HeapMainState::initNode()
 {
-	if (heap.Size() <= limNodes) RADIUS = maxRADIUS;
-	else RADIUS = minRADIUS;
-
 	for (int i = 0; i < heap.Size(); i++)
 	{
 		Node node;
@@ -759,39 +743,12 @@ void HeapMainState::initNode()
 
 
 		b_nodes[i] = node;
+		b_nodes[i].initTextUnder(DarkGrey, 17);
 
 		node.setFillColor(sf::Color::White);			// set color for node in black theme
 		node.setOutlineColor(Orange);
 		w_nodes[i] = node;
-	}
-}
-
-void HeapMainState::resetNodePosRad()
-{
-	if (heap.Size() <= limNodes) RADIUS = maxRADIUS;
-	else RADIUS = minRADIUS;
-
-	for (int i = 0; i < heap.Size(); i++)
-	{
-		b_nodes[i].setRadius(RADIUS);
-		w_nodes[i].setRadius(RADIUS);
-		if (i == 0) { // the root
-			b_nodes[i].setPosition(sf::Vector2f(SCREEN_WIDTH / 2, homeButton.getPosition().y + homeButton.getGlobalBounds().height + 50));
-			w_nodes[i].setPosition(sf::Vector2f(SCREEN_WIDTH / 2, homeButton.getPosition().y + homeButton.getGlobalBounds().height + 50));
-		}
-		else {
-			int par = heap.parent(i);
-			int dep = heap.depth(i);
-			if (i % 2 == 1) { // left child
-				b_nodes[i].setPosition(sf::Vector2f(static_cast<float>(b_nodes[par].getPosition().x - std::max(minSpaceX, static_cast<float>(spaceX / pow(2, dep - 1)))), static_cast<float>(b_nodes[par].getPosition().y + 2 * RADIUS + spaceY - dep)));
-				w_nodes[i].setPosition(sf::Vector2f(static_cast<float>(b_nodes[par].getPosition().x - std::max(minSpaceX, static_cast<float>(spaceX / pow(2, dep - 1)))), static_cast<float>(b_nodes[par].getPosition().y + 2 * RADIUS + spaceY - dep)));
-			}
-			else { // right child
-				b_nodes[i].setPosition(sf::Vector2f(static_cast<float>(b_nodes[par].getPosition().x + std::max(minSpaceX, static_cast<float>(spaceX / pow(2, dep - 1)))), static_cast<float>(b_nodes[par].getPosition().y + 2 * RADIUS + spaceY - dep)));
-				w_nodes[i].setPosition(sf::Vector2f(static_cast<float>(b_nodes[par].getPosition().x + std::max(minSpaceX, static_cast<float>(spaceX / pow(2, dep - 1)))), static_cast<float>(b_nodes[par].getPosition().y + 2 * RADIUS + spaceY - dep)));
-			}
-		}
-
+		w_nodes[i].initTextUnder(DesaturatedBlue, 17);
 	}
 }
 
@@ -827,4 +784,3 @@ void HeapMainState::initEdge()
 		w_edges[i] = edge;
 	}
 }
-

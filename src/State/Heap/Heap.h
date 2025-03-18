@@ -33,4 +33,3 @@ public:
 	bool isLessThanParent(int i, int value);
 	std::vector<std::vector<std::pair<int, int>>> create(std::vector<int> nums);
 };
-
