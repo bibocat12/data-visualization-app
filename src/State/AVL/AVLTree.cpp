@@ -83,6 +83,15 @@ std::vector<AVLTree::TreeSnapshot> AVLTree::insertSnapshots(int value)
 	
 }
 
+std::vector<AVLTree::TreeSnapshot> AVLTree::removeSnapshots(int value)
+{
+	std::vector<TreeSnapshot> snapshots;
+	root = removeSnapshot(root, value, snapshots);
+	recordSnapshot(snapshots, "end", root);
+	return snapshots;
+	
+}
+
 
 
 
@@ -145,7 +154,7 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 
 			
 		node = rotateRight(node);
-		recordSnapshot(snapshot, "rotateR", node);
+		recordSnapshot(snapshot, "rotateRR", node);
 		return node;
 	}
 	if (balance < -1)
@@ -157,12 +166,85 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 		}
 			
 		node = rotateLeft(node);
-		recordSnapshot(snapshot, "rotateRR", node);
+		recordSnapshot(snapshot, "rotateLL", node);
 		return node;
 	}
 
 	return node;
 
+}
+AVLTree::Node* AVLTree::removeSnapshot(Node* node, int value, std::vector<TreeSnapshot>& snapshot)
+{
+	if (node == nullptr)
+		return node;
+
+	// Traverse to the node to delete.
+	if (value < node->value)
+		node->left = removeSnapshot(node->left, value, snapshot);
+	else if (value > node->value)
+		node->right = removeSnapshot(node->right, value, snapshot);
+	else {
+		// Node to delete found.
+		if (node->left == nullptr || node->right == nullptr) {
+			Node* temp = node->left ? node->left : node->right;
+			if (temp == nullptr) {  // No child
+				temp = node;
+				node = nullptr;
+			}
+			else {
+				// One child: copy the child’s data.
+				*node = *temp;
+			}
+			delete temp;
+		}
+		else {
+			// Two children: get the inorder successor.
+			Node* temp = minValueNode(node->right);
+			node->value = temp->value;
+			node->right = removeSnapshot(node->right, temp->value, snapshot);
+		}
+	}
+
+	// If the tree had only one node.
+	if (node == nullptr)
+		return node;
+
+	// Update height.
+	node->height = std::max(height(node->left), height(node->right)) + 1;
+
+	// Check balance and record snapshot.
+	int balance = getBalance(node);
+	recordSnapshot(snapshot, "check" + std::to_string(balance), node);
+
+	// Left Left Case.
+	if (balance > 1 && getBalance(node->left) >= 0) {
+		node = rotateRight(node);
+		recordSnapshot(snapshot, "rotateRR", node);
+		return node;
+	}
+	// Left Right Case.
+	if (balance > 1 && getBalance(node->left) < 0) {
+		node->left = rotateLeft(node->left);
+		recordSnapshot(snapshot, "rotateLR", node);
+		node = rotateRight(node);
+		recordSnapshot(snapshot, "rotateRR", node);
+		return node;
+	}
+	// Right Right Case.
+	if (balance < -1 && getBalance(node->right) <= 0) {
+		node = rotateLeft(node);
+		recordSnapshot(snapshot, "rotateLL", node);
+		return node;
+	}
+	// Right Left Case.
+	if (balance < -1 && getBalance(node->right) > 0) {
+		node->right = rotateRight(node->right);
+		recordSnapshot(snapshot, "rotateRL", node);
+		node = rotateLeft(node);
+		recordSnapshot(snapshot, "rotateLL", node);
+		return node;
+	}
+	return node;
 }
 AVLTree::Node* AVLTree::remove(Node* node, int value)
 {
@@ -198,7 +280,7 @@ AVLTree::Node* AVLTree::remove(Node* node, int value)
 		{
 			Node* temp = minValueNode(node->right);
 			node->value = temp->value;
-			node->right = remove(node->right, temp->value);
+ 			node->right = remove(node->right, temp->value);
 		}
 	}
 	if (node == nullptr)

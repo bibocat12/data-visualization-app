@@ -431,9 +431,11 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
         isSelectedInsertButton = false;
         isSelectedSearchButton = false;
         isSelectedInorderButton = false;
-        if (isSelectedDeleteButton == false)
+		isSelectedDeleteButton ^= 1;
+    }
+        if (isSelectedDeleteButton)
         {
-            isSelectedDeleteButton ^= 1;
+
             deleteButton.setBackColor(hoverButtonColor);
             deleteTextbox.setVisible();
 
@@ -447,7 +449,7 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
                 int randomNum = std::rand() % 100 + 1;
                 deleteTextbox.insertNum(randomNum);
             }
-
+			std::cerr << "delete:" << std::endl;
             if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
                 (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 
@@ -456,19 +458,26 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
                 deleteTextbox.setSelected(false);
 
 				std::cerr << "delete:" << value << std::endl;
-               // initDeleteFrames(value);
+                initDeleteFrames(value);
             }
         }
         else
         {
-            isSelectedDeleteButton ^= 1;
+
             deleteTextbox.setSelected(false);
             deleteTextbox.setInvisible();
-            randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
-            okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+			if (!isSelectedCreateButton)
+				if (!isSelectedInsertButton)
+					if (!isSelectedDeleteButton)
+						if (!isSelectedSearchButton)
+                            if (!isSelectedInorderButton)
+                            {
+                                randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                                okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                            }
         }
         // Handle delete button click
-    }
+    
 }
 void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
     searchButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);

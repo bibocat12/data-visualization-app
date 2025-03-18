@@ -30,6 +30,7 @@ public:
 	};
 
 	std::vector<TreeSnapshot> insertSnapshots(int value);
+	std::vector<TreeSnapshot> removeSnapshots(int value);
 	
 
 private:
@@ -46,6 +47,7 @@ private:
 	Node* root;
 	Node* insert(Node* node, int value);
 	Node* insertSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot);
+	Node* removeSnapshot(Node* node, int value, std::vector<TreeSnapshot>& snapshot);
 	Node* remove(Node* node, int value);
 	Node* search(Node* node, int value);
 
