@@ -28,6 +28,7 @@ public:
 	int getNum();
 	void drawTo(sf::RenderWindow& window);
 	void typedOnNum(sf::Event event, sf::RenderWindow& window);
+	void typedOnMatrix(sf::Event event, sf::RenderWindow& window);
 	void typedOnAlpha(sf::Event event, sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void insertNum(int num);
@@ -37,12 +38,13 @@ public:
 	void setLimNum(int num);
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
-
+	void setLineBoundingBox(sf::Color color);
 private:
 	sf::Text textbox;
-	sf::RectangleShape boundingBox;
+	sf::RectangleShape boundingBox, line;
 	std::ostringstream text;
 	sf::Vector2f pos;
+	bool hasLineBoundingBox = false;
 	bool isSelected = false;
 	bool hasLimit = false;
 	int limit;

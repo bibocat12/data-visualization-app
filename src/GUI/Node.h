@@ -23,6 +23,7 @@ public:
 
 	void initTextUnder(sf::Color color, int size);
 	void setTextUnder(std::string s);
+	void setTextUnder(std::string s, int charSize, sf::Color color);
 
 
 	void setFont(sf::Font& font);
@@ -41,7 +42,8 @@ public:
 	std::string getString();
 	std::string getStringUnder();
 
-
+	sf::Color getFillColor();
+	sf::Color getOutlineColor();
 private:
 
 

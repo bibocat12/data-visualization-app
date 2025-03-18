@@ -26,6 +26,11 @@ void Label::setBackColor(sf::Color color){
 	shape.setFillColor(color);
 }
 
+sf::Color Label::getBackColor()
+{
+	return shape.getFillColor();
+}
+
 void Label::setTextColor(sf::Color color){
 	text.setColor(color);
 }
@@ -37,4 +42,9 @@ void Label::drawTo(sf::RenderWindow& window) {
 
 void Label::setText(std::string st){
 	text.setString(st);
+}
+
+void Label::setSize(sf::Vector2f size)
+{
+	shape.setSize(size);
 }

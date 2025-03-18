@@ -11,11 +11,11 @@ public:
 	void setPosition(sf::Vector2f pos);
 	void setFont(sf::Font& font);
 	void setBackColor(sf::Color color);
-	sf::Color getBackColor() { return shape.getFillColor(); }
+	sf::Color getBackColor();
 	void setTextColor(sf::Color color);
 	void drawTo(sf::RenderWindow& window);
 	void setText(std::string st);
-	
+	void setSize(sf::Vector2f size);
 private:
 	sf::RectangleShape shape;
 	sf::Text text;

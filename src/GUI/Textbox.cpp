@@ -26,6 +26,7 @@ void Textbox::setFont(sf::Font& font) {
 void Textbox::setPosition(sf::Vector2f pos) {
 	this->pos = pos;
 	boundingBox.setPosition(pos);
+	line.setPosition(boundingBox.getPosition());
 	textbox.setPosition(sf::Vector2f{ pos.x,  pos.y + (boundingBox.getGlobalBounds().height - textbox.getCharacterSize()) / 2 });
 	setInvisible();
 }
@@ -35,6 +36,7 @@ void Textbox::setBox(sf::Vector2f size, sf::Color boxColor)
 	boundingBox.setSize(size);
 	boundingBox.setFillColor(boxColor);
 	boundingBox.setPosition(textbox.getPosition());
+	line.setSize(sf::Vector2f(20, boundingBox.getGlobalBounds().height));
 	//boundingBox.setOutlineColor(Gunmetal);
 	//boundingBox.setOutlineThickness(2);
 }
@@ -85,6 +87,7 @@ int Textbox::getNum()
 
 void Textbox::drawTo(sf::RenderWindow& window) {
 	window.draw(boundingBox);
+	if(hasLineBoundingBox) window.draw(line);
 	window.draw(textbox);
 }
 
@@ -120,6 +123,32 @@ void Textbox::typedOnNum(sf::Event event, sf::RenderWindow& window) {
 	if (getNum() > limNum) {
 		insertNum(limNum);
 	}
+}
+
+void Textbox::typedOnMatrix(sf::Event event, sf::RenderWindow& window)
+{
+	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		setSelected(isMouseOver(window));
+	}
+
+	if (event.type == sf::Event::TextEntered && isSelected) {
+		int charTyped = event.text.unicode;
+
+		if ((48 <= charTyped && charTyped <= 57 && !(text.str().length() == 0 && charTyped == 48)) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY || charTyped == 32) {
+			if (hasLimit) {
+				if (text.str().length() <= limit + constText.length()) {
+					inputLogic(charTyped);
+				}
+				else if (text.str().length() > limit + constText.length() && charTyped == DELETE_KEY) {
+					deleteLastChar();
+				}
+			}
+			else {
+				inputLogic(charTyped);
+			}
+		}
+	}
+
 }
 
 void Textbox::typedOnAlpha(sf::Event event, sf::RenderWindow& window) {
@@ -166,12 +195,14 @@ void Textbox::setInvisible()
 {
 	textbox.setPosition(sf::Vector2f {-1000, 1000});
 	boundingBox.setPosition(sf::Vector2f {-1000, 1000});
+	line.setPosition(sf::Vector2f {-1000, 1000});
 }
 
 void Textbox::setVisible()
 {
 	boundingBox.setPosition(pos);
 	textbox.setPosition(sf::Vector2f{ pos.x,  pos.y + (boundingBox.getGlobalBounds().height - textbox.getCharacterSize()) / 2 });
+	line.setPosition(pos);
 }
 
 void Textbox::inputLogic(int charTyped) {
@@ -227,6 +258,12 @@ sf::Vector2f Textbox::getPositon() const
 sf::FloatRect Textbox::getGlobalBounds() const
 {
 	return boundingBox.getGlobalBounds();
+}
+
+void Textbox::setLineBoundingBox(sf::Color color)
+{
+	hasLineBoundingBox = true;
+	line.setFillColor(color);
 }
 
 
