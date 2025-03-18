@@ -70,5 +70,10 @@ sf::FloatRect Button::getGlobalBounds() const {
 	return button.getGlobalBounds();
 }
 
+void Button::setSize(sf::Vector2f size)
+{
+	button.setSize(size);
+}
+
 
 

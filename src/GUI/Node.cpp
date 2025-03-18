@@ -19,6 +19,17 @@ void Node::setTextUnder(std::string s, int sizeFont, sf::Color color)
 	isSetTextUnder = true;
 }
 
+void Node::setTextUnder(std::string s, int charSize, sf::Color color)
+{
+	textUnder.setString(s);
+	textUnder.setCharacterSize(charSize);
+	textUnder.setFillColor(color);
+	textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
+	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
+
+	isSetTextUnder = true;
+}
+
 void Node::setFont(sf::Font& font)
 {
 	text.setFont(font);
@@ -71,13 +82,10 @@ bool Node::isMouseOver(sf::RenderWindow& window)
 	float mouseY = sf::Mouse::getPosition(window).y;
 	float nodePosX = shape.getPosition().x;
 	float nodePosY = shape.getPosition().y;
-	float nodePosXWidth = shape.getPosition().x + shape.getGlobalBounds().width;
-	float nodePosYHeight = shape.getPosition().y + shape.getGlobalBounds().height;
-	if (nodePosX < mouseX && mouseX < nodePosXWidth && nodePosY < mouseY && mouseY < nodePosYHeight)
-	{
-		return true;
-	}
-	return false;
+	float radius = shape.getRadius();
+
+	float distance = std::sqrt((mouseX - nodePosX) * (mouseX - nodePosX) + (mouseY - nodePosY) * (mouseY - nodePosY));
+	return distance <= radius;
 }
 
 void Node::handleHover(sf::RenderWindow& window)
@@ -123,7 +131,19 @@ sf::Color Node::getFillColor()
 	return fillColor;
 }
 
+
+sf::Color Node::getFillColor()
+{
+	return fillColor;
+}
+
 sf::Color Node::getOutlineColor()
+{
+	return outlineColor;
+}
+
+std::string Node::getStringUnder()
+
 {
 	return outlineColor;
 }

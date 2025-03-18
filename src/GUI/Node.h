@@ -19,7 +19,11 @@ public:
 
 	bool isSetTextUnder = false;
 
-	void setTextUnder(std::string s, int sizeFont, sf::Color color);
+
+	void initTextUnder(sf::Color color, int size);
+	void setTextUnder(std::string s);
+	void setTextUnder(std::string s, int charSize, sf::Color color);
+
 
 
 	void setFont(sf::Font& font);
@@ -41,7 +45,8 @@ public:
 	sf::Color getOutlineColor();
 	std::string getString();
 
-
+	sf::Color getFillColor();
+	sf::Color getOutlineColor();
 private:
 
 

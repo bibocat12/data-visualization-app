@@ -2,6 +2,9 @@
 #include "SinglyLinkedListMainState.h"
 #include "Heap/HeapMainState.h"
 #include "AVL/AVLMainState.h"
+
+#include "Graph/GraphMainState.h"
+
 MenuState::MenuState(std::shared_ptr<Context>& context) : m_context(context)
 {
 
@@ -135,7 +138,7 @@ void MenuState::processEvents()
 			}
 
 			if (i == 2 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-				std::cerr << "Button " << i << "\n";
+				std::cerr << "AVL\n";
 				m_context->stateMachine->addState(std::make_unique<AVLMainState>(m_context), 0);
 				break;
 			}
@@ -153,8 +156,8 @@ void MenuState::processEvents()
 			}
 
 			if (i == 5 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-				std::cerr << "Button " << i << "\n";
-				//m_context->stateMachine->addState(std::make_unique<SinglyLinkedListMainState>(m_context), 0);
+				std::cerr << "Graph\n";
+				m_context->stateMachine->addState(std::make_unique<GraphMainState>(m_context), 0);
 				break;
 			}
 		}

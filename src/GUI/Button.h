@@ -20,6 +20,7 @@ public:
 	void setText(std::string str);
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
+	void setSize(sf::Vector2f size);
 private:
 	sf::RectangleShape button; 
 	sf::Text text;

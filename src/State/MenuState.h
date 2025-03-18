@@ -12,6 +12,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include "../Utils.h"
 #include "../GUI/Button.h"
 #include "../GUI/ImageButton.h"
 #include "../GUI/Label.h"
