@@ -35,6 +35,7 @@ public:
 	void setInvisible();
 	void setVisible();
 	void reset();
+	void setLimNum(int num);
 	sf::Vector2f getPositon() const;
 	sf::FloatRect getGlobalBounds() const;
 	void setLineBoundingBox(sf::Color color);
@@ -47,6 +48,7 @@ private:
 	bool isSelected = false;
 	bool hasLimit = false;
 	int limit;
+	int limNum;
 	std::string constText;
 
 	void inputLogic(int charTyped);

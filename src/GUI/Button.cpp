@@ -74,6 +74,3 @@ void Button::setSize(sf::Vector2f size)
 {
 	button.setSize(size);
 }
-
-
-

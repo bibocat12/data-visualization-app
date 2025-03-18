@@ -48,6 +48,10 @@ void Textbox::setLimit(bool ToF) {
 void Textbox::setLimit(bool ToF, int lim) {
 	hasLimit = ToF;
 	limit = lim - 1;
+	limNum = 0;
+	for (int i = 0; i < lim; i++) {
+		limNum = limNum * 10 + 9;
+	}
 }
 
 void Textbox::setSelected(bool sel) {
@@ -61,7 +65,7 @@ void Textbox::setSelected(bool sel) {
 		textbox.setString(newT);
 	}
 	else {
-		textbox.setString(text.str() + (showCursor ? "|":""));
+		textbox.setString(text.str() + (showCursor ? "|" : ""));
 	}
 }
 
@@ -98,23 +102,27 @@ void Textbox::typedOnNum(sf::Event event, sf::RenderWindow& window) {
 		setSelected(isMouseOver(window));
 	}
 
-    if (event.type == sf::Event::TextEntered && isSelected) {
-        int charTyped = event.text.unicode;
+	if (event.type == sf::Event::TextEntered && isSelected) {
+		int charTyped = event.text.unicode;
 
-        if ((48 <= charTyped && charTyped <= 57 && !(text.str().length() == 0 && charTyped == 48)) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
-            if (hasLimit) {
-                if (text.str().length() <= limit + constText.length()) {
-                    inputLogic(charTyped);
-                }
-                else if (text.str().length() > limit + constText.length() && charTyped == DELETE_KEY) {
-                    deleteLastChar();
-                }
-            }
-            else {
-                inputLogic(charTyped);
-            }
-        }
-    }
+		if ((48 <= charTyped && charTyped <= 57 && !(text.str().length() == 0 && charTyped == 48)) || charTyped == DELETE_KEY || charTyped == ENTER_KEY || charTyped == ESCAPE_KEY) {
+			if (hasLimit) {
+				if (text.str().length() <= limit + constText.length()) {
+					inputLogic(charTyped);
+				}
+				else if (text.str().length() > limit + constText.length() && charTyped == DELETE_KEY) {
+					deleteLastChar();
+				}
+			}
+			else {
+				inputLogic(charTyped);
+			}
+		}
+	}
+
+	if (getNum() > limNum) {
+		insertNum(limNum);
+	}
 }
 
 void Textbox::typedOnMatrix(sf::Event event, sf::RenderWindow& window)
@@ -237,6 +245,11 @@ void Textbox::reset() {
 	setSelected(true);
 }
 
+void Textbox::setLimNum(int num)
+{
+	limNum = num;
+}
+
 sf::Vector2f Textbox::getPositon() const
 {
 	return pos;
@@ -252,5 +265,3 @@ void Textbox::setLineBoundingBox(sf::Color color)
 	hasLineBoundingBox = true;
 	line.setFillColor(color);
 }
-
-
