@@ -59,10 +59,7 @@ void Slider::setBreakpoints(std::vector<int> breakpoints)
 		sf::RectangleShape line;
 		line.setSize(sf::Vector2f{ 1, bar.getGlobalBounds().height });
 		line.setPosition(sf::Vector2f{ partX[breakpoints[i]], bar.getPosition().y });
-		if (i != 0 && i != (int)breakpoints.size() - 1) {
-			line.setFillColor(sf::Color::Black);
-		}
-		else line.setFillColor(sf::Color::Transparent);
+		line.setFillColor(sf::Color::Black);
 		breakpointsLine.push_back(line);
 	}
 }
@@ -107,7 +104,7 @@ void Slider::setPart(int index) {
 		knob.setPosition(sf::Vector2f{ bar.getPosition().x, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2.f });
 	}
 	else {
-		knob.setPosition(sf::Vector2f{ std::max(bar.getPosition().x, partX[index] - knob.getGlobalBounds().width), bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2.f });
+		knob.setPosition(sf::Vector2f{ partX[index] - knob.getGlobalBounds().width, bar.getPosition().y - (knob.getGlobalBounds().height - bar.getGlobalBounds().height) / 2.f });
 	}
 }
 
@@ -119,7 +116,7 @@ bool Slider::isMouseOverWindow(sf::RenderWindow& window)
 }
 
 void Slider::handleEvent(sf::Event event) {
-	float sizePart = bar.getGlobalBounds().width / (static_cast<float>(partX.size())  - 1.f); 
+	float sizePart = bar.getGlobalBounds().width / ((int)partX.size() - 1);
 
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left && isPressed == false) {
 		float mousePosX = event.mouseButton.x;
@@ -141,7 +138,7 @@ void Slider::handleEvent(sf::Event event) {
 		float mousePosY = event.mouseMove.y;
 		if (sf::Event::MouseMoved) {
 			isDragging = true;
-			knob.setPosition(sf::Vector2f{std::max(bar.getPosition().x, mousePosX - offset.x), knob.getPosition().y });
+			knob.setPosition(sf::Vector2f{ mousePosX - offset.x, knob.getPosition().y });
 			setPart(getPartIndexMouse(knob.getPosition().x));
 		} 
 	}
@@ -151,6 +148,7 @@ void Slider::handleEvent(sf::Event event) {
 		float mousePosY = event.mouseButton.y;
 		if (bar.getGlobalBounds().contains(mousePosX, mousePosY)) {
 			setPart(getPartIndexMouse(mousePosX));
+
 		}
 	}
 
