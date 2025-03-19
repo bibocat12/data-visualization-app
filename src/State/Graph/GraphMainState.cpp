@@ -21,8 +21,18 @@ void GraphMainState::switchTheme() {
 		unfixedButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
-		fGraph.setColor(textColor);
+		fGraph.setColor(textColor, frames.empty());
+
+		for (int i = 0; i < (int)frames.size(); i++) {
+			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
+			}
+			for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+				if (frames[i].getEdge("2edges" + std::to_string(j)).getColor() == sf::Color::Black) {
+					frames[i].getEdge("2edges" + std::to_string(j)).setColor(sf::Color::White);
+				}
+			}
+		}
 	}
 	else if (*m_context->themeType == 0) { // light mode
 		backgroundColor = SuperLightPink;
@@ -43,8 +53,18 @@ void GraphMainState::switchTheme() {
 		unfixedButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
-		fGraph.setColor(textColor);
+		fGraph.setColor(textColor, frames.empty());
+
+		for (int i = 0; i < (int)frames.size(); i++) {
+			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
+			}
+			for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+				if (frames[i].getEdge("2edges" + std::to_string(j)).getColor() == sf::Color::White) {
+					frames[i].getEdge("2edges" + std::to_string(j)).setColor(sf::Color::Black);
+				}
+			}
+		}
 	}
 }
 
@@ -284,7 +304,16 @@ void GraphMainState::update(const sf::Time& dt)
 	}
 	 
 	fGraph.update(dt.asSeconds());
-	//updateFrames();
+	for (int i = 0; i < (int) frames.size(); i++) {
+		for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+			frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
+		}
+		for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+			frames[i].getEdge("2edges" + std::to_string(j)).setStart(fGraph.edges[j].edge.getStart());
+			frames[i].getEdge("2edges" + std::to_string(j)).setEnd(fGraph.edges[j].edge.getEnd());
+		}
+	}
+	updateFrames();
 }
 
 void GraphMainState::draw()
@@ -330,8 +359,8 @@ void GraphMainState::draw()
 		inputTextbox[i].drawTo(*m_context->window);
 	}
 	uploadFileButton.drawTo(*m_context->window);
-	currentFrame.drawAll(*m_context->window);
 	fGraph.draw(*m_context->window);
+	currentFrame.drawAll(*m_context->window);
 	m_context->window->display();
 
 }
@@ -366,8 +395,8 @@ void GraphMainState::handleThemeButtonEvents(sf::Event event)
 
 void GraphMainState::handleAniSliderEvents(sf::Event event)
 {
-	if (b_frames.size() == 0) return;
-	aniSlider.setNumPart(b_frames.size());
+	if (frames.size() == 0) return;
+	aniSlider.setNumPart(frames.size());
 
 	if (isPlaying == false)
 		return;
@@ -395,8 +424,8 @@ void GraphMainState::handleAniSliderEvents(sf::Event event)
 		}
 		if (forwardButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
-			currentFrameIndex = b_frames.size() - 1;
-			aniSlider.setPart(b_frames.size() - 1);
+			currentFrameIndex = frames.size() - 1;
+			aniSlider.setPart(frames.size() - 1);
 		}
 		if (rewindButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
@@ -488,8 +517,8 @@ void GraphMainState::handleButtonEvents(const sf::Event& event)
 	handleSettingsButtonEvents(event);
 	handleShortestPathButtonEvents(event);
 	handleMstButtonEvents(event);
-	handleInputButtonEvents(event);
 	handleCreateButtonEvents(event);
+	handleInputButtonEvents(event);
 	handleHomeButtonEvents(event);
 	handleThemeButtonEvents(event);
 
@@ -586,11 +615,13 @@ void GraphMainState::handleCreateButtonEvents(sf::Event event)
 			createTextboxE.setSelected(false);
 
 			// Build graph
+			deleteAllFrames();
 			fGraph.reset();
 			graph.reset();
 			for (int i = 1; i <= n; i++) {
 				fGraph.addNode(randomNodePosition(), std::to_string(i));
 			}
+			fGraph.setFixed(isFixed);
 			
 			if (isDirected) e = std::min(e, n * (n - 1));
 			else e = std::min(e, n * (n - 1) / 2);
@@ -659,7 +690,8 @@ void GraphMainState::handleInputButtonEvents(sf::Event event)
 				std::string filename = selection[0];  // Get the file path
 
 				std::ifstream fileIn(filename);
-
+					
+				deleteAllFrames();
 				graph.reset();
 				fGraph.reset();
 				if (fileIn.is_open()) {
@@ -731,6 +763,7 @@ void GraphMainState::handleInputButtonEvents(sf::Event event)
 				inputTextbox[i].setSelected(false);
 			}
 
+			deleteAllFrames();
 			graph.reset();
 			fGraph.reset();
 			for (int i = 1; i <= n; i++) {
@@ -776,7 +809,7 @@ void GraphMainState::handleMstButtonEvents(sf::Event event)
 
 
 		if (((okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left))) {
-			//do sth
+			initMstFrames();
 		}
 	}
 	else {
@@ -813,4 +846,3 @@ void GraphMainState::handleShortestPathButtonEvents(sf::Event event)
 		}
 	}
 }
-

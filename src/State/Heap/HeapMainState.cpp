@@ -18,7 +18,6 @@ void HeapMainState::switchTheme() {
 		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
 	}
 	else if (*m_context->themeType == 0) { // light mode
 		backgroundColor = SuperLightPink;
@@ -35,7 +34,6 @@ void HeapMainState::switchTheme() {
 		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
 	}
 }
 

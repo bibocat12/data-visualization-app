@@ -63,34 +63,23 @@ public:
 	std::vector<int> breakpoints;
 
 	Engine::Frame currentFrame;
-	Engine::Frame b_currentFrame;
-	Engine::Frame w_currentFrame;
-	Engine::Frame b_nextFrame;
-	Engine::Frame w_nextFrame;
+	Engine::Frame nextFrame;
 	Engine::Frame staticFrame;
 
 private:
 	static constexpr int maxNodes = 64;
 
 public:
-	Node b_nodes[maxNodes];
-	Edge b_edges[maxNodes];
-	Node w_nodes[maxNodes];
-	Edge w_edges[maxNodes];
 
 	Graph graph;
 	ForceGraph fGraph;
 
-	/*void deleteAllFrames();
-	void initCreateFrames(std::vector<int> elements, bool isInitState = false);
-	void initInsertFrames(int value);
-	void initUpdateFrames(int id, int newV);
-	void initDeleteFrames(int id);
-	void initExtractFrames();
+	void deleteAllFrames();
+	void selectEdge(int edgeIndex, bool isSelected, int index1, int index2);
+	void initMstFrames();
 
-	void updateFrames();*/
-	std::vector<Engine::Frame> b_frames;
-	std::vector<Engine::Frame> w_frames;
+	void updateFrames();
+	std::vector<Engine::Frame> frames;
 	int speed = 1;
 
 	void initButton(Button& button, std::string text, sf::Vector2f pos);
