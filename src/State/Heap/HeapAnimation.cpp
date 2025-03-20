@@ -201,132 +201,175 @@ void HeapMainState::deleteAllFrames()
 {
 	b_frames.clear();
 	w_frames.clear();
+}
+
+void HeapMainState::initPreHeap(const std::vector<int> &nums)
+{
+	Engine::Frame b_frame, w_frame;
+	for (int j = 0; j < (int)nums.size(); j++) {
+		b_nodes[j].setString(std::to_string(nums[j]));
+		w_nodes[j].setString(std::to_string(nums[j]));
+		b_nodes[j].setTextUnder(std::to_string(j));
+		w_nodes[j].setTextUnder(std::to_string(j));
+		b_frame.addNode("1bnodes" + std::to_string(j), b_nodes[j]);
+		w_frame.addNode("1wnodes" + std::to_string(j), w_nodes[j]);
+		if (j) {
+			b_frame.addEdge("2bedges" + std::to_string(j), b_edges[j]);
+			w_frame.addEdge("1wedges" + std::to_string(j), w_edges[j]);
+		}
+	}
+	b_frames.push_back(b_frame);
+	w_frames.push_back(w_frame);
+}
+
+void HeapMainState::preInitCreateFrames(bool isInitState)
+{
+	isSelectedCreateFrames = true;
+	isSelectedInsertFrames = false;
+	isSelectedDeleteFrames = false;
+	isSelectedUpdateFrames = false;
+	isSelectedExtractFrames = false;
+	
 	breakpoints.clear();
-	numFrames = 0;
-	currentFrameIndex = 0;
-	isPlaying = false;
+	createArrs = heap.create(createNums);
+	initNode();
+	initEdge();
 	for (int i = 0; i < 7; i++) {
 		codePanel.setLineColor(i, LavenderSoft);
 		codePanel.setText("", i);
 	}
-}
-
-void HeapMainState::initCreateFrames(std::vector<int> elements, bool isInitState)
-{
-	deleteAllFrames();
-	Engine::Frame b_frame, w_frame;
-	auto arrs = heap.create(elements);
-	initNode();
-	initEdge();
+	numFrames = 0;
+	currentFrameIndex = 0;
+	prevFrameIndex = 0;
 
 	codePanel.setText("for (i = 0; i < a.size(); i++)", 0);
 	codePanel.setText("    node[i] = a[i]", 1);
 	codePanel.setText("for (i = a.size() / 2 - 1; i >= 0; i--)", 2);
 	codePanel.setText("    heapify(i)", 3);
 
+	// calculate number of frames
 	breakpoints.push_back(0);
-	int firstIndex = static_cast<int>(b_frames.size());
-	int lastIndex = firstIndex + 60 - 1;
-	for (int i = 0; i < 60; i++)
-	{
-		Engine::Frame b_frame, w_frame;
-		for (int j = 0; j < (int)arrs[0].size(); j++) {
-			b_nodes[j].setString(std::to_string(arrs[0][j].second));
-			w_nodes[j].setString(std::to_string(arrs[0][j].second));
-			b_nodes[j].setTextUnder(std::to_string(arrs[0][j].first));
-			w_nodes[j].setTextUnder(std::to_string(arrs[0][j].first));
-			b_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
-			w_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
-			codePanel.setLineColor(0, sf::Color::Red);
-			codePanel.setLineColor(1, sf::Color::Red);
-			if (i == 59 && j == (int)arrs[0].size() - 1) {
-				codePanel.setLineColor(0, LavenderSoft);
-				codePanel.setLineColor(1, LavenderSoft);
-			}
-			if (j == 0) {
-				if (i < 59) {
-					b_nodes[j].setFillColor(sf::Color::Red);
-					w_nodes[j].setFillColor(Orange);
-				}
-				else {
-					b_nodes[j].setFillColor(sf::Color::White);
-					w_nodes[j].setFillColor(sf::Color::White);
-				}
-			}
-
-			b_frame.addNode("1bnodes" + std::to_string(arrs[0][j].first), b_nodes[j]);
-			w_frame.addNode("1wnodes" + std::to_string(arrs[0][j].first), w_nodes[j]);
-			b_frame.addEdge("2bedges" + std::to_string(arrs[0][j].first), b_edges[j]);
-			w_frame.addEdge("2wedges" + std::to_string(arrs[0][j].first), w_edges[j]);
-		}
-		if (!isInitState) {
-			b_frame.addPanel("3bcodePanel", codePanel);
-			w_frame.addPanel("3wcodePanel", codePanel);
-		}
-		b_frames.push_back(b_frame);
-		w_frames.push_back(w_frame);
-	}
-	for (int i = 1; i < (int)arrs[0].size(); i++)
-		connectTwoNodes(i, firstIndex, lastIndex, 1);
-
-	breakpoints.push_back(static_cast<int>(b_frames.size()));
-	
-	//Heapify
-	std::vector<std::pair<int, int>> prev;
-	for (int i = 1; i < (int)arrs.size(); i++) {
-		for (int j = 0; j < (int)arrs[i].size() - 1; j += 2) {
-			std::pair<int, int> cur = arrs[i][j];
-			std::pair<int, int> child = arrs[i][j + 1];
-			int firstIndex = static_cast<int>(b_frames.size());
-			int lastIndex = firstIndex + 60 - 1;
-			b_nodes[cur.first].setString(std::to_string(cur.second));
-			w_nodes[cur.first].setString(std::to_string(cur.second));
-
-			b_nodes[child.first].setString(std::to_string(child.second));
-			w_nodes[child.first].setString(std::to_string(child.second));
-
-			for (int k = 0; k < 60; k++)
-			{
-				Engine::Frame b_frame, w_frame;
-
-				codePanel.setLineColor(2, sf::Color::Red);
-				codePanel.setLineColor(3, sf::Color::Red);
-
-				b_frame.init(b_frames[b_frames.size() - 1]);
-				w_frame.init(w_frames[w_frames.size() - 1]);
-				b_frame.addPanel("3bcodePanel", codePanel);
-				w_frame.addPanel("3wcodePanel", codePanel);
-				for(auto x:prev) {
-					b_frame.addNode("1bnodes" + std::to_string(x.first), b_nodes[x.first]);
-					w_frame.addNode("1wnodes" + std::to_string(x.first), w_nodes[x.first]);
-				}
-
-				b_frames.push_back(b_frame);
-				w_frames.push_back(w_frame);
-			}
-			swapTwoNodes(cur.first, child.first, firstIndex, lastIndex, 1);
-			breakpoints.push_back(static_cast<int>(b_frames.size()));
-			prev.push_back(cur);
-			prev.push_back(child);
-		}
-		if (i == (int)arrs.size() - 1 && !isInitState) {
-			codePanel.setLineColor(2, LavenderSoft);
-			codePanel.setLineColor(3, LavenderSoft);
-			b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(2, LavenderSoft);
-			b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(3, LavenderSoft);
-			w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(2, LavenderSoft);
-			w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(3, LavenderSoft);
+	numFrames += 60;
+	breakpoints.push_back(numFrames);
+	// Heapify
+	for (int i = 1; i < (int)createArrs.size(); i++) {
+		for (int j = 0; j < (int)createArrs[i].size() - 1; j += 2) {
+			numFrames += 60;
+			breakpoints.push_back(numFrames);
 		}
 	}
 
-	//end
-	aniSlider.setNumPart(static_cast<int>(b_frames.size()));
+	aniSlider.setNumPart(numFrames);
 	aniSlider.setBreakpoints(breakpoints);
+	currentFrameIndex = 0;
 	isPlaying = true;
 	isPaused = false;
 	isEnd = false;
-	numFrames = static_cast<int>(b_frames.size());
-	currentFrameIndex = 0;
+}
+ 
+void HeapMainState::initCreateFrames(bool isInitState)
+{
+	auto elements = createNums;
+	deleteAllFrames();
+
+	if (currentFrameIndex < 60) {
+		int firstIndex = static_cast<int>(b_frames.size());
+		int lastIndex = firstIndex + 60 - 1;
+		for (int i = 0; i < 60; i++)
+		{
+			Engine::Frame b_frame, w_frame;
+			for (int j = 0; j < (int)createArrs[0].size(); j++) {
+				b_nodes[j].setString(std::to_string(createArrs[0][j].second));
+				w_nodes[j].setString(std::to_string(createArrs[0][j].second));
+				b_nodes[j].setTextUnder(std::to_string(createArrs[0][j].first));
+				w_nodes[j].setTextUnder(std::to_string(createArrs[0][j].first));
+				b_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
+				w_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
+				codePanel.setLineColor(0, sf::Color::Red);
+				codePanel.setLineColor(1, sf::Color::Red);
+				if (i == 59 && j == (int)createArrs[0].size() - 1) {
+					codePanel.setLineColor(0, LavenderSoft);
+					codePanel.setLineColor(1, LavenderSoft);
+				}
+				if (j == 0) {
+					if (i < 59) {
+						b_nodes[j].setFillColor(sf::Color::Red);
+						w_nodes[j].setFillColor(Orange);
+					}
+					else {
+						b_nodes[j].setFillColor(sf::Color::White);
+						w_nodes[j].setFillColor(sf::Color::White);
+					}
+				}
+
+				b_frame.addNode("1bnodes" + std::to_string(createArrs[0][j].first), b_nodes[j]);
+				w_frame.addNode("1wnodes" + std::to_string(createArrs[0][j].first), w_nodes[j]);
+				b_frame.addEdge("2bedges" + std::to_string(createArrs[0][j].first), b_edges[j]);
+				w_frame.addEdge("2wedges" + std::to_string(createArrs[0][j].first), w_edges[j]);
+			}
+			if (!isInitState) {
+				b_frame.addPanel("3bcodePanel", codePanel);
+				w_frame.addPanel("3wcodePanel", codePanel);
+			}
+			b_frames.push_back(b_frame);
+			w_frames.push_back(w_frame);
+		}
+		for (int i = 1; i < (int)createArrs[0].size(); i++)
+			connectTwoNodes(i, firstIndex, lastIndex, 1);
+	}
+	else {
+		// build current state
+		//std::cerr << b_frames.size() << " " << currentFrameIndex << "\n";
+		int preFrames = 60;
+		bool ok = 0;
+		for (int i = 1; i < (int)createArrs.size(); i++) {
+			for (int j = 0; j < (int)createArrs[i].size() - 1; j += 2) {
+				preFrames += 60;
+				if (preFrames > currentFrameIndex) {
+					//this one
+					int firstIndex = static_cast<int>(b_frames.size());
+					int lastIndex = firstIndex + 60 - 1;
+					std::pair<int, int> cur = createArrs[i][j];
+					std::pair<int, int> child = createArrs[i][j + 1];
+					b_nodes[cur.first].setString(std::to_string(cur.second));
+					w_nodes[cur.first].setString(std::to_string(cur.second));
+
+					b_nodes[child.first].setString(std::to_string(child.second));
+					w_nodes[child.first].setString(std::to_string(child.second));
+
+					for (int k = 0; k < 60; k++)
+					{
+						initPreHeap(elements);
+						codePanel.setLineColor(2, sf::Color::Red);
+						codePanel.setLineColor(3, sf::Color::Red);
+
+						b_frames[k].addPanel("3bcodePanel", codePanel);
+						w_frames[k].addPanel("3wcodePanel", codePanel);
+
+					}
+					swapTwoNodes(cur.first, child.first, firstIndex, lastIndex, 1);
+					
+					ok = 1;
+					break;
+				}
+				std::swap(elements[createArrs[i][j].first], elements[createArrs[i][j + 1].first]);
+			}
+
+			if (i == (int)createArrs.size() - 1 && !isInitState) {
+				codePanel.setLineColor(2, LavenderSoft);
+				codePanel.setLineColor(3, LavenderSoft);
+				b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(2, LavenderSoft);
+				b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(3, LavenderSoft);
+				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(2, LavenderSoft);
+				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(3, LavenderSoft);
+			}
+			
+			if (ok) {
+				return;
+			}
+		}
+	}
+
 }
 
 void HeapMainState::initInsertFrames(int value)
@@ -970,27 +1013,37 @@ void HeapMainState::initExtractFrames()
 
 void HeapMainState::updateFrames()
 {
-	numFrames = b_frames.size();
-	speed = speedSlider.getPartIndex() + 1;
+	if (numFrames == 0) return;
+	if(numFrames > 0) currentFrameIndex = std::min(currentFrameIndex, numFrames - 1);
+	if (!isEnd) {
+		if (currentFrameIndex == 0 || aniSlider.getBreakpoints(prevFrameIndex) != aniSlider.getBreakpoints(currentFrameIndex)) {
+			if (isSelectedCreateFrames) {
+				initCreateFrames();
+			}
+		}
+	}
+
 	if (isPlaying)
 	{
 
 		if (numFrames > 0)
 		{
-			//std::cerr << currentFrameIndex << std::endl;
 			if (currentFrameIndex < numFrames - 1)
 			{
 				isEnd = false;
-				b_currentFrame = b_frames[currentFrameIndex];
-				w_currentFrame = w_frames[currentFrameIndex];
+				b_currentFrame = b_frames[currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex)];
+				w_currentFrame = w_frames[currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex)];
 
 				if (*m_context->themeType == 0)
 					currentFrame = b_currentFrame;
 				else
 					currentFrame = w_currentFrame;
 
-				if (isPaused == false)
+				if (isPaused == false) {
+					prevFrameIndex = currentFrameIndex;
 					currentFrameIndex += speed;
+					currentFrameIndex = std::min(numFrames - 1, currentFrameIndex);
+				}
 			}
 			else
 			{

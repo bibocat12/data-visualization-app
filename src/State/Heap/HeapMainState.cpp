@@ -179,13 +179,14 @@ HeapMainState::HeapMainState(std::shared_ptr<Context>& context) : m_context(cont
 
 	// Init node and edge
 
-	std::vector<int> nums;
-	for (int i = 0; i < 15; i++) {
+	/*std::vector<int> nums;
+	for (int i = 0; i < 31; i++) {
 		nums.push_back(rand() % 100);
 	}
 	heap.create(nums);
 	nums = heap.getAllElements();
-	initCreateFrames(nums, 1);
+	createNums = nums;
+	preInitCreateFrames(1);*/
 }
 
 HeapMainState::~HeapMainState()
@@ -229,10 +230,9 @@ void HeapMainState::processEvents()
 			}
 
 		}
+		handleSpeedSliderEvents(event);
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
-		handleSpeedSliderEvents(event);
-
 	}
 
 	createTextbox.handleCursor();
@@ -258,9 +258,8 @@ void HeapMainState::update(const sf::Time& dt)
 
 
 
-
 	if (isPaused == false && isPlaying == true)
-		aniSlider.setPart(currentFrameIndex);
+		aniSlider.setPart(currentFrameIndex + 1);
 
 	if (isPaused == true && isPlaying == true)
 	{
@@ -515,8 +514,8 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 					createTextbox.insertNum((int)nums.size());
 					//handle num list
 					createTextbox.setSelected(false);
-					initCreateFrames(nums);
-
+					createNums = nums;
+					preInitCreateFrames();
 				}
 				else {
 					std::cerr << "Cant open the file\n";
@@ -537,7 +536,8 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 			for (int i = 0; i < num; i++) {
 				allElements.push_back(rand() % 100);
 			}
-			initCreateFrames(allElements);
+			createNums = allElements;
+			preInitCreateFrames();
 
 
 		}
@@ -627,8 +627,8 @@ void HeapMainState::handleThemeButtonEvents(sf::Event event)
 
 void HeapMainState::handleAniSliderEvents(sf::Event event)
 {
-	if (b_frames.size() == 0) return;
-	aniSlider.setNumPart(b_frames.size());
+	if (numFrames == 0) return;
+	aniSlider.setNumPart(numFrames);
 
 	if (isPlaying == false)
 		return;
@@ -656,8 +656,8 @@ void HeapMainState::handleAniSliderEvents(sf::Event event)
 		}
 		if (forwardButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
-			currentFrameIndex = b_frames.size() - 1;
-			aniSlider.setPart(b_frames.size() - 1);
+			currentFrameIndex = numFrames - 1;
+			aniSlider.setPart(numFrames);
 		}
 		if (rewindButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
@@ -696,6 +696,7 @@ void HeapMainState::handleSpeedSliderEvents(sf::Event event)
 	std::string st = "1.0x";
 	st[0] = char(speedSlider.getPartIndex() + 1 + '0');
 	speedSlider.setMaxText(st);
+	*m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / static_cast<float>(speedSlider.getPartIndex() + 1));
 }
 
 void HeapMainState::handleButtonEvents(const sf::Event& event)

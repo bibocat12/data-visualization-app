@@ -27,16 +27,16 @@ public:
 	struct TreeSnapshot {
 		std::string operation;
 		int order;
-		std::vector<int> inorder;      
-		std::vector<int> inorderDepth; 
-		std::vector<int> parent;       
+		std::vector<int> inorder;
+		std::vector<int> inorderDepth;
+		std::vector<int> parent;
 		std::vector<int> height;
 	};
 
 	std::vector<TreeSnapshot> insertSnapshots(int value);
 	std::vector<TreeSnapshot> removeSnapshots(int value);
 	std::vector<int> recordInorder();
-	
+
 
 private:
 	struct Node
@@ -51,9 +51,9 @@ private:
 	};
 	Node* root;
 	Node* insert(Node* node, int value);
-	Node* insertSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot);
-	Node* removeSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot);
-	Node* replaceSnapshots(Node*& remove, Node* &node, std::vector<TreeSnapshot>& snapshot);
+	Node* insertSnapshot(Node*& node, int value, std::vector<TreeSnapshot>& snapshot);
+	Node* removeSnapshot(Node*& node, int value, std::vector<TreeSnapshot>& snapshot);
+	Node* replaceSnapshots(Node*& remove, Node*& node, std::vector<TreeSnapshot>& snapshot);
 	void recordInorder(Node* node, std::vector<int>& elements);
 	Node* remove(Node* node, int value);
 	Node* search(Node* node, int value);
@@ -78,4 +78,3 @@ private:
 	void recordSnapshot(std::vector<TreeSnapshot>& snapshots, std::string operation, Node* node);
 
 };
-

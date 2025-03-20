@@ -26,21 +26,21 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 			DISTANCE_Y = MIN_DISTANCE_Y;
 		}
 		else
-	{
+		{
 			RADIUS = SM_RADIUS;
 			DISTANCE_X = SM_DISTANCE_X;
 			DISTANCE_Y = SM_DISTANCE_Y;
-	}
+		}
 
 	PADDING_X = SCREEN_WIDTH / 2.0 - numNodes / 2.0 * DISTANCE_X;
 	PADDING_Y = 100;
-	
+
 	for (int i = 0; i < elements.size(); i++)
 	{
 		if (elements[i] == -1)
 			continue;
 		sf::Vector2f pos;
-		pos.x = PADDING_X + (i) * DISTANCE_X;
+		pos.x = PADDING_X + (i)*DISTANCE_X;
 		pos.y = PADDING_Y + depth[i] * DISTANCE_Y;
 		b_nodes[i] = Node();
 		b_nodes[i].setFillColor(B_NODE_COLOR);
@@ -53,7 +53,7 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 		b_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::Black);
 		b_nodes[i].setTextColor(sf::Color::Black);
 		b_nodes[i].setPosition(pos);
-		
+
 		w_nodes[i] = Node();
 		w_nodes[i].setFillColor(W_NODE_COLOR);
 		w_nodes[i].setOutlineColor(W_NODE_OUTLINE_COLOR);
@@ -281,7 +281,7 @@ void AVLMainState::initCreateFrames(std::vector<int> elements)
 		w_frames.push_back(w_frame);
 		b_frames.push_back(b_frame);
 	}
-;
+	;
 	Node node;
 	for (int i = 0; i < (int)elements.size(); i++)
 	{
@@ -322,92 +322,92 @@ void AVLMainState::initInsertFrames(int value)
 	codePanel.setLineColor(0, sf::Color::Red);
 	{
 
-	deleteAllFrames();
-	Engine::Frame b_frame, w_frame;
-	avl.search(value);
-	std::vector<int> inorder = avl.getAllElements();
-	std::vector<int> inorderDepth = avl.getInorderDepth();
-	std::vector<int> parent = avl.getParent();
-	int numNodes = inorder.size();
-	initNode(inorder, inorderDepth);
-	initEdge(parent);
-	// Add nodes and edges to frames
-
-	for (int i = 0; i < (int)inorder.size(); i++)
-	{
-		w_frame.addNode("1wnode" + std::to_string(i), w_nodes[i]);
-		b_frame.addNode("1bnode" + std::to_string(i), b_nodes[i]);
-		if (parent[i] != -1)
-		{
-			w_frame.addEdge("1wedge" + std::to_string(i), w_edges[i]);
-			b_frame.addEdge("1bedge" + std::to_string(i), b_edges[i]);
-		}
-	}
-
-	// Add code panel to frames
-
-
-	b_frame.addPanel("3bcodePanel", codePanel);
-	w_frame.addPanel("3wcodePanel", codePanel);
-	for (int step = 0; step < 60; step++)
-	{
-		w_frames.push_back(w_frame);
-		b_frames.push_back(b_frame);
-	}
-	codePanel.setLineColor(1, LavenderSoft);
-
-	std::vector<int> path = avl.searchPath(value);
-	Node node;
-	for (int i = 0; i < (int)path.size(); i++)
-	{
-		int firstIndex = b_frames.size();
-		int lastIndex = b_frames.size() + 59;
-		node = w_nodes[path[i]];
-		node.setFillColor(W_NODE_COLOR_HOVER);
-		node = b_nodes[path[i]];
-		node.setFillColor(B_NODE_COLOR_HOVER);
-		Panel codePanel2 = codePanel;
-		Panel codePanel3 = codePanel;
-		codePanel2.setLineColor(1, sf::Color::Red);
-
-
+		deleteAllFrames();
 		Engine::Frame b_frame, w_frame;
-		b_frame.init(b_frames.back());
-		w_frame.init(w_frames.back());
+		avl.search(value);
+		std::vector<int> inorder = avl.getAllElements();
+		std::vector<int> inorderDepth = avl.getInorderDepth();
+		std::vector<int> parent = avl.getParent();
+		int numNodes = inorder.size();
+		initNode(inorder, inorderDepth);
+		initEdge(parent);
+		// Add nodes and edges to frames
 
+		for (int i = 0; i < (int)inorder.size(); i++)
+		{
+			w_frame.addNode("1wnode" + std::to_string(i), w_nodes[i]);
+			b_frame.addNode("1bnode" + std::to_string(i), b_nodes[i]);
+			if (parent[i] != -1)
+			{
+				w_frame.addEdge("1wedge" + std::to_string(i), w_edges[i]);
+				b_frame.addEdge("1bedge" + std::to_string(i), b_edges[i]);
+			}
+		}
+
+		// Add code panel to frames
+
+
+		b_frame.addPanel("3bcodePanel", codePanel);
+		w_frame.addPanel("3wcodePanel", codePanel);
 		for (int step = 0; step < 60; step++)
 		{
-			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
+			b_frames.push_back(b_frame);
 		}
-		node = w_nodes[path[i]];
-		node.setFillColor(W_NODE_COLOR_HOVER);
+		codePanel.setLineColor(1, LavenderSoft);
 
-		changeBNode(path[i], firstIndex, lastIndex, node, b_nodes[path[i]]);
-		node = b_nodes[path[i]];
-		node.setFillColor(B_NODE_COLOR_HOVER);
-		changeWNode(path[i], firstIndex, lastIndex, node, w_nodes[path[i]]);
-		breakpoints.push_back(b_frames.size() - 1);
-
-		if (inorder[path[i]] == value)
+		std::vector<int> path = avl.searchPath(value);
+		Node node;
+		for (int i = 0; i < (int)path.size(); i++)
 		{
-			isFound = true;
-			for (int step = 0; step <= 60; step++)
-			{
-				b_frames.push_back(b_frames.back());
-				w_frames.push_back(w_frames.back());
-			}
-
+			int firstIndex = b_frames.size();
+			int lastIndex = b_frames.size() + 59;
+			node = w_nodes[path[i]];
+			node.setFillColor(W_NODE_COLOR_HOVER);
 			node = b_nodes[path[i]];
-			node.setFillColor(sf::Color::Green);
-			changeBNode(path[i], b_frames.size() - 61, b_frames.size() - 1, b_nodes[path[i]], node);
-			Node node = w_nodes[path[i]];
-			node.setFillColor(sf::Color::Green);
-			changeWNode(path[i], w_frames.size() - 61, w_frames.size() - 1, w_nodes[path[i]], node);
+			node.setFillColor(B_NODE_COLOR_HOVER);
+			Panel codePanel2 = codePanel;
+			Panel codePanel3 = codePanel;
+			codePanel2.setLineColor(1, sf::Color::Red);
+
+
+			Engine::Frame b_frame, w_frame;
+			b_frame.init(b_frames.back());
+			w_frame.init(w_frames.back());
+
+			for (int step = 0; step < 60; step++)
+			{
+				b_frames.push_back(b_frame);
+				w_frames.push_back(w_frame);
+			}
+			node = w_nodes[path[i]];
+			node.setFillColor(W_NODE_COLOR_HOVER);
+
+			changeBNode(path[i], firstIndex, lastIndex, node, b_nodes[path[i]]);
+			node = b_nodes[path[i]];
+			node.setFillColor(B_NODE_COLOR_HOVER);
+			changeWNode(path[i], firstIndex, lastIndex, node, w_nodes[path[i]]);
 			breakpoints.push_back(b_frames.size() - 1);
-			break;
+
+			if (inorder[path[i]] == value)
+			{
+				isFound = true;
+				for (int step = 0; step <= 60; step++)
+				{
+					b_frames.push_back(b_frames.back());
+					w_frames.push_back(w_frames.back());
+				}
+
+				node = b_nodes[path[i]];
+				node.setFillColor(sf::Color::Green);
+				changeBNode(path[i], b_frames.size() - 61, b_frames.size() - 1, b_nodes[path[i]], node);
+				Node node = w_nodes[path[i]];
+				node.setFillColor(sf::Color::Green);
+				changeWNode(path[i], w_frames.size() - 61, w_frames.size() - 1, w_nodes[path[i]], node);
+				breakpoints.push_back(b_frames.size() - 1);
+				break;
+			}
 		}
-	}
 	}
 	if (isFound == true)
 	{
@@ -463,10 +463,10 @@ void AVLMainState::initInsertFrames(int value)
 
 		int firstIndex = b_frames.size();
 		int lastIndex = b_frames.size() + 59;
-		
+
 
 		int numNodes = inorder.size();
-        if (operation.find("check") != std::string::npos)
+		if (operation.find("check") != std::string::npos)
 		{
 			codePanel.setLineColor(1, sf::Color::Red);
 			int number = std::stoi(operation.substr(5));
@@ -504,7 +504,7 @@ void AVLMainState::initInsertFrames(int value)
 			codePanel.setLineColor(1, LavenderSoft);
 			continue;
 		}
-		
+
 		if (operations.back() == "rotateRL" || operation == "rotateRL")
 			codePanel.setLineColor(4, sf::Color::Red);
 		else if (operation == "rotateLR" || operations.back() == "rotateLR")
@@ -517,7 +517,7 @@ void AVLMainState::initInsertFrames(int value)
 
 		b_frame.addPanel("3bcodePanel", codePanel);
 		w_frame.addPanel("3wcodePanel", codePanel);
-		
+
 		firstIndex = b_frames.size();
 		lastIndex = firstIndex + 59;
 		for (int step = 0; step < 60; step++)
@@ -541,7 +541,7 @@ void AVLMainState::initInsertFrames(int value)
 				}
 				else if (parent[i] != -1)
 					x = i;
-				else 
+				else
 					y = i;
 			}
 			if (x != -1)
@@ -618,7 +618,7 @@ void AVLMainState::initDeleteFrames(int value)
 	int indexValue = -1;;
 	Engine::Frame b_frame, w_frame;
 	for (int i = 0; i < inorder.size(); i++)
-	{	
+	{
 		if (inorder[i] == value)
 			indexValue = i;
 		w_frame.addNode("1wnode" + std::to_string(i), w_nodes[i]);
@@ -668,7 +668,7 @@ void AVLMainState::initDeleteFrames(int value)
 					parent[i]++;
 			}
 			isRemoved = true;
-			
+
 		}
 
 		// Reinitialize the node positions and edges based on the snapshot.
@@ -708,8 +708,8 @@ void AVLMainState::initDeleteFrames(int value)
 				else if (operation == "rotateLL")
 					codePanel.setLineColor(2, sf::Color::Red);
 			}
-		else
-			codePanel.setLineColor(0, sf::Color::Red);
+			else
+				codePanel.setLineColor(0, sf::Color::Red);
 
 
 		b_frame.addPanel("3bcodePanel", codePanel);
@@ -807,7 +807,7 @@ void AVLMainState::initDeleteFrames(int value)
 				changeWEdge(x, firstIndex, lastIndex, prew_edges[y], w_edges[x]);
 			}
 		}
-		
+
 
 		breakpoints.push_back(b_frames.size() - 1);
 		preparent = parent;
@@ -893,7 +893,7 @@ void AVLMainState::initSearchFrames(int value)
 		Panel codePanel2 = codePanel;
 		Panel codePanel3 = codePanel;
 		codePanel2.setLineColor(1, sf::Color::Red);
-		if(i != 0)
+		if (i != 0)
 			if (inorder[path[i]] < value)
 			{
 				codePanel3.setLineColor(2, sf::Color::Red);
@@ -939,7 +939,7 @@ void AVLMainState::initSearchFrames(int value)
 
 		if (inorder[path[i]] == value)
 		{
-	
+
 			for (int step = 0; step <= 60; step++)
 			{
 				b_frames.push_back(b_frames.back());
@@ -1003,7 +1003,7 @@ void AVLMainState::initInorderFrames()
 	initEdge(parent);
 
 	breakpoints.push_back(0);
-	
+
 	for (int i = 0; i < inorderStep.size(); i++)
 	{
 		Engine::Frame b_frame, w_frame;
@@ -1024,7 +1024,7 @@ void AVLMainState::initInorderFrames()
 
 		if (map.find(inorderStep[i]) == map.end())
 		{
-			if(operations.empty() == true)
+			if (operations.empty() == true)
 				codePanel.setLineColor(0, sf::Color::Red);
 			else
 				if (operations.back() == "inorder")
@@ -1042,8 +1042,8 @@ void AVLMainState::initInorderFrames()
 		}
 		b_frame.addPanel("3bcodePanel", codePanel);
 		w_frame.addPanel("3wcodePanel", codePanel);
-		
-		
+
+
 
 		int firstIndex = b_frames.size();
 		int lastIndex = b_frames.size() + 59;
@@ -1139,4 +1139,3 @@ void AVLMainState::updateFrames()
 		}
 	}
 }
-
