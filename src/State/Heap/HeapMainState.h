@@ -66,6 +66,7 @@ public:
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
+	int prevFrameIndex = 0;
 	bool isShowing = false;
 	bool isPaused = false;
 	bool isPlaying = false;
@@ -105,7 +106,9 @@ public:
 
 
 	void deleteAllFrames();
-	void initCreateFrames(std::vector<int> elements, bool isInitState = false);
+	void initPreHeap(const std::vector<int> &nums);
+	void preInitCreateFrames(bool isInitState = false);
+	void initCreateFrames(bool isInitState = false);
 	void initInsertFrames(int value);
 	void initUpdateFrames(int id, int newV);
 	void initDeleteFrames(int id);
@@ -148,6 +151,14 @@ private:
 	bool isSelectedExtractButton = false;
 	bool isSelectedCreateButton = false;
 	bool isSelectedUpdateButton = false;
+
+	bool isSelectedCreateFrames = false;
+	std::vector<int> createNums;
+	std::vector<std::vector<std::pair<int, int>>> createArrs;
+	bool isSelectedInsertFrames = false;
+	bool isSelectedDeleteFrames = false;
+	bool isSelectedUpdateFrames = false;
+	bool isSelectedExtractFrames = false;
 
 	Panel codePanel;
 	Slider aniSlider;

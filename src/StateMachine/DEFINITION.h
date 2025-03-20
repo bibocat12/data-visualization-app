@@ -4,7 +4,7 @@
 #define SCREEN_HEIGHT 900
 #define M_PI 3.14159265358979323846
 #define DEG_TO_RAD(deg) ((deg) * M_PI / 180.0)
-
+//#define Size(a) (int) a.size()
 const sf::Time TIME_PER_FRAME = sf::seconds(1.f / 60.f);
 
 const sf::Color Orange = sf::Color(255, 165, 0);

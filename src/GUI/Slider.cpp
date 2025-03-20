@@ -91,6 +91,14 @@ int Slider::getNumPart() {
 	return (int)partX.size() - 1;
 }
 
+int Slider::getBreakpoints(int currentFrameIndex)
+{
+	for (int i = (int)breakpoints.size() - 1; i >= 0; i--) {
+		if (breakpoints[i] <= currentFrameIndex) return breakpoints[i];
+	}
+	return 0;
+}
+
 void Slider::setTextColor(sf::Color color) {
 	minText.setColor(color);
 	maxText.setColor(color);

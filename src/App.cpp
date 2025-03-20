@@ -1,5 +1,5 @@
 #include "App.h"
-
+#include <SFML/System.hpp>
 #include "State/MenuState.h"
 
 App::App()
@@ -39,7 +39,8 @@ App::App()
 	m_context->assetManager->loadFont("JetBrainsMono-SemiBold", "assets/font/JetBrains_Mono/static/JetBrainsMono-SemiBold.TTF");
 	m_context->assetManager->loadFont("Neon", "assets/font/Neon/Neon.TTF");
 
-	*m_context->themeType = 0;
+	m_context->themeType = std::make_unique<int>(0);
+	m_context->TIME_PER_FRAME = std::make_unique<sf::Time>(sf::seconds(1.f / 60.f)); // Default to 60 FPS
 	m_context->stateMachine->addState(std::make_unique<MenuState>(m_context), 0);
 
 }
@@ -57,16 +58,17 @@ void App::run()
 
 	sf::Time timeSinceLastUpdate = sf::Time::Zero;
 	srand(time(NULL));
+	m_context->window->setVerticalSyncEnabled(false); 
+	m_context->window->setFramerateLimit(0);
 	while (m_context->window->isOpen())
 	{
 
 		sf::Time dt = m_clock.restart();
 		timeSinceLastUpdate += dt;
 
-		while (timeSinceLastUpdate > TIME_PER_FRAME)
+		while (timeSinceLastUpdate > *m_context->TIME_PER_FRAME)
 		{
-			timeSinceLastUpdate -= TIME_PER_FRAME;
-			m_dt = TIME_PER_FRAME;
+			timeSinceLastUpdate -= *m_context->TIME_PER_FRAME;
 			m_context->stateMachine->processStateChanges();
 
 			if (m_context->stateMachine->getActiveState() == nullptr)
@@ -76,6 +78,7 @@ void App::run()
 			}
 
 			m_context->stateMachine->getActiveState()->processEvents();
+			m_dt = *m_context->TIME_PER_FRAME;
 			m_context->stateMachine->getActiveState()->update(m_dt);
 			m_context->stateMachine->getActiveState()->draw();
 		}

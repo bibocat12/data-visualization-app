@@ -19,6 +19,7 @@ public:
 	int getPartIndex();
 	int getPartIndexMouse(float x);
 	int getNumPart();
+	int getBreakpoints(int currentFrameIndex);
 	void setTextColor(sf::Color color);
 	void setPart(int index);
 	bool isMouseOverWindow(sf::RenderWindow& window);
