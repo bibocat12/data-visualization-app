@@ -20,6 +20,10 @@ public:
 	std::vector<int> getParent();
 	void clear();
 
+	bool isParent(int value, int child);
+	int countChild(int value);
+	int findMinRight(int value);
+
 	struct TreeSnapshot {
 		std::string operation;
 		int order;
@@ -31,6 +35,7 @@ public:
 
 	std::vector<TreeSnapshot> insertSnapshots(int value);
 	std::vector<TreeSnapshot> removeSnapshots(int value);
+	std::vector<int> recordInorder();
 	
 
 private:
@@ -47,7 +52,9 @@ private:
 	Node* root;
 	Node* insert(Node* node, int value);
 	Node* insertSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot);
-	Node* removeSnapshot(Node* node, int value, std::vector<TreeSnapshot>& snapshot);
+	Node* removeSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot);
+	Node* replaceSnapshots(Node*& remove, Node* &node, std::vector<TreeSnapshot>& snapshot);
+	void recordInorder(Node* node, std::vector<int>& elements);
 	Node* remove(Node* node, int value);
 	Node* search(Node* node, int value);
 

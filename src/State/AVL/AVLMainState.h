@@ -24,14 +24,28 @@
 #include <fstream>
 #include <cstdlib>
 #include <string>
+#include <map>
+
 
 class AVLMainState : public Engine::State {
 public:
     // Constants
 	const float MAX_RADIUS = 30;
+	const float MED_RADIUS = 20;
 	const float MIN_RADIUS = 15;
-	const float MIN_DISTANCE_X = 25;
-	const float MAX_DISTANCE_X = 60;
+	const float SM_RADIUS = 10;
+
+	
+    const float MAX_DISTANCE_X = 50;
+	const float MED_DISTANCE_X = 30;
+    const float MIN_DISTANCE_X = 20;
+    const float SM_DISTANCE_X = 20;
+	
+
+	const float MAX_DISTANCE_Y = 80;
+	const float MED_DISTANCE_Y = 70;
+	const float MIN_DISTANCE_Y = 60;
+	const float SM_DISTANCE_Y = 50;
 	float RADIUS = 25;
 	float PADDING_X = 380;
 	float PADDING_Y = 20;
@@ -39,8 +53,10 @@ public:
 	float DISTANCE_X = 40;
 	float DISTANCE_Y = 80;
 
-	const int LIMIT_NODE_MIN = 20;
-	const int LIMIT_NODE_MAX = 50;
+	const int LIMIT_NODE_MIN = 30;
+	const int LIMIT_NODE_MED = 50;
+	const int LIMIT_NODE_MAX = 70;
+	
 
 	
 	const sf::Color B_NODE_COLOR = sf::Color::White;
