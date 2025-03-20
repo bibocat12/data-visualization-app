@@ -44,6 +44,11 @@ void Edge::setFont(sf::Font& font)
 	this->font = font;
 }
 
+sf::Color Edge::getColor()
+{
+	return line.getFillColor();
+}
+
 void Edge::setWeight(int weight)
 {
 	this->weight = weight;
@@ -73,6 +78,9 @@ void Edge::drawTo(sf::RenderWindow& window)
 		triangle[0].position = p1;
 		triangle[1].position = p2;
 		triangle[2].position = p3;
+		triangle[0].color = color;
+		triangle[1].color = color;
+		triangle[2].color = color;
 
 		window.draw(triangle);
 	}

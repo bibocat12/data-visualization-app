@@ -8,6 +8,7 @@
 
 #include <stack>
 #include <map>
+#include <unordered_map>
 #include <string>
 
 namespace Engine
@@ -36,11 +37,11 @@ namespace Engine
         void drawAll(sf::RenderWindow& window);
 
     private:
-        std::map<std::string, Button> buttonMap;
-        std::map<std::string, Node> nodeMap;
-        std::map<std::string, Edge> edgeMap;
-		std::map<std::string, sf::Text> textMap;
-		std::map<std::string, Panel> panelMap;
+        std::unordered_map<std::string, Button> buttonMap;
+        std::unordered_map<std::string, Node> nodeMap;
+        std::unordered_map<std::string, Edge> edgeMap;
+		std::unordered_map<std::string, sf::Text> textMap;
+		std::unordered_map<std::string, Panel> panelMap;
     };
 
 }
