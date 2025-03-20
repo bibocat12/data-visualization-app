@@ -8,6 +8,7 @@
 
 #include <stack>
 #include <map>
+#include <unordered_map>
 #include <string>
 
 namespace Engine
@@ -19,11 +20,11 @@ namespace Engine
         void init(const Frame& frame);
 
 
-        void addButton(const std::string& name, const Button button);
-        void addNode(const std::string& name, const Node node);
-        void addEdge(const std::string& name, const Edge edge);
-		void addText(const std::string& name, const sf::Text text);
-		void addPanel(const std::string& name, const Panel panel);
+        void addButton(const std::string& name, const Button& button);
+        void addNode(const std::string& name, const Node& node);
+        void addEdge(const std::string& name, const Edge& edge);
+		void addText(const std::string& name, const sf::Text& text);
+		void addPanel(const std::string& name, const Panel& panel);
 
 
         Button& getButton(const std::string& name);
@@ -36,11 +37,11 @@ namespace Engine
         void drawAll(sf::RenderWindow& window);
 
     private:
-        std::map<std::string, Button> buttonMap;
-        std::map<std::string, Node> nodeMap;
-        std::map<std::string, Edge> edgeMap;
-		std::map<std::string, sf::Text> textMap;
-		std::map<std::string, Panel> panelMap;
+        std::unordered_map<std::string, Button> buttonMap;
+        std::unordered_map<std::string, Node> nodeMap;
+        std::unordered_map<std::string, Edge> edgeMap;
+		std::unordered_map<std::string, sf::Text> textMap;
+		std::unordered_map<std::string, Panel> panelMap;
     };
 
 }

@@ -33,13 +33,21 @@ void Node::setTextUnder(std::string s, int charSize, sf::Color color)
 	textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
 	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 
+	stringUnder = s;
+	textSizeUnder = charSize;
+	textColorUnder = color;
+
 	isSetTextUnder = true;
+
 }
 
 void Node::setFont(sf::Font& font)
 {
 	text.setFont(font);
 	textUnder.setFont(font);
+
+
+
 }
 
 void Node::setFillColor(sf::Color color)

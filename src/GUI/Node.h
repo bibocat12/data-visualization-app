@@ -16,10 +16,25 @@ public:
 	sf::Color outlineColor;
 	sf::Color textColorUnder;
 	int textSizeUnder;
-
 	sf::Text textUnder;
-
+	std::string stringUnder;
+	int charSizeUnder;
 	bool isSetTextUnder = false;
+
+	struct Data
+	{
+		std::string text;
+		sf::Vector2f position;
+		sf::Color fillColor;
+		sf::Color outlineColor;
+		int textSize;
+		sf::Color textColorUnder;
+		int textSizeUnder;
+		std::string stringUnder;
+		bool isSetTextUnder;
+	};
+
+
 
 	void initTextUnder(sf::Color color, int size);
 	void setTextUnder(std::string s);
@@ -31,6 +46,7 @@ public:
 	void setCharacterSize(int size);
 	void setPosition(sf::Vector2f pos);
 	sf::Vector2f getPosition();
+	
 	void drawTo(sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void handleHover(sf::RenderWindow& window);

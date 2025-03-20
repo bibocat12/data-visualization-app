@@ -12,27 +12,27 @@ namespace Engine
 		panelMap = frame.panelMap;
     }
 
-    void Frame::addButton(const std::string& name, const Button button)
+    void Frame::addButton(const std::string& name, const Button& button)
     {
         buttonMap[name] = button;
     }
 
-    void Frame::addNode(const std::string& name, const Node node)
+    void Frame::addNode(const std::string& name, const Node& node)
     {
         nodeMap[name] = node;
     }
 
-    void Frame::addEdge(const std::string& name, const Edge edge)
+    void Frame::addEdge(const std::string& name, const Edge& edge)
     {
         edgeMap[name] = edge;
     }
 
-    void Frame::addText(const std::string& name, const sf::Text text)
+    void Frame::addText(const std::string& name, const sf::Text& text)
     {
 		textMap[name] = text;
     }
 
-    void Frame::addPanel(const std::string& name, const Panel panel)
+    void Frame::addPanel(const std::string& name, const Panel& panel)
     {
 		panelMap[name] = panel;
     }
