@@ -163,17 +163,14 @@ AVLTree::Node* AVLTree::insert(Node* node, int value)
 }
 AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot)
 {
+	
 	if (node == nullptr)
 	{
-
 		return new Node(value);
 	}
+	recordSnapshot(snapshot, "find", node);
 	if (value < node->value)
-	{
 		node->left = insertSnapshot(node->left, value, snapshot);
-
-		
-	}
 	else if (value > node->value)
 	{
 		node->right = insertSnapshot(node->right, value, snapshot);

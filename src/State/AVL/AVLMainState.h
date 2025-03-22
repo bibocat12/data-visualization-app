@@ -100,12 +100,14 @@ public:
     // Frame Control
     int numFrames = 0;
     int currentFrameIndex = 0;
+	int prevFrameIndex = 0;
     bool isShowing = false;
     bool isPaused = false;
     bool isPlaying = false;
     bool isEnd = false;
 
     std::vector<int> breakpoints;
+
 
     Engine::Frame currentFrame;
     Engine::Frame b_currentFrame;
@@ -136,18 +138,31 @@ public:
 	void connectTwoNodes(int index, int index1, int index2, bool isEnd);
 
     // Frame Initialization
+
+	std::string currentState = "no";
+
     void deleteAllFrames();
+	void initEmptyFrames(int count);
     void initCreateFrames(std::vector<int> elements);
-    void initInsertFrames(int value);
+    void initInsertFrames();
     void initDeleteFrames(int value);
 	void initSearchFrames(int value);
 	void initInorderFrames();
+
+    void createInorderFrames();
+	void createInsertFrames(int value);
+
     void updateFrames();
+
+    Engine::Frame handleInorderFrame(int index);
 
     // UI Elements
     sf::Sprite background;
     std::vector<Engine::Frame> b_frames;
     std::vector<Engine::Frame> w_frames;
+	std::vector<bool> isFrameActive;
+	std::vector<int> inorderSnapshot;
+	std::vector<AVLTree::TreeSnapshot> snapshots;
     int speed = 1;
 
     // UI Initialization
