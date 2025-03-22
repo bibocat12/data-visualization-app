@@ -68,7 +68,7 @@ void AVLMainState::update(const sf::Time& dt) {
         pauseButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - pauseButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
 
     if (isPaused == false && isPlaying == true)
-        aniSlider.setPart(currentFrameIndex);
+        aniSlider.setPart(currentFrameIndex + 1);
 
     if (isPaused == true && isPlaying == true) {
         int part = aniSlider.getPartIndex();
@@ -330,6 +330,7 @@ void AVLMainState::handleCreateButtonEvents(const sf::Event& event) {
                     //handle num list
 
                     initCreateFrames(nums);
+                    currentState = "create";
 
                 }
                 else {
@@ -360,6 +361,7 @@ void AVLMainState::handleCreateButtonEvents(const sf::Event& event) {
             }
 
             initCreateFrames(allElements);
+			currentState = "create";
 
 
         }
@@ -396,7 +398,7 @@ void AVLMainState::handleInsertButtonEvents(const sf::Event& event) {
             okButton.setPosition(sf::Vector2f{ insertTextbox.getPositon().x + (insertTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5, insertTextbox.getPositon().y + insertTextbox.getGlobalBounds().height });
 
             insertTextbox.typedOnNum(event, *m_context->window);
-			std::cerr << "insert:"  << std::endl;
+		
 
             if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                 int randomNum = std::rand() % 100 + 1;
@@ -410,7 +412,7 @@ void AVLMainState::handleInsertButtonEvents(const sf::Event& event) {
                 insertTextbox.reset();
                 insertTextbox.setSelected(false);
 				std::cerr << "insert:" << value << std::endl;
-                initInsertFrames(value);
+				createInsertFrames(value);
             }
         }
         else
@@ -466,6 +468,7 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
 
 				std::cerr << "delete:" << value << std::endl;
                 initDeleteFrames(value);
+				currentState = "delete";
             }
         }
         else
@@ -522,6 +525,7 @@ void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
                 deleteAllFrames();
 
                 initSearchFrames(value);
+				currentState = "search";
 				aniSlider.setNumPart(b_frames.size());
 				aniSlider.setBreakpoints(breakpoints);
 				isPlaying = true;
@@ -560,9 +564,12 @@ void AVLMainState::handleInorderButtonEvents(const sf::Event& event)
 			okButtonBackground.setPosition(sf::Vector2f{ 5 + inorderButton.getPositon().x + inorderButton.getGlobalBounds().width, inorderButton.getPositon().y });
 			okButton.setPosition(sf::Vector2f{ inorderButton.getPositon().x + (inorderButton.getGlobalBounds().width + 50) , inorderButton.getPositon().y  });
             if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
-                (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed 
+                (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed
                     && event.mouseButton.button == sf::Mouse::Left))
-                    initInorderFrames();
+            {
+				createInorderFrames();
+            }
+
 		}
 		else
 		{
@@ -595,8 +602,8 @@ void AVLMainState::handleThemeButtonEvents(const sf::Event& event) {
     }
 }
 void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
-    if (b_frames.size() == 0) return;
-    aniSlider.setNumPart(b_frames.size());
+    if (numFrames == 0) return;
+    aniSlider.setNumPart(numFrames);
 
     if (isPlaying == false)
         return;
@@ -624,8 +631,8 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
         }
         if (forwardButton.isMouseOverCircle(*m_context->window)) {
             isPaused = true;
-            currentFrameIndex = b_frames.size() - 1;
-            aniSlider.setPart(b_frames.size() - 1);
+            currentFrameIndex = numFrames - 1;
+            aniSlider.setPart(numFrames);
         }
         if (rewindButton.isMouseOverCircle(*m_context->window)) {
             isPaused = true;
@@ -651,16 +658,18 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
         {
             isPaused = true;
             aniSlider.handleEvent(event);
+            currentFrameIndex = aniSlider.getPartIndex();
             return;
         }
     }
-
     aniSlider.handleEvent(event);
+    currentFrameIndex = aniSlider.getPartIndex();
 }
 void AVLMainState::handleSpeedSliderEvents(const sf::Event& event) {
     speedSlider.handleEvent(event);
     std::string st = "1.0x";
     st[0] = char(speedSlider.getPartIndex() + 1 + '0');
+    *m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / static_cast<float>(speedSlider.getPartIndex() + 1));
     speedSlider.setMaxText(st);
 }
 

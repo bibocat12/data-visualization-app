@@ -59,7 +59,10 @@ void Slider::setBreakpoints(std::vector<int> breakpoints)
 		sf::RectangleShape line;
 		line.setSize(sf::Vector2f{ 1, bar.getGlobalBounds().height });
 		line.setPosition(sf::Vector2f{ partX[breakpoints[i]], bar.getPosition().y });
-		line.setFillColor(sf::Color::Black);
+		if (i == 0 || i == (int)breakpoints.size() - 1) {
+			line.setFillColor(sf::Color::Transparent);
+		}
+		else line.setFillColor(sf::Color::Black);
 		breakpointsLine.push_back(line);
 	}
 }
@@ -87,6 +90,14 @@ int Slider::getPartIndexMouse(float x) {
 
 int Slider::getNumPart() {
 	return (int)partX.size() - 1;
+}
+
+int Slider::getBreakpoints(int currentFrameIndex)
+{
+	for (int i = (int)breakpoints.size() - 1; i >= 0; i--) {
+		if (breakpoints[i] <= currentFrameIndex) return breakpoints[i];
+	}
+	return 0;
 }
 
 void Slider::setTextColor(sf::Color color) {
@@ -140,9 +151,9 @@ void Slider::handleEvent(sf::Event event) {
 			isDragging = true;
 			knob.setPosition(sf::Vector2f{ mousePosX - offset.x, knob.getPosition().y });
 			setPart(getPartIndexMouse(knob.getPosition().x));
-		} 
+		}
 	}
-	
+
 	if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		float mousePosX = event.mouseButton.x;
 		float mousePosY = event.mouseButton.y;
@@ -157,7 +168,7 @@ void Slider::handleEvent(sf::Event event) {
 void Slider::draw(sf::RenderWindow& window) {
 	window.draw(bar);
 	window.draw(curBar);
-	
+
 	window.draw(knob);
 	window.draw(minText);
 	window.draw(maxText);
