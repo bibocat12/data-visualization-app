@@ -92,8 +92,8 @@ public:
 	Edge w_edges[maxNodes];
 
 
-	void initNode();
-	void initEdge();
+	void initNode(int n = 0);
+	void initEdge(int n = 0);
 
 	MinHeap heap = MinHeap(maxNodes);
 
@@ -101,17 +101,17 @@ public:
 	void deleteEdge(int index, int index1, int index2, bool isEnd);
 	void swapTwoNodes(int node1, int node2, int index1, int index2, bool isEnd);
 
-	void changeBColor(int index, int index1, int index2, sf::Color from, sf::Color to);
-	void changeWColor(int index, int index1, int index2, sf::Color from, sf::Color to);
-
-
 	void deleteAllFrames();
 	void initPreHeap(const std::vector<int> &nums);
 	void preInitCreateFrames(bool isInitState = false);
 	void initCreateFrames(bool isInitState = false);
+	void preInitInsertFrames(int value);
 	void initInsertFrames(int value);
+	void preInitUpdateFrames(int id, int newV);
 	void initUpdateFrames(int id, int newV);
+	void preInitDeleteFrames(int id);
 	void initDeleteFrames(int id);
+	void preInitExtractFrames();
 	void initExtractFrames();
 
 	void updateFrames();
@@ -152,12 +152,25 @@ private:
 	bool isSelectedCreateButton = false;
 	bool isSelectedUpdateButton = false;
 
+	std::vector<int> heapElements;
 	bool isSelectedCreateFrames = false;
 	std::vector<int> createNums;
 	std::vector<std::vector<std::pair<int, int>>> createArrs;
+	bool isLess;
+
 	bool isSelectedInsertFrames = false;
+	int insertValue;
+	std::vector<std::pair<int, int>> insertArrs;
+
 	bool isSelectedDeleteFrames = false;
+	int deleteId;
+	std::vector<std::vector<std::pair<int, int>>> deleteArrs;
+
 	bool isSelectedUpdateFrames = false;
+	int updateId, updateValue;
+	std::vector<std::pair<int, int>> updateArrs;
+
+	std::vector<std::pair<int, int>> extractArrs;
 	bool isSelectedExtractFrames = false;
 
 	Panel codePanel;
