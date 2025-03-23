@@ -33,6 +33,7 @@ public:
     int c[maxn][maxn];
 
 public:
+    void setDirected(int directed);
     void addEdge(int u, int v, int weight = 0, bool isDirected = false);
     void reset();
     bool hasEdge(int u, int v);

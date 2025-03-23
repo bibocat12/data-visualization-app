@@ -133,6 +133,9 @@ void ForceGraph::applyForces(float dt, float optimalEdgeLength) {
 
 void ForceGraph::update(float dt) {
     applyForces(dt, idealEdgeLength);
+    for (auto& node : nodes) {
+        node.node.setTextUnder(node.node.getStringUnder());
+    }
 }
 
 void ForceGraph::draw(sf::RenderWindow& window) {

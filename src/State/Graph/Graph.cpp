@@ -20,6 +20,13 @@ bool Dsu::Union(int u, int v) {
     return true;
 }
 
+void Graph::setDirected(int directed)
+{
+    for (auto& edge : edges) {
+        edge.isDirected = directed;
+    }
+}
+
 void Graph::addEdge(int u, int v, int weight, bool isDirected) {
     edges.push_back({ u, v, weight, isDirected });
     c[u][v] = weight;
@@ -30,14 +37,14 @@ void Graph::reset() {
     edges.clear();
     for (int i = 0; i < maxn; i++) {
         for (int j = 0; j < maxn; j++) {
-            c[i][j] = -1;
+            c[i][j] = 0;
         }
     }
     ds.init();
 }
 
 bool Graph::hasEdge(int u, int v) {
-    return c[u][v] != -1;
+    return c[u][v] != 0;
 }
 
 std::vector<std::pair<int, bool>> Graph::kruskal() {
@@ -58,7 +65,6 @@ std::vector<std::pair<int, bool>> Graph::kruskal() {
     return ans;
 }
 
-
 std::vector<std::array<int, 3>> Graph::dijkstra(int source, int n)
 {
     int oo = (int)1e9 + 7;
@@ -77,16 +83,17 @@ std::vector<std::array<int, 3>> Graph::dijkstra(int source, int n)
 
         if (fu != f[u]) continue;
 
-        for (const auto& edge : edges) {
+        for (int i = 0; i < (int)edges.size(); i++) {
+            auto edge = edges[i];
             if (edge.u != u && edge.v != u) continue;
-            int v = (edge.u == u) ? edge.v : edge.u;
+            if (edge.isDirected && edge.u != u) continue;
+            int v = edge.u ^ edge.v ^ u;
             if (f[v] > fu + edge.weight) {
                 f[v] = fu + edge.weight;
                 q.push({ f[v], v });
-                res.push_back({ edge.u == u ? edge.u : edge.v, v, f[v] });
+                res.push_back({ i, v, f[v] });
             }
         }
     }
     return res;
 }
-
