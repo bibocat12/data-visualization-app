@@ -82,8 +82,8 @@ sf::Vector2f Node::getPosition()
 void Node::drawTo(sf::RenderWindow& window)
 {
 	this->setPosition(position);
-	textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
-	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
+	//textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
+	//textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 	window.draw(shape);
 	window.draw(text);
 	if (isSetTextUnder)

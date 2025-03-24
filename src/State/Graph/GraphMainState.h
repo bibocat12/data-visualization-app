@@ -22,6 +22,7 @@
 #include "../MenuState.h"
 
 #include <vector>
+#include <array>;
 #include <fstream>
 #include <cstdlib>
 #include <string>
@@ -55,6 +56,7 @@ public:
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
+	int prevFrameIndex = 0;
 	bool isShowing = false;
 	bool isPaused = false;
 	bool isPlaying = false;
@@ -71,12 +73,19 @@ private:
 
 public:
 
+	const float RADIUS = 20;
 	Graph graph;
 	ForceGraph fGraph;
 
+	void initPreGraph();
 	void deleteAllFrames();
 	void selectEdge(int edgeIndex, bool isSelected, int index1, int index2);
+	void moveTo(int from, int edgeIndex, int index1, int index2);
+	void preInitMstFrames();
 	void initMstFrames();
+	void preInitShortestPathFrames(int s);
+	void initShortestPathFrames(int s);
+	std::vector<std::pair<int, bool>> mstArrs;
 
 	void updateFrames();
 	std::vector<Engine::Frame> frames;
@@ -116,6 +125,13 @@ private:
 	bool isDirected = false;
 	bool isFixed = false;
 
+	bool isSelectedMstFrames = false;
+
+	bool isSelectedShortestPathFrames = false;
+	int source;
+	std::vector<std::array<int, 3>> spArrs;
+
+	void deleteOldFrames();
 	Panel codePanel;
 	Slider aniSlider;
 	Slider speedSlider;
@@ -133,6 +149,7 @@ private:
 
 	Textbox createTextboxN;
 	Textbox createTextboxE;
+	Textbox shortestPathTextbox;
 	const int numMatrix = 13;
 	Textbox inputTextbox[13];
 	ImageButton randomButton1;

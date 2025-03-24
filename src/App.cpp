@@ -62,13 +62,14 @@ void App::run()
 	m_context->window->setFramerateLimit(0);
 	while (m_context->window->isOpen())
 	{
-
 		sf::Time dt = m_clock.restart();
 		timeSinceLastUpdate += dt;
 
 		while (timeSinceLastUpdate > *m_context->TIME_PER_FRAME)
 		{
-			timeSinceLastUpdate -= *m_context->TIME_PER_FRAME;
+			sf::Time currentTimePerFrame = *m_context->TIME_PER_FRAME; 
+			timeSinceLastUpdate -= currentTimePerFrame;
+
 			m_context->stateMachine->processStateChanges();
 
 			if (m_context->stateMachine->getActiveState() == nullptr)
@@ -78,12 +79,17 @@ void App::run()
 			}
 
 			m_context->stateMachine->getActiveState()->processEvents();
-			m_dt = *m_context->TIME_PER_FRAME;
+			m_dt = currentTimePerFrame;
 			m_context->stateMachine->getActiveState()->update(m_dt);
 			m_context->stateMachine->getActiveState()->draw();
+
+			if (currentTimePerFrame != *m_context->TIME_PER_FRAME)
+			{
+				timeSinceLastUpdate = sf::Time::Zero; 
+				break; 
+			}
 		}
-
-
 	}
+
 
 }
