@@ -22,6 +22,7 @@
 #include "../MenuState.h"
 
 #include <vector>
+#include <array>;
 #include <fstream>
 #include <cstdlib>
 #include <string>
@@ -55,6 +56,7 @@ public:
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
+	int prevFrameIndex = 0;
 	bool isShowing = false;
 	bool isPaused = false;
 	bool isPlaying = false;
@@ -63,34 +65,30 @@ public:
 	std::vector<int> breakpoints;
 
 	Engine::Frame currentFrame;
-	Engine::Frame b_currentFrame;
-	Engine::Frame w_currentFrame;
-	Engine::Frame b_nextFrame;
-	Engine::Frame w_nextFrame;
+	Engine::Frame nextFrame;
 	Engine::Frame staticFrame;
 
 private:
 	static constexpr int maxNodes = 64;
 
 public:
-	Node b_nodes[maxNodes];
-	Edge b_edges[maxNodes];
-	Node w_nodes[maxNodes];
-	Edge w_edges[maxNodes];
 
+	const float RADIUS = 20;
 	Graph graph;
 	ForceGraph fGraph;
 
-	/*void deleteAllFrames();
-	void initCreateFrames(std::vector<int> elements, bool isInitState = false);
-	void initInsertFrames(int value);
-	void initUpdateFrames(int id, int newV);
-	void initDeleteFrames(int id);
-	void initExtractFrames();
+	void initPreGraph();
+	void deleteAllFrames();
+	void selectEdge(int edgeIndex, bool isSelected, int index1, int index2);
+	void moveTo(int from, int edgeIndex, int index1, int index2);
+	void preInitMstFrames();
+	void initMstFrames();
+	void preInitShortestPathFrames(int s);
+	void initShortestPathFrames(int s);
+	std::vector<std::pair<int, bool>> mstArrs;
 
-	void updateFrames();*/
-	std::vector<Engine::Frame> b_frames;
-	std::vector<Engine::Frame> w_frames;
+	void updateFrames();
+	std::vector<Engine::Frame> frames;
 	int speed = 1;
 
 	void initButton(Button& button, std::string text, sf::Vector2f pos);
@@ -127,6 +125,13 @@ private:
 	bool isDirected = false;
 	bool isFixed = false;
 
+	bool isSelectedMstFrames = false;
+
+	bool isSelectedShortestPathFrames = false;
+	int source;
+	std::vector<std::array<int, 3>> spArrs;
+
+	void deleteOldFrames();
 	Panel codePanel;
 	Slider aniSlider;
 	Slider speedSlider;
@@ -144,6 +149,7 @@ private:
 
 	Textbox createTextboxN;
 	Textbox createTextboxE;
+	Textbox shortestPathTextbox;
 	const int numMatrix = 13;
 	Textbox inputTextbox[13];
 	ImageButton randomButton1;

@@ -61,8 +61,9 @@ void Slider::setBreakpoints(std::vector<int> breakpoints)
 		line.setPosition(sf::Vector2f{ partX[breakpoints[i]], bar.getPosition().y });
 		if (i == 0 || i == (int)breakpoints.size() - 1) {
 			line.setFillColor(sf::Color::Transparent);
-		}
-		else line.setFillColor(sf::Color::Black);
+
+		} else line.setFillColor(sf::Color::Black);
+
 		breakpointsLine.push_back(line);
 	}
 }

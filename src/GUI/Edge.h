@@ -15,6 +15,7 @@ public:
 	void setColor(sf::Color color);
 	void setThickness(float thickness);
 	void setFont(sf::Font& font);
+	sf::Color getColor();
 
 
 	

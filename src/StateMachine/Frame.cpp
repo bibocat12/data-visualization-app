@@ -8,8 +8,8 @@ namespace Engine
         nodeMap = frame.nodeMap;
         edgeMap = frame.edgeMap;
 
-		textMap = frame.textMap;
-		panelMap = frame.panelMap;
+        textMap = frame.textMap;
+        panelMap = frame.panelMap;
     }
 
     void Frame::addButton(const std::string& name, const Button& button)
@@ -29,12 +29,12 @@ namespace Engine
 
     void Frame::addText(const std::string& name, const sf::Text& text)
     {
-		textMap[name] = text;
+        textMap[name] = text;
     }
 
     void Frame::addPanel(const std::string& name, const Panel& panel)
     {
-		panelMap[name] = panel;
+        panelMap[name] = panel;
     }
 
     Button& Frame::getButton(const std::string& name)
@@ -54,30 +54,30 @@ namespace Engine
 
     sf::Text& Frame::getText(const std::string& name)
     {
-		return textMap.at(name);
+        return textMap.at(name);
     }
 
     Panel& Frame::getPanel(const std::string& name)
     {
-		return panelMap.at(name);
+        return panelMap.at(name);
     }
 
     void Frame::drawAll(sf::RenderWindow& window)
     {
-		for (auto& button : buttonMap)
-			button.second.drawTo(window);
-		
+        for (auto& button : buttonMap)
+            button.second.drawTo(window);
+
         for (auto& edge : edgeMap)
             edge.second.drawTo(window);
 
-		for (auto& node : nodeMap)
-			node.second.drawTo(window);
-        
-		for (auto& text : textMap)
-			window.draw(text.second);
+        for (auto& node : nodeMap)
+            node.second.drawTo(window);
 
-		for (auto& panel : panelMap)
-			panel.second.draw(window);
+        for (auto& text : textMap)
+            window.draw(text.second);
+
+        for (auto& panel : panelMap)
+            panel.second.draw(window);
 
 
     }
