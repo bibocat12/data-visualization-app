@@ -26,21 +26,21 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 			DISTANCE_Y = MIN_DISTANCE_Y;
 		}
 		else
-	{
+		{
 			RADIUS = SM_RADIUS;
 			DISTANCE_X = SM_DISTANCE_X;
 			DISTANCE_Y = SM_DISTANCE_Y;
-	}
+		}
 
 	PADDING_X = SCREEN_WIDTH / 2.0 - numNodes / 2.0 * DISTANCE_X;
 	PADDING_Y = 100;
-	
+
 	for (int i = 0; i < elements.size(); i++)
 	{
 		if (elements[i] == -1)
 			continue;
 		sf::Vector2f pos;
-		pos.x = PADDING_X + (i) * DISTANCE_X;
+		pos.x = PADDING_X + (i)*DISTANCE_X;
 		pos.y = PADDING_Y + depth[i] * DISTANCE_Y;
 		b_nodes[i] = Node();
 		b_nodes[i].setFillColor(B_NODE_COLOR);
@@ -53,7 +53,7 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 		b_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::Black);
 		b_nodes[i].setTextColor(sf::Color::Black);
 		b_nodes[i].setPosition(pos);
-		
+
 		w_nodes[i] = Node();
 		w_nodes[i].setFillColor(W_NODE_COLOR);
 		w_nodes[i].setOutlineColor(W_NODE_OUTLINE_COLOR);
@@ -312,7 +312,7 @@ void AVLMainState::initCreateFrames(std::vector<int> elements)
 		w_frames.push_back(w_frame);
 		b_frames.push_back(b_frame);
 	}
-;
+	;
 	Node node;
 	for (int i = 0; i < (int)elements.size(); i++)
 	{
@@ -343,6 +343,7 @@ void AVLMainState::initCreateFrames(std::vector<int> elements)
 }
 void AVLMainState::initInsertFrames()
 {
+
 	deleteAllFrames();
 	std::vector<std::string> codeLines = {
 		"insert v",
@@ -384,11 +385,13 @@ void AVLMainState::initInsertFrames()
 				b_frame.addEdge("1bedges" + std::to_string(i), b_edges[i]);
 			}
 		}
+
 		for (int step = 0; step < 60; step++)
 		{
 			w_frames.push_back(w_frame);
 			b_frames.push_back(b_frame);
 		}
+
 		Node node = w_nodes[order];
 		node.setFillColor(W_NODE_COLOR_HOVER);
 		changeBNode(order, 0, 59, b_nodes[order], node);
@@ -396,6 +399,7 @@ void AVLMainState::initInsertFrames()
 		node.setFillColor(B_NODE_COLOR_HOVER);
 		changeWNode(order, 0, 59, w_nodes[order], node);
 		codePanel.setLineColor(0, sf::Color::Red);
+
 	}
 	else
 	{
@@ -437,8 +441,10 @@ void AVLMainState::initInsertFrames()
 			}
 		}
 
+
 		for (int i = 0; i < 60; i++)
 		{
+
 			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
 		}
@@ -451,8 +457,10 @@ void AVLMainState::initInsertFrames()
 			
 			if (prew_nodes[i].getPosition() != b_nodes[i].getPosition())
 			{
+
 				changeBNode(i, 0, 59, preb_nodes[i], b_nodes[i]);
 				changeWNode(i, 0, 59, prew_nodes[i], w_nodes[i]);
+
 			}
 
 			if (parent[i] == -1 && preparent[i] == -1)
@@ -594,7 +602,6 @@ void AVLMainState::initDeleteFrames(int deleteValue)
 				if (preparent[i] >= indexValue)
 					preparent[i]++;
 			}
-
 		}
 		Engine::Frame b_frame, w_frame;
 
@@ -659,7 +666,9 @@ void AVLMainState::initDeleteFrames(int deleteValue)
 			else
 				y = i;
 		}
+
 		if (x != -1)
+
 		{
 			changeBEdge(x, 0, 59, preb_edges[y], b_edges[x]);
 			changeWEdge(x, 0, 59, prew_edges[y], w_edges[x]);
@@ -736,6 +745,7 @@ void AVLMainState::initSearchFrames()
 		b_frames[i].addPanel("3bcodePanel", codePanel);
 	}
 
+
 	if (inorder[order] == ValueFind)
 	{
 		codePanel.setLineColor(6, sf::Color::Red);
@@ -755,12 +765,14 @@ void AVLMainState::initSearchFrames()
 
 	}
 
+
 	Node node = w_nodes[order];
 	node.setFillColor(W_NODE_COLOR_HOVER);
 	changeBNode(order, 0, 59, b_nodes[order], node);
 	node = b_nodes[order];
 	node.setFillColor(B_NODE_COLOR_HOVER);
 	changeWNode(order, 0, 59, w_nodes[order], node);
+
 
 	if (inorder[order] == ValueFind)
 	{
@@ -820,6 +832,7 @@ void AVLMainState::initInorderFrames()
 		}
 	}
 
+
 	for (int i = 0; i < currBreakpoint; i++)
 	{
 		int x = inorderSnapshot[i];
@@ -836,11 +849,14 @@ void AVLMainState::initInorderFrames()
 				w_frame.addEdge("1wedges" + std::to_string(x), w_edges[x]);
 				b_frame.addEdge("1bedges" + std::to_string(x), b_edges[x]);
 			}
+
 			operations = "inorder";
+
 
 		}
 		else
 		{
+
 			Node node = w_nodes[x];
 			node.setFillColor(sf::Color::Green);
 			w_frame.addNode("1wnodes" + std::to_string(x), node);
@@ -1062,10 +1078,12 @@ void AVLMainState::updateFrames()
 			}
 		}
 	}
+
 }
 
 Engine::Frame AVLMainState::handleInorderFrame(int index)
 {
 	return Engine::Frame();
 }
+
 
