@@ -18,7 +18,6 @@ void HeapMainState::switchTheme() {
 		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
 	}
 	else if (*m_context->themeType == 0) { // light mode
 		backgroundColor = SuperLightPink;
@@ -35,7 +34,6 @@ void HeapMainState::switchTheme() {
 		extractButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		codePanel.setTextColor(textColor);
 	}
 }
 
@@ -181,13 +179,14 @@ HeapMainState::HeapMainState(std::shared_ptr<Context>& context) : m_context(cont
 
 	// Init node and edge
 
-	std::vector<int> nums;
-	for (int i = 0; i < 15; i++) {
+	/*std::vector<int> nums;
+	for (int i = 0; i < 31; i++) {
 		nums.push_back(rand() % 100);
 	}
 	heap.create(nums);
 	nums = heap.getAllElements();
-	initCreateFrames(nums, 1);
+	createNums = nums;
+	preInitCreateFrames(1);*/
 }
 
 HeapMainState::~HeapMainState()
@@ -231,10 +230,9 @@ void HeapMainState::processEvents()
 			}
 
 		}
+		handleSpeedSliderEvents(event);
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
-		handleSpeedSliderEvents(event);
-
 	}
 
 	createTextbox.handleCursor();
@@ -260,9 +258,8 @@ void HeapMainState::update(const sf::Time& dt)
 
 
 
-
 	if (isPaused == false && isPlaying == true)
-		aniSlider.setPart(currentFrameIndex);
+		aniSlider.setPart(currentFrameIndex + 1);
 
 	if (isPaused == true && isPlaying == true)
 	{
@@ -354,7 +351,7 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 		insertTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % 100 + 1;
+			int randomNum = Utils::rand(0, 99);
 			insertTextbox.insertNum(randomNum);
 		}
 
@@ -362,12 +359,12 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
 			(okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 
-			int value = insertTextbox.getNum();
+			insertValue = insertTextbox.getNum();
 			insertTextbox.reset();
 			insertTextbox.setSelected(false);
 
-			initInsertFrames(value);
-			std::cerr << value << "\n";
+			preInitInsertFrames(insertValue);
+			std::cerr << insertValue << "\n";
 		}
 	}
 	else {
@@ -386,7 +383,7 @@ void HeapMainState::handleInsertButtonEvents(sf::Event event)
 
 void HeapMainState::handleDeleteButtonEvents(sf::Event event)
 {
-	deleteTextbox.setLimNum(heap.Size() - 1);
+	deleteTextbox.setLimNum(std::max(0, heap.Size() - 1));
 	deleteButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (deleteButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
@@ -406,16 +403,16 @@ void HeapMainState::handleDeleteButtonEvents(sf::Event event)
 		deleteTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomId = std::rand() % heap.Size();
+			int randomId = Utils::rand(0, heap.Size() - 1);
 			deleteTextbox.insertNum(randomId);
 		}
 
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
-			int id = deleteTextbox.getNum();
+			deleteId = deleteTextbox.getNum();
 			deleteTextbox.reset();
 			// do sth
 
-			initDeleteFrames(id);
+			if(deleteId < heap.Size()) preInitDeleteFrames(deleteId);
 		}
 	}
 	else {
@@ -446,7 +443,7 @@ void HeapMainState::handleExtractButtonEvents(sf::Event event)
 
 
 		if (((okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left))) {
-			initExtractFrames();
+			preInitExtractFrames();
 		}
 	}
 	else {
@@ -490,7 +487,7 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 		createTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % 20;
+			int randomNum = Utils::rand(0, 63);
 			createTextbox.insertNum(randomNum);
 		}
 
@@ -517,8 +514,8 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 					createTextbox.insertNum((int)nums.size());
 					//handle num list
 					createTextbox.setSelected(false);
-					initCreateFrames(nums);
-
+					createNums = nums;
+					preInitCreateFrames();
 				}
 				else {
 					std::cerr << "Cant open the file\n";
@@ -539,7 +536,8 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 			for (int i = 0; i < num; i++) {
 				allElements.push_back(rand() % 100);
 			}
-			initCreateFrames(allElements);
+			createNums = allElements;
+			preInitCreateFrames();
 
 
 		}
@@ -558,7 +556,7 @@ void HeapMainState::handleCreateButtonEvents(sf::Event event)
 
 void HeapMainState::handleUpdateButtonEvents(sf::Event event)
 {
-	updateTextboxX.setLimNum(heap.Size() - 1);
+	updateTextboxX.setLimNum(std::max(0, heap.Size() - 1));
 	updateButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (updateButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton = false;
@@ -582,26 +580,24 @@ void HeapMainState::handleUpdateButtonEvents(sf::Event event)
 		updateTextboxV.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % heap.Size();
+			int randomNum = Utils::rand(0, heap.Size() - 1);
 			updateTextboxX.insertNum(randomNum);
 		}
 
 		if (randomUpdateButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % 100 + 1;
+			int randomNum = Utils::rand(0, 99);
 			updateTextboxV.insertNum(randomNum);
 		}
 
 		if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) || (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
-			int id = updateTextboxX.getNum();
+			updateId = updateTextboxX.getNum();
 			updateTextboxX.reset();
 			updateTextboxX.setSelected(false);
-			int newV = updateTextboxV.getNum();
+			updateValue = updateTextboxV.getNum();
 			updateTextboxV.reset();
 			updateTextboxV.setSelected(false);
-
-			initUpdateFrames(id, newV);
-
-
+				
+			if(updateId < heap.Size()) preInitUpdateFrames(updateId, updateValue);
 		}
 	}
 	else {
@@ -629,8 +625,8 @@ void HeapMainState::handleThemeButtonEvents(sf::Event event)
 
 void HeapMainState::handleAniSliderEvents(sf::Event event)
 {
-	if (b_frames.size() == 0) return;
-	aniSlider.setNumPart(b_frames.size());
+	if (numFrames == 0) return;
+	aniSlider.setNumPart(numFrames);
 
 	if (isPlaying == false)
 		return;
@@ -658,8 +654,8 @@ void HeapMainState::handleAniSliderEvents(sf::Event event)
 		}
 		if (forwardButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
-			currentFrameIndex = b_frames.size() - 1;
-			aniSlider.setPart(b_frames.size() - 1);
+			currentFrameIndex = numFrames - 1;
+			aniSlider.setPart(numFrames);
 		}
 		if (rewindButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
@@ -685,11 +681,12 @@ void HeapMainState::handleAniSliderEvents(sf::Event event)
 		{
 			isPaused = true;
 			aniSlider.handleEvent(event);
+			currentFrameIndex = aniSlider.getPartIndex();
 			return;
 		}
 	}
-
 	aniSlider.handleEvent(event);
+	currentFrameIndex = aniSlider.getPartIndex();
 }
 
 void HeapMainState::handleSpeedSliderEvents(sf::Event event)
@@ -698,6 +695,7 @@ void HeapMainState::handleSpeedSliderEvents(sf::Event event)
 	std::string st = "1.0x";
 	st[0] = char(speedSlider.getPartIndex() + 1 + '0');
 	speedSlider.setMaxText(st);
+	*m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / static_cast<float>(speedSlider.getPartIndex() + 1));
 }
 
 void HeapMainState::handleButtonEvents(const sf::Event& event)
@@ -712,9 +710,10 @@ void HeapMainState::handleButtonEvents(const sf::Event& event)
 
 }
 
-void HeapMainState::initNode()
+void HeapMainState::initNode(int n)
 {
-	for (int i = 0; i < heap.Size(); i++)
+	n = std::max(n, heap.Size());
+	for (int i = 0; i < n; i++)
 	{
 		Node node;
 
@@ -744,17 +743,20 @@ void HeapMainState::initNode()
 
 		b_nodes[i] = node;
 		b_nodes[i].initTextUnder(DarkGrey, 17);
+		b_nodes[i].setTextUnder(std::to_string(i));
 
 		node.setFillColor(sf::Color::White);			// set color for node in black theme
 		node.setOutlineColor(Orange);
 		w_nodes[i] = node;
 		w_nodes[i].initTextUnder(DesaturatedBlue, 17);
+		w_nodes[i].setTextUnder(std::to_string(i));
 	}
 }
 
-void HeapMainState::initEdge()
+void HeapMainState::initEdge(int n)
 {
-	for (int i = 1; i < heap.Size(); i++)
+	n = std::max(n, heap.Size());
+	for (int i = 1; i < n; i++)
 	{
 		Edge edge;
 		edge.setColor(sf::Color::Black);			// set color for edge in white theme

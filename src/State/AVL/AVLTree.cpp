@@ -1,3 +1,4 @@
+
 #include "AVLTree.h"
 
 AVLTree::AVLTree()
@@ -16,7 +17,7 @@ void AVLTree::insert(int value)
 	int order = 0;
 	reorder(root, order);
 
-	
+
 }
 void AVLTree::remove(int value)
 {
@@ -117,7 +118,7 @@ std::vector<AVLTree::TreeSnapshot> AVLTree::insertSnapshots(int value)
 	root = insertSnapshot(root, value, snapshots);
 	recordSnapshot(snapshots, "end", root);
 	return snapshots;
-	
+
 }
 
 std::vector<AVLTree::TreeSnapshot> AVLTree::removeSnapshots(int value)
@@ -126,7 +127,7 @@ std::vector<AVLTree::TreeSnapshot> AVLTree::removeSnapshots(int value)
 	root = removeSnapshot(root, value, snapshots);
 	recordSnapshot(snapshots, "end", root);
 	return snapshots;
-	
+
 }
 
 std::vector<int> AVLTree::recordInorder()
@@ -156,12 +157,12 @@ AVLTree::Node* AVLTree::insert(Node* node, int value)
 	}
 	else
 		return node;
-	
+
 	node->height = std::max(height(node->left), height(node->right)) + 1;
 
 	return balance(node, value);
 }
-AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot)
+AVLTree::Node* AVLTree::insertSnapshot(Node*& node, int value, std::vector<TreeSnapshot>& snapshot)
 {
 	
 	if (node == nullptr)
@@ -171,6 +172,7 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 	recordSnapshot(snapshot, "find", node);
 	if (value < node->value)
 		node->left = insertSnapshot(node->left, value, snapshot);
+
 	else if (value > node->value)
 	{
 		node->right = insertSnapshot(node->right, value, snapshot);
@@ -193,7 +195,7 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 			is = true;
 		}
 
-			
+
 		node = rotateRight(node);
 		recordSnapshot(snapshot, "rotateRR", node);
 		return node;
@@ -206,7 +208,7 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 			node->right = rotateRight(node->right);
 			recordSnapshot(snapshot, "rotateRL", node);
 		}
-			
+
 		node = rotateLeft(node);
 		recordSnapshot(snapshot, "rotateLL", node);
 		return node;
@@ -215,7 +217,7 @@ AVLTree::Node* AVLTree::insertSnapshot(Node* &node, int value, std::vector<TreeS
 	return node;
 
 }
-AVLTree::Node* AVLTree::removeSnapshot(Node* &node, int value, std::vector<TreeSnapshot>& snapshot)
+AVLTree::Node* AVLTree::removeSnapshot(Node*& node, int value, std::vector<TreeSnapshot>& snapshot)
 {
 	if (node == nullptr)
 		return node;
@@ -235,7 +237,7 @@ AVLTree::Node* AVLTree::removeSnapshot(Node* &node, int value, std::vector<TreeS
 				recordSnapshot(snapshot, "removeNoChild", temp);
 			}
 			else {
-				// One child: copy the child’s data.
+				// One child: copy the childâ€™s data.
 				*node = *temp;
 				recordSnapshot(snapshot, "removeOneChild", node);
 			}
@@ -246,9 +248,9 @@ AVLTree::Node* AVLTree::removeSnapshot(Node* &node, int value, std::vector<TreeS
 			Node* temp = minValueNode(node->right);
 			int valueTmp = temp->value;
 			node->right = replaceSnapshots(node, node->right, snapshot);
-			
-		
-			
+
+
+
 		}
 	}
 
@@ -293,7 +295,7 @@ AVLTree::Node* AVLTree::removeSnapshot(Node* &node, int value, std::vector<TreeS
 	}
 	return node;
 }
-AVLTree::Node* AVLTree::replaceSnapshots(Node*& remove, Node* &node, std::vector<TreeSnapshot>& snapshot)
+AVLTree::Node* AVLTree::replaceSnapshots(Node*& remove, Node*& node, std::vector<TreeSnapshot>& snapshot)
 {
 	recordSnapshot(snapshot, "find", node);
 	if (node->left != nullptr)
@@ -303,7 +305,7 @@ AVLTree::Node* AVLTree::replaceSnapshots(Node*& remove, Node* &node, std::vector
 		Node* temp = node;
 		remove->value = node->value;
 		node = node->right;
-		
+
 		if (node != nullptr)
 		{
 			node->height = std::max(height(node->left), height(node->right)) + 1;
@@ -394,7 +396,7 @@ AVLTree::Node* AVLTree::remove(Node* node, int value)
 		{
 			Node* temp = minValueNode(node->right);
 			node->value = temp->value;
- 			node->right = remove(node->right, temp->value);
+			node->right = remove(node->right, temp->value);
 		}
 	}
 	if (node == nullptr)
@@ -427,7 +429,7 @@ AVLTree::Node* AVLTree::create(Node* node, std::vector<int> elements)
 {
 	for (int element : elements)
 		node = insert(node, element);
-	
+
 	return node;
 }
 
@@ -616,9 +618,3 @@ void AVLTree::recordSnapshot(std::vector<TreeSnapshot>& snapshots, std::string o
 	snapshot.order = x->order;
 	snapshots.push_back(snapshot);
 }
-
-
-
-
-
-

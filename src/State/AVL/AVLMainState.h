@@ -30,47 +30,47 @@
 class AVLMainState : public Engine::State {
 public:
     // Constants
-	const float MAX_RADIUS = 30;
-	const float MED_RADIUS = 20;
-	const float MIN_RADIUS = 15;
-	const float SM_RADIUS = 10;
+    const float MAX_RADIUS = 30;
+    const float MED_RADIUS = 20;
+    const float MIN_RADIUS = 15;
+    const float SM_RADIUS = 10;
 
-	
+
     const float MAX_DISTANCE_X = 50;
-	const float MED_DISTANCE_X = 30;
+    const float MED_DISTANCE_X = 30;
     const float MIN_DISTANCE_X = 20;
     const float SM_DISTANCE_X = 20;
-	
 
-	const float MAX_DISTANCE_Y = 80;
-	const float MED_DISTANCE_Y = 70;
-	const float MIN_DISTANCE_Y = 60;
-	const float SM_DISTANCE_Y = 50;
-	float RADIUS = 25;
-	float PADDING_X = 380;
-	float PADDING_Y = 20;
 
-	float DISTANCE_X = 40;
-	float DISTANCE_Y = 80;
+    const float MAX_DISTANCE_Y = 80;
+    const float MED_DISTANCE_Y = 70;
+    const float MIN_DISTANCE_Y = 60;
+    const float SM_DISTANCE_Y = 50;
+    float RADIUS = 25;
+    float PADDING_X = 380;
+    float PADDING_Y = 20;
 
-	const int LIMIT_NODE_MIN = 30;
-	const int LIMIT_NODE_MED = 50;
-	const int LIMIT_NODE_MAX = 70;
-	
+    float DISTANCE_X = 40;
+    float DISTANCE_Y = 80;
 
-	
-	const sf::Color B_NODE_COLOR = sf::Color::White;
-	const sf::Color B_NODE_COLOR_TRANS = sf::Color(255, 255, 255, 0);
-	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
+    const int LIMIT_NODE_MIN = 30;
+    const int LIMIT_NODE_MED = 50;
+    const int LIMIT_NODE_MAX = 70;
+
+
+
+    const sf::Color B_NODE_COLOR = sf::Color::White;
+    const sf::Color B_NODE_COLOR_TRANS = sf::Color(255, 255, 255, 0);
+    const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
     const sf::Color B_NODE_OUTLINE_COLOR = sf::Color::Red;
     const sf::Color B_NODE_OUTLINE_COLOR_TRANS = sf::Color(255, 0, 0, 0);
-	const sf::Color W_NODE_COLOR = sf::Color::White;
-	const sf::Color W_NODE_COLOR_TRANS = sf::Color(255, 255, 255, 0);
-	const sf::Color W_NODE_COLOR_HOVER = Orange;
-	const sf::Color W_NODE_OUTLINE_COLOR = Orange;
-	const sf::Color W_NODE_OUTLINE_COLOR_TRANS = sf::Color(255, 165, 0, 0);
+    const sf::Color W_NODE_COLOR = sf::Color::White;
+    const sf::Color W_NODE_COLOR_TRANS = sf::Color(255, 255, 255, 0);
+    const sf::Color W_NODE_COLOR_HOVER = Orange;
+    const sf::Color W_NODE_OUTLINE_COLOR = Orange;
+    const sf::Color W_NODE_OUTLINE_COLOR_TRANS = sf::Color(255, 165, 0, 0);
 
-	
+
 
     // Constructor & Destructor
     AVLMainState(std::shared_ptr<Context>& context);
@@ -122,8 +122,8 @@ public:
 
     Node preb_nodes[100];
     Node prew_nodes[100];
-	Edge preb_edges[100];
-	Edge prew_edges[100];
+    Edge preb_edges[100];
+    Edge prew_edges[100];
 
     AVLTree avl;
 
@@ -131,11 +131,11 @@ public:
     void initNode(std::vector<int>& elements, std::vector<int>& depth);
     void resetNodePosRad();
     void initEdge(std::vector<int>& parent);
-	void changeBNode(int index, int index1, int index2, Node from, Node to);
-	void changeWNode(int index, int index1, int index2, Node from, Node to);
-	void changeBEdge(int index, int index1, int index2, Edge from, Edge to);
-	void changeWEdge(int index, int index1, int index2, Edge from, Edge to);
-	void connectTwoNodes(int index, int index1, int index2, bool isEnd);
+    void changeBNode(int index, int index1, int index2, Node from, Node to);
+    void changeWNode(int index, int index1, int index2, Node from, Node to);
+    void changeBEdge(int index, int index1, int index2, Edge from, Edge to);
+    void changeWEdge(int index, int index1, int index2, Edge from, Edge to);
+    void connectTwoNodes(int index, int index1, int index2, bool isEnd);
 
     // Frame Initialization
 
@@ -156,6 +156,7 @@ public:
 	void createInsertFrames(int value);
 	void createDeleteFrames(int value);
 	void createSearchFrames(int value);
+
 
     void updateFrames();
 
@@ -190,15 +191,15 @@ private:
 
     Button createButton;
     Button insertButton;
-	Button searchButton;
-	Button deleteButton;
-	Button inorderButton;
+    Button searchButton;
+    Button deleteButton;
+    Button inorderButton;
 
     bool isSelectedInsertButton = false;
     bool isSelectedDeleteButton = false;
     bool isSelectedSearchButton = false;
     bool isSelectedCreateButton = false;
-	bool isSelectedInorderButton = false;
+    bool isSelectedInorderButton = false;
 
     // UI Panels & Sliders
     Panel codePanel;
@@ -223,7 +224,7 @@ private:
     Textbox deleteTextbox;
     Textbox searchTextbox;
     Textbox createTextbox;
-    
+
     ImageButton randomUpdateButton;
 
 public:
