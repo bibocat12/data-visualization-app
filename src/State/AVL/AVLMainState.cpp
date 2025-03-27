@@ -533,14 +533,14 @@ void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
         searchTextbox.typedOnNum(event, *m_context->window);
 
 
-            if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
-                (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
+        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
+            (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
 
-                int value = searchTextbox.getNum();
-                searchTextbox.reset();
-                searchTextbox.setSelected(false);
-				//std::cerr << "search:" << value << std::endl;
-                deleteAllFrames();
+            int value = searchTextbox.getNum();
+            searchTextbox.reset();
+            searchTextbox.setSelected(false);
+            //std::cerr << "search:" << value << std::endl;
+            deleteAllFrames();
 
 				createSearchFrames(value);
             }
