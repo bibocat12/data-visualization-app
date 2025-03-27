@@ -409,7 +409,7 @@ void AVLMainState::handleInsertButtonEvents(const sf::Event& event) {
                 int value = insertTextbox.getNum();
                 insertTextbox.reset();
                 insertTextbox.setSelected(false);
-				std::cerr << "insert:" << value << std::endl;
+				//std::cerr << "insert:" << value << std::endl;
 				createInsertFrames(value);
             }
 
@@ -477,9 +477,7 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
                 deleteTextbox.reset();
                 deleteTextbox.setSelected(false);
 
-				std::cerr << "delete:" << value << std::endl;
-                initDeleteFrames(value);
-				currentState = "delete";
+				createDeleteFrames(value);
             }
 
         }
@@ -544,13 +542,7 @@ void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
 				//std::cerr << "search:" << value << std::endl;
                 deleteAllFrames();
 
-                initSearchFrames(value);
-				currentState = "search";
-				aniSlider.setNumPart(b_frames.size());
-				aniSlider.setBreakpoints(breakpoints);
-				isPlaying = true;
-				isPaused = false;
-				isEnd = false;
+				createSearchFrames(value);
             }
 
         }
