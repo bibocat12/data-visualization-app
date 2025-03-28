@@ -21,7 +21,7 @@ void GraphMainState::switchTheme() {
 		unfixedButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		fGraph.setColor(textColor, 1);
+		fGraph.setColor(textColor, 0);
 		for (int i = 0; i < (int)frames.size(); i++) {
 			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
@@ -53,7 +53,7 @@ void GraphMainState::switchTheme() {
 		unfixedButton.setTextColor(textColor);
 		speedSlider.setTextColor(textColor);
 		title.setFillColor(textColor);
-		fGraph.setColor(textColor, 1);
+		fGraph.setColor(textColor, 0);
 		for (int i = 0; i < (int)frames.size(); i++) {
 			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
@@ -370,7 +370,7 @@ void GraphMainState::draw()
 	}
 	uploadFileButton.drawTo(*m_context->window);
 	if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) {
-		//codePanel.draw(*m_context->window);
+		if(isSelectedMstFrames || isSelectedShortestPathFrames) codePanel.draw(*m_context->window);
 		fGraph.draw(*m_context->window);
 	}
 	if(!isEnd) currentFrame.drawAll(*m_context->window);

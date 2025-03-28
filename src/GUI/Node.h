@@ -10,6 +10,8 @@ public:
 	~Node();
 
 	sf::CircleShape shape;
+	sf::RectangleShape squareShape;
+	bool isCircle = true;
 	sf::Text text;
 	sf::Vector2f position;
 	sf::Color fillColor;
@@ -35,7 +37,7 @@ public:
 	};
 
 
-
+	void setShape(bool isCircle);
 	void initTextUnder(sf::Color color, int size);
 	void setTextUnder(std::string s);
 	void setTextUnder(std::string s, int charSize, sf::Color color);
@@ -43,14 +45,16 @@ public:
 
 	void setFont(sf::Font& font);
 	void setFillColor(sf::Color color);
-	void setCharacterSize(int size);
+	void setCharacterSize(float size);
 	void setPosition(sf::Vector2f pos);
 	sf::Vector2f getPosition();
+	sf::FloatRect getGlobalBounds();
 	
 	void drawTo(sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void handleHover(sf::RenderWindow& window);
 	void setRadius(float radius);
+	void setSide(float length);
 	void setOutlineColor(sf::Color color);
 	void setOutlineThickness(float thickness);
 	void setString(std::string str);
