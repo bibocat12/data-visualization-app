@@ -37,12 +37,6 @@ public:
 	const float spaceY = 15;
 	const float minSpaceX = 30;
 
-	const sf::Color B_NODE_COLOR = sf::Color::White;
-	const sf::Color B_NODE_COLOR_HOVER = sf::Color::Yellow;
-	const sf::Color W_NODE_COLOR = sf::Color::White;
-	const sf::Color W_NODE_COLOR_HOVER = Orange;
-
-
 	HeapMainState(std::shared_ptr<Context>& context);
 	~HeapMainState();
 	void init() override;
@@ -115,10 +109,6 @@ public:
 	void initExtractFrames();
 
 	void updateFrames();
-
-
-	sf::Sprite background;
-
 
 	std::vector<Engine::Frame> b_frames;
 	std::vector<Engine::Frame> w_frames;
