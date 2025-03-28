@@ -164,17 +164,15 @@ AVLTree::Node* AVLTree::insert(Node* node, int value)
 }
 AVLTree::Node* AVLTree::insertSnapshot(Node*& node, int value, std::vector<TreeSnapshot>& snapshot)
 {
+	
 	if (node == nullptr)
 	{
-
 		return new Node(value);
 	}
+	recordSnapshot(snapshot, "find", node);
 	if (value < node->value)
-	{
 		node->left = insertSnapshot(node->left, value, snapshot);
 
-
-	}
 	else if (value > node->value)
 	{
 		node->right = insertSnapshot(node->right, value, snapshot);
@@ -239,7 +237,7 @@ AVLTree::Node* AVLTree::removeSnapshot(Node*& node, int value, std::vector<TreeS
 				recordSnapshot(snapshot, "removeNoChild", temp);
 			}
 			else {
-				// One child: copy the child’s data.
+				// One child: copy the childâ€™s data.
 				*node = *temp;
 				recordSnapshot(snapshot, "removeOneChild", node);
 			}
