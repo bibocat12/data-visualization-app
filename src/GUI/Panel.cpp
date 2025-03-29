@@ -26,6 +26,7 @@ void Panel::setText(std::string text, int lineIndex) {
 
 void Panel::setLineColor(int lineIndex, sf::Color color)
 {
+	if (panel[lineIndex].getBackColor() == color) return;
 	panel[lineIndex].setBackColor(color);
 }
 

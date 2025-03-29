@@ -53,7 +53,6 @@ void GraphMainState::moveTo(int from, int edgeIndex, int index1, int index2)
     if (fGraph.edges[edgeIndex].from == from) {
         std::swap(start, end);
     }
-    Edge tmpEdge;
     tmpEdge.setColor(Orange);
     tmpEdge.setDirected(false);
     tmpEdge.setThickness(3.5f);

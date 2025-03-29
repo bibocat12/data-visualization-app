@@ -50,13 +50,15 @@ void ForceGraph::setColor(sf::Color color, bool changeFillColor)
 {
     this->color = color;
     for (int i = 0; i < (int)nodes.size(); i++) {
-        if (changeFillColor == true) nodes[i].node.setFillColor(sf::Color::Transparent);
+        if (changeFillColor == true) {
+            nodes[i].node.setFillColor(sf::Color::Transparent);
+            nodes[i].node.initTextUnder(color, 20);
+        }
         nodes[i].node.setOutlineColor(color);
         nodes[i].node.setTextColor(color);
-        nodes[i].node.initTextUnder(color, 20);
     }
     for (int i = 0; i < (int)edges.size(); i++) {
-        if(changeFillColor) edges[i].edge.setColor(color);
+        if(changeFillColor || edges[i].edge.getColor() == sf::Color::White || edges[i].edge.getColor() == sf::Color::Black) edges[i].edge.setColor(color);
     }
 }
 

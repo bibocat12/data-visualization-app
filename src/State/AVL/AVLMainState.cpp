@@ -511,6 +511,7 @@ void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
         if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
             int randomNum = std::rand() % 100 + 1;
             searchTextbox.insertNum(randomNum);
+
         }
 
         if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||

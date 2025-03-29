@@ -18,7 +18,7 @@ void HeapMainState::connectTwoNodes(int index, int index1, int index2, bool isEn
 		//find center of the node
 		sf::Vector2f center = b_nodes[index].getPosition();
 		start = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
-		
+
 		//find center of parent
 		center = b_nodes[heap.parent(index)].getPosition();
 		end = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
@@ -60,53 +60,53 @@ void HeapMainState::connectTwoNodes(int index, int index1, int index2, bool isEn
 
 void HeapMainState::deleteEdge(int index, int index1, int index2, bool isEnd)
 {
-    sf::Vector2f start, end;
+	sf::Vector2f start, end;
 
-    if (index % 2 == 1) { // left child
-        //find center of the node
-        sf::Vector2f center = b_nodes[index].getPosition();
-        start = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
+	if (index % 2 == 1) { // left child
+		//find center of the node
+		sf::Vector2f center = b_nodes[index].getPosition();
+		start = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
 
-        //find center of parent
-        center = b_nodes[heap.parent(index)].getPosition();
-        end = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
-    }
-    else { // right child
-        //find center of the node
-        sf::Vector2f center = b_nodes[index].getPosition();
-        start = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
+		//find center of parent
+		center = b_nodes[heap.parent(index)].getPosition();
+		end = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
+	}
+	else { // right child
+		//find center of the node
+		sf::Vector2f center = b_nodes[index].getPosition();
+		start = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
 
-        //find center of parent
-        center = b_nodes[heap.parent(index)].getPosition();
-        end = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
-    }
+		//find center of parent
+		center = b_nodes[heap.parent(index)].getPosition();
+		end = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
+	}
 
-    float _tan = abs(end.y - start.y) / abs(end.x - start.x);
+	float _tan = abs(end.y - start.y) / abs(end.x - start.x);
 
-    for (int i = index1; i <= index2; i++)
-    {
-        sf::Vector2f posEndEdge;
-        if (index % 2 == 1) {
-            posEndEdge.x = start.x + abs(end.x - start.x) * static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
-        }
-        else {
-            posEndEdge.x = start.x - abs(end.x - start.x) * static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
-        }
-        posEndEdge.y = start.y - abs(posEndEdge.x - start.x) * _tan;
+	for (int i = index1; i <= index2; i++)
+	{
+		sf::Vector2f posEndEdge;
+		if (index % 2 == 1) {
+			posEndEdge.x = start.x + abs(end.x - start.x) * static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
+		}
+		else {
+			posEndEdge.x = start.x - abs(end.x - start.x) * static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
+		}
+		posEndEdge.y = start.y - abs(posEndEdge.x - start.x) * _tan;
 
-        b_edges[index].setStart(posEndEdge);
-        b_edges[index].setEnd(end);
-        w_edges[index].setStart(posEndEdge);
-        w_edges[index].setEnd(end);
+		b_edges[index].setStart(posEndEdge);
+		b_edges[index].setEnd(end);
+		w_edges[index].setStart(posEndEdge);
+		w_edges[index].setEnd(end);
 
-        if (i == index2) {
-            b_edges[index].setThickness(0);
-            w_edges[index].setThickness(0);
-        }
+		if (i == index2) {
+			b_edges[index].setThickness(0);
+			w_edges[index].setThickness(0);
+		}
 
-        b_frames[i].addEdge("2bedges" + std::to_string(index), b_edges[index]);
-        w_frames[i].addEdge("2wedges" + std::to_string(index), w_edges[index]);
-    }
+		b_frames[i].addEdge("2bedges" + std::to_string(index), b_edges[index]);
+		w_frames[i].addEdge("2wedges" + std::to_string(index), w_edges[index]);
+	}
 }
 
 void HeapMainState::swapTwoNodes(int node1, int node2, int index1, int index2, bool isEnd)
@@ -171,7 +171,7 @@ void HeapMainState::deleteAllFrames()
 	}
 }
 
-void HeapMainState::initPreHeap(const std::vector<int> &nums)
+void HeapMainState::initPreHeap(const std::vector<int>& nums)
 {
 	Engine::Frame b_frame, w_frame;
 	for (int j = 0; j < (int)nums.size(); j++) {
@@ -195,7 +195,7 @@ void HeapMainState::preInitCreateFrames(bool isInitState)
 	isSelectedDeleteFrames = false;
 	isSelectedUpdateFrames = false;
 	isSelectedExtractFrames = false;
-	
+
 	breakpoints.clear();
 	createArrs = heap.create(createNums);
 	initNode();
@@ -233,7 +233,7 @@ void HeapMainState::preInitCreateFrames(bool isInitState)
 	isPaused = false;
 	isEnd = false;
 }
- 
+
 void HeapMainState::initCreateFrames(bool isInitState)
 {
 	auto elements = createNums;
@@ -315,7 +315,7 @@ void HeapMainState::initCreateFrames(bool isInitState)
 
 					}
 					swapTwoNodes(cur.first, child.first, firstIndex, lastIndex, 1);
-					
+
 					ok = 1;
 					break;
 				}
@@ -330,7 +330,7 @@ void HeapMainState::initCreateFrames(bool isInitState)
 				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(2, LavenderSoft);
 				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(3, LavenderSoft);
 			}
-			
+
 			if (ok) {
 				return;
 			}
@@ -559,7 +559,7 @@ void HeapMainState::initUpdateFrames(int id, int newV)
 		}
 		preFrames += 60;
 		if (preFrames > currentFrameIndex) {
-			for (int j = 0; j < 60; j++){
+			for (int j = 0; j < 60; j++) {
 				if (isLess) {
 					codePanel.setLineColor(1, sf::Color::Red);
 					codePanel.setLineColor(2, sf::Color::Red);
@@ -660,7 +660,7 @@ void HeapMainState::initDeleteFrames(int id)
 	auto elements = heapElements;
 	initNode(elements.size());
 	initEdge(elements.size());
-	
+
 	int preFrames = 0;
 	// move the delete node to the root
 	for (int h = 1; h < (int)deleteArrs[0].size(); h++) {
@@ -679,7 +679,7 @@ void HeapMainState::initDeleteFrames(int id)
 					codePanel.setLineColor(1, LavenderSoft);
 					codePanel.setLineColor(2, LavenderSoft);
 				}
-				
+
 				initPreHeap(elements);
 				b_frames[i].addPanel("3bcodePanel", codePanel);
 				w_frames[i].addPanel("3wcodePanel", codePanel);
@@ -756,12 +756,12 @@ void HeapMainState::initDeleteFrames(int id)
 	w_nodes[heap.Size()].setCharacterSize(0);
 	b_edges[heap.Size()].setThickness(0);
 	w_edges[heap.Size()].setThickness(0);
-	
+
 	//heapify
 	for (int h = 0; h < (int)deleteArrs[1].size() - 1; h += 2) {
 		std::pair<int, int> cur = deleteArrs[1][h];
 		std::pair<int, int> child = deleteArrs[1][h + 1];
-		
+
 		preFrames += 60;
 		if (preFrames > currentFrameIndex) {
 			for (int i = 0; i < 60; i++) {
@@ -939,7 +939,7 @@ void HeapMainState::initExtractFrames()
 void HeapMainState::updateFrames()
 {
 	if (numFrames == 0) return;
-	if(numFrames > 0) currentFrameIndex = std::min(currentFrameIndex, numFrames - 1);
+	if (numFrames > 0) currentFrameIndex = std::min(currentFrameIndex, numFrames - 1);
 	if (currentFrameIndex == 0 || aniSlider.getBreakpoints(prevFrameIndex) != aniSlider.getBreakpoints(currentFrameIndex)) {
 		if (isSelectedCreateFrames) {
 			initCreateFrames();
