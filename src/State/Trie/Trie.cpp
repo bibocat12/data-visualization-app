@@ -75,7 +75,7 @@ void Trie::create(const std::vector<std::string>& words) {
     for (const std::string& word : words) {
         insert(word);
     }
-    // Assign order/depth after creation for visualization
+   
     assignOrderAndDepth(root, nullptr, nextOrder = 0, nextOrderDisplay = 0);
 }
 
@@ -99,7 +99,7 @@ void Trie::getAllWordsRecursive(TrieNode* node, std::string currentPrefix, std::
 }
 
 
-void Trie::assignOrderAndDepth(TrieNode* node, TrieNode* parent, int& currentOrder, int& currentOrderDisplay) {
+void Trie::assignOrderAndDepth(TrieNode*& node, TrieNode* parent, int& currentOrder, int& currentOrderDisplay) {
     if (!node) return;
 
     node->order = currentOrder++;
@@ -112,7 +112,7 @@ void Trie::assignOrderAndDepth(TrieNode* node, TrieNode* parent, int& currentOrd
     for (auto const& [key, val] : node->children) {
         sortedKeys.push_back(key);
     }
-    std::sort(sortedKeys.begin(), sortedKeys.end());
+
     int cnt = 0;
     for (char key : sortedKeys) {
         if (cnt >= 1)
@@ -153,48 +153,40 @@ void Trie::collectNodesInfoRecursive(TrieNode* node, int parentOrder, std::vecto
 
 std::vector<Trie::TrieNodeInfo> Trie::getNodesInfo() {
     std::vector<TrieNodeInfo> infoList;
-    // Ensure order/depth are assigned first if needed (might be done after modifications)
+
     assignOrderAndDepth(root, nullptr, nextOrder = 0, nextOrderDisplay = 0);
-    collectNodesInfoRecursive(root, -1, infoList); // Root has no parent (-1)
-    // Sort by order to match AVL tree's inorder-like output for visualization state
-    std::sort(infoList.begin(), infoList.end(), [](const TrieNodeInfo& a, const TrieNodeInfo& b) {
-        return a.order < b.order;
-        });
+    collectNodesInfoRecursive(root, -1, infoList);
+   
+
     return infoList;
 }
 
 
 void Trie::recordSnapshot(std::vector<TrieSnapshot>& snapshots,
     const std::string& operation,
-    TrieNode* currentNode,
+    TrieNode*& currentNode,
     char currentChar)
 {
-    // Re-assign orders and depths before capturing state if modifications happened
     assignOrderAndDepth(root, nullptr, nextOrder = 0, nextOrder = 0);
-	for (int i = 0; i < snapshots.size(); i++) {
-		TrieSnapshot snapshot = snapshots[i];
 
-
-	}
     TrieSnapshot snapshot;
     snapshot.operation = operation;
-    snapshot.currentNodeOrder = (currentNode) ? currentNode->order : -1;
+    
     snapshot.currentChar = currentChar;
-    snapshot.nodesInfo = getNodesInfo(); // Capture the current state of all nodes
-
+    snapshot.nodesInfo = getNodesInfo(); 
+    snapshot.currentNodeOrder = (currentNode) ? currentNode->order : -1;
     snapshots.push_back(snapshot);
 }
 
-// --- Snapshot Function Implementations ---
 
-void Trie::insertSnapshotHelper(TrieNode*& node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots) {
+
+void Trie::insertSnapshot(TrieNode*& node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots) {
     if (index == word.length()) {
         if (!node->isEndOfWord) {
             node->isEndOfWord = true;
             recordSnapshot(snapshots, "mark_end", node, '\0');
         }
         else {
-            // Optional: record snapshot indicating word already exists
             recordSnapshot(snapshots, "already_exists", node, '\0');
         }
         return;
@@ -203,16 +195,17 @@ void Trie::insertSnapshotHelper(TrieNode*& node, const std::string& word, int in
     char c = word[index];
     recordSnapshot(snapshots, "traverse", node, c);
 
-    // If using fixed array: int childIndex = getCharIndex(c); TrieNode*& nextNode = node->children[childIndex];
-    TrieNode*& nextNode = node->children[c]; // Use reference for potential creation
+   
+    TrieNode*& nextNode = node->children[c]; 
 
     if (nextNode == nullptr) {
         nextNode = new TrieNode(c, node->depth + 1);
-        // Record snapshot *after* creation and re-ordering
-        recordSnapshot(snapshots, "create_node", nextNode, c);
+        node->children[c] = nextNode;
+        recordSnapshot(snapshots, "create_node", node->children[c], c);
+
     }
 
-    insertSnapshotHelper(nextNode, word, index + 1, snapshots);
+    insertSnapshot(nextNode, word, index + 1, snapshots);
 }
 
 
@@ -231,75 +224,65 @@ std::vector<Trie::TrieSnapshot> Trie::insertSnapshots(const std::string& word) {
     std::vector<TrieSnapshot> snapshots;
     if (word.empty()) return snapshots;
 
-    // Start snapshotting from root
-    TrieNode* current = root; // Use a non-reference variable for the initial call
-    insertSnapshotHelper(current, word, 0, snapshots);
+   
+    TrieNode* current = root; 
+    insertSnapshot(current, word, 0, snapshots);
 
-    // Final snapshot showing the completed state
-    recordSnapshot(snapshots, "end_insert", nullptr, '\0');
+	TrieNode* tmp = nullptr;
+    recordSnapshot(snapshots, "end_insert", tmp, '\0');
     return snapshots;
 }
 
-bool Trie::searchSnapshotHelper(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots) {
-    if (!node) return false; // Should not happen if starting from root
+bool Trie::searchSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots) {
+    if (!node) return false; 
 
     recordSnapshot(snapshots, "traverse", node, (index < word.length()) ? word[index] : '\0');
 
     if (index == word.length()) {
-        if (node->isEndOfWord) {
-            recordSnapshot(snapshots, "found_word", node, '\0');
-            return true;
-        }
-        else {
-            recordSnapshot(snapshots, "found_prefix_not_word", node, '\0');
-            return false;
-        }
+		if (node->isEndOfWord) {
+			recordSnapshot(snapshots, "found_word", node, '\0');
+		}
+		else {
+			recordSnapshot(snapshots, "not_found_prefix", node, '\0');
+		}   
+        return true;
     }
 
     char c = word[index];
-    // If using fixed array: int childIndex = getCharIndex(c); TrieNode* nextNode = node->children[childIndex];
+    
     auto it = node->children.find(c);
     if (it == node->children.end()) {
         recordSnapshot(snapshots, "not_found", node, c);
         return false;
     }
 
-    return searchSnapshotHelper(it->second, word, index + 1, snapshots);
+    return searchSnapshot(it->second, word, index + 1, snapshots);
 }
 
 
 std::vector<Trie::TrieSnapshot> Trie::searchSnapshots(const std::string& word) {
     std::vector<TrieSnapshot> snapshots;
     if (word.empty()) return snapshots;
-    searchSnapshotHelper(root, word, 0, snapshots);
-    // Final snapshot
-    recordSnapshot(snapshots, "end_search", nullptr, '\0');
+    searchSnapshot(root, word, 0, snapshots);
+
     return snapshots;
 }
 
 
-// --- Remove Implementation (Basic - No Snapshots Yet) ---
-// Snapshotting remove is complex because node deletion changes structure significantly.
-
 bool Trie::hasChildren(TrieNode* node) {
-    // If using map:
+
     return !node->children.empty();
-    // If using fixed array:
-    // for(int i=0; i<ALPHABET_SIZE; ++i) {
-    //     if (node->children[i]) return true;
-    // }
-    // return false;
+
 }
 
 Trie::TrieNode* Trie::removeRecursive(TrieNode* node, const std::string& word, int depth, bool& removedAny) {
     if (!node) return nullptr;
 
-    // If last character of the word is being processed
     if (depth == word.length()) {
         if (node->isEndOfWord) {
-            node->isEndOfWord = false; // Unmark the word
+            node->isEndOfWord = false; 
             removedAny = true;
-            // If node has no children, it can be deleted.
+
             if (!hasChildren(node)) {
                 delete node;
                 node = nullptr;
@@ -308,21 +291,18 @@ Trie::TrieNode* Trie::removeRecursive(TrieNode* node, const std::string& word, i
         return node;
     }
 
-    // Recurse for the next character
     char c = word[depth];
-    // If using fixed array: int index = getCharIndex(c); node->children[index] = removeRecursive(...);
+
     auto it = node->children.find(c);
     if (it != node->children.end()) {
         it->second = removeRecursive(it->second, word, depth + 1, removedAny);
-        // If the recursive call deleted the child node
+
         if (it->second == nullptr) {
-            node->children.erase(it); // Remove entry from map
+            node->children.erase(it); 
         }
     }
 
 
-    // After recursion, check if the current node can be deleted:
-    // It should not be the end of another word and should have no children.
     if (node != root && !node->isEndOfWord && !hasChildren(node) && removedAny) {
         delete node;
         node = nullptr;
@@ -345,14 +325,14 @@ void Trie::remove(const std::string& word) {
 }
 
 
-Trie::TrieNode* Trie::removeRecursiveSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots, bool& deletedNode) {
+Trie::TrieNode* Trie::removeSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots, bool& deletedNode) {
     if (!node) {
         
         deletedNode = false;
         return nullptr;
     }
 
-    recordSnapshot(snapshots, "remove_traverse", node, (index < word.length() ? word[index] : '\0'));
+    recordSnapshot(snapshots, "traverse", node, (index < word.length() ? word[index] : '\0'));
 
   
     if (index == word.length()) {
@@ -373,7 +353,7 @@ Trie::TrieNode* Trie::removeRecursiveSnapshot(TrieNode* node, const std::string&
         }
         else {
  
-            recordSnapshot(snapshots, "remove_word_not_found_at_end", node, '\0');
+            recordSnapshot(snapshots, "not_found", node, '\0');
             deletedNode = false; 
             return node;
         }
@@ -384,23 +364,23 @@ Trie::TrieNode* Trie::removeRecursiveSnapshot(TrieNode* node, const std::string&
     auto it = node->children.find(c);
     if (it == node->children.end()) {
 
-        recordSnapshot(snapshots, "remove_path_not_exist", node, c);
+        recordSnapshot(snapshots, "not_found", node, c);
         deletedNode = false;
         return node;
     }
 
     TrieNode* childNode = it->second;
     bool childDeleted = false;
-    TrieNode* resultNode = removeRecursiveSnapshot(childNode, word, index + 1, snapshots, childDeleted);
+    TrieNode* resultNode = removeSnapshot(childNode, word, index + 1, snapshots, childDeleted);
 
 
     if (childDeleted) {
         node->children.erase(it); 
-        recordSnapshot(snapshots, "remove_update_parent_link", node, c);
+        recordSnapshot(snapshots, "remove_delete_leaf", node, c);
     }
 
     if (node != root && !node->isEndOfWord && !hasChildren(node) && childDeleted) { 
-        recordSnapshot(snapshots, "remove_delete_intermediate", node, '\0');
+        recordSnapshot(snapshots, "remove_delete_leaf", node, '\0');
         delete node;
         deletedNode = true;
         return nullptr;
@@ -418,7 +398,8 @@ std::vector<Trie::TrieSnapshot> Trie::removeSnapshots(const std::string& word) {
 
     bool deleted = false; 
 
-    removeRecursiveSnapshot(root, word, 0, snapshots, deleted);
-    recordSnapshot(snapshots, "end_remove", nullptr, '\0');
+    removeSnapshot(root, word, 0, snapshots, deleted);
+	TrieNode* tmp = nullptr;
+    recordSnapshot(snapshots, "end_remove", tmp, '\0');
     return snapshots;
 }

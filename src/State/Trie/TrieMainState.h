@@ -53,8 +53,8 @@ public:
     float PADDING_X = 100;
     float PADDING_Y = 100;
 
-    float DISTANCE_X = 60;
-    float DISTANCE_Y = 40;
+    const float DISTANCE_X = 60;
+    float DISTANCE_Y = 60;
 
     const int LIMIT_NODE_MIN = 30;
     const int LIMIT_NODE_MED = 50;
@@ -116,6 +116,8 @@ public:
     Engine::Frame b_currentFrame;
     Engine::Frame w_currentFrame;
 
+	sf::Color colorPanel[3000][8];
+
 
     // Node & Edge Data
     Node b_nodes[2000];
@@ -140,13 +142,16 @@ public:
     void changeBEdge(int index, int index1, int index2, Edge from, Edge to);
     void changeWEdge(int index, int index1, int index2, Edge from, Edge to);
     void connectTwoNodes(int index, int index1, int index2, bool isEnd);
+    void setCodePanelColor(int frameIndex);
+
+	sf::Color codePanelColor[60][8];
 
     // Frame Initialization
 
     std::string currentState = "no";
 
     void deleteAllFrames();
-    void initEmptyFrames(int count);
+
     void initCreateFrames(std::vector<std::string> words);
     void initInsertFrames();
 
@@ -155,10 +160,9 @@ public:
     void initSearchFrames();
     std::vector<int> searchPath;
     int ValueFind = 0;
+    float orderFinal[3000];
+	float totalChild[3000];
 
-    void initInorderFrames();
-
-    void createInorderFrames();
     void createInsertFrames(std::string word);
     void createDeleteFrames(std::string word);
     void createSearchFrames(std::string word);
