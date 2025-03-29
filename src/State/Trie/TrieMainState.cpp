@@ -94,12 +94,10 @@ void TrieMainState::draw() {
     insertButton.drawTo(*m_context->window);
     deleteButton.drawTo(*m_context->window);
     searchButton.drawTo(*m_context->window);
-    
-    displayButton.drawTo(*m_context->window);
 
     themeButton.drawTo(*m_context->window);
     homeButton.drawTo(*m_context->window);
-    //codePanel.draw(*m_context->window);
+    codePanel.draw(*m_context->window);
 
     aniSlider.draw(*m_context->window);
     speedSlider.draw(*m_context->window);
@@ -130,8 +128,7 @@ void TrieMainState::initTextbox(Textbox& textbox, int charSize, sf::Color textCo
     textbox.setFont(m_context->assetManager->getFont("JetBrainsMono-SemiBold"));
     textbox.setPosition(pos);
     textbox.setBox(sf::Vector2f{ 200, buttonSize.y }, BeigeGrey);
-    // Với Trie, chúng ta cho phép nhập chuỗi dài hơn và không giới hạn kiểu số
-    textbox.setLimit(false, 20);
+   
 }
 
 void TrieMainState::switchTheme() {
@@ -178,7 +175,7 @@ void TrieMainState::initFunctionButton() {
     initButton(insertButton, "Insert", sf::Vector2f{ 10, firstButtonY + buttonSize.y });
     initButton(deleteButton, "Delete", sf::Vector2f{ 10, firstButtonY + 2 * buttonSize.y });
     initButton(searchButton, "Search", sf::Vector2f{ 10, firstButtonY + 3 * buttonSize.y });
-    initButton(displayButton, "Display", sf::Vector2f{ 10, firstButtonY + 4 * buttonSize.y });
+   
 
     randomButton = ImageButton(m_context->assetManager->getTexture("Random"), 1.f, 1.f);
     uploadFileButton = ImageButton(m_context->assetManager->getTexture("UploadFile"), 1.f, 1.f);
@@ -190,18 +187,18 @@ void TrieMainState::initFunctionButton() {
     okButtonBackground = Label("", 0, sf::Vector2f{ 200, buttonSize.y }, DarkBeigeGrey, textColor, m_context->assetManager->getFont("arial"));
     okButtonBackground.setPosition(sf::Vector2f{ -1000, -1000 });
 
-    // Với Trie, các textbox sẽ nhập chuỗi (word)
+
     initTextbox(insertTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
     insertTextbox.setConstText("w = ");
-    insertTextbox.setLimit(true, 10);
+    insertTextbox.setLimit(true, 8);
 
     initTextbox(deleteTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
     deleteTextbox.setConstText("w = ");
-    deleteTextbox.setLimit(true, 10);
+    deleteTextbox.setLimit(true, 8);
 
     initTextbox(searchTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
     searchTextbox.setConstText("w = ");
-    searchTextbox.setLimit(true, 10);
+    searchTextbox.setLimit(true, 8);
 
     initTextbox(createTextbox, 18, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
     createTextbox.setConstText("n = ");
@@ -295,7 +292,6 @@ void TrieMainState::handleButtonEvents(const sf::Event& event) {
     handleInsertButtonEvents(event);
     handleDeleteButtonEvents(event);
     handleSearchButtonEvents(event);
-    handleDisplayButtonEvents(event);
     handleHomeButtonEvents(event);
     handleThemeButtonEvents(event);
 }
@@ -303,11 +299,11 @@ void TrieMainState::handleButtonEvents(const sf::Event& event) {
 void TrieMainState::handleCreateButtonEvents(const sf::Event& event) {
    
     auto randomString = []() -> std::string {
-        int len = static_cast<int>(Utils::rand(1, 10)); // Use Utils::rand to determine length
+        int len = static_cast<int>(Utils::rand(1, 8)); // Use Utils::rand to determine length
         std::string s;
         s.reserve(len);
         for (int i = 0; i < len; ++i) {
-            char c = static_cast<char>(Utils::rand('a', 'z')); // Random character from 'a' to 'z'
+            char c = static_cast<char>(Utils::rand('a', 'f')); // Random character from 'a' to 'z'
             s.push_back(c);
         }
         return s;
@@ -448,7 +444,7 @@ void TrieMainState::handleInsertButtonEvents(const sf::Event& event) {
             std::string word = insertTextbox.getText();
             insertTextbox.reset();
             insertTextbox.setSelected(false);
-           // createInsertFrames(word);
+            createInsertFrames(word);
         }
     }
     else {
@@ -502,7 +498,7 @@ void TrieMainState::handleDeleteButtonEvents(const sf::Event& event) {
             std::string word = deleteTextbox.getText();
             deleteTextbox.reset();
             deleteTextbox.setSelected(false);
-          //  createDeleteFrames(word);
+            createDeleteFrames(word);
         }
     }
     else {
@@ -557,7 +553,7 @@ void TrieMainState::handleSearchButtonEvents(const sf::Event& event) {
             searchTextbox.reset();
             searchTextbox.setSelected(false);
             deleteAllFrames();
-            //createSearchFrames(word);
+            createSearchFrames(word);
         }
     }
     else {
@@ -570,32 +566,6 @@ void TrieMainState::handleSearchButtonEvents(const sf::Event& event) {
     }
 }
 
-void TrieMainState::handleDisplayButtonEvents(const sf::Event& event) {
-    displayButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
-    if (displayButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed &&
-        event.mouseButton.button == sf::Mouse::Left) {
-        isSelectedCreateButton = false;
-        isSelectedInsertButton = false;
-        isSelectedDeleteButton = false;
-        isSelectedSearchButton = false;
-        isSelectedDisplayButton ^= 1;
-    }
-    if (isSelectedDisplayButton) {
-        displayButton.setBackColor(hoverButtonColor);
-     
-        if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
-            (okButton.isMouseOver(*m_context->window) &&
-                event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)) {
-          //  createDisplayFrames();
-        }
-    }
-    else {
-        if (!isSelectedCreateButton && !isSelectedInsertButton && !isSelectedDeleteButton && !isSelectedSearchButton) {
-            randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
-            okButton.setPosition(sf::Vector2f{ -1000, -1000 });
-        }
-    }
-}
 
 void TrieMainState::handleHomeButtonEvents(const sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {

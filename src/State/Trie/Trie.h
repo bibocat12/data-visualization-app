@@ -79,7 +79,8 @@ private:
     void getAllWordsRecursive(TrieNode* node, std::string currentPrefix, std::vector<std::string>& words);
 
 
-    void assignOrderAndDepth(TrieNode* node, 
+    void assignOrderAndDepth(
+        TrieNode*& node, 
         TrieNode* parent, 
         int& currentOrder,
         int& currentOrderDisplay);
@@ -90,7 +91,7 @@ private:
 
     TrieNode* removeRecursive(TrieNode* node, const std::string& word, int depth, bool& removedAny);
 
-    TrieNode* removeRecursiveSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots, bool& deletedNode);
+    TrieNode* removeSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots, bool& deletedNode);
 
 
     // Helper to check if a node has any children
@@ -99,13 +100,13 @@ private:
     // Snapshot recording helper
     void recordSnapshot(std::vector<TrieSnapshot>& snapshots,
         const std::string& operation,
-        TrieNode* currentNode,
+        TrieNode*& currentNode,
         char currentChar = '\0');
 
 
-    // --- Snapshot Generating Helpers ---
-    void insertSnapshotHelper(TrieNode*& node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots);
-    bool searchSnapshotHelper(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots);
+  
+    void insertSnapshot(TrieNode*& node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots);
+    bool searchSnapshot(TrieNode* node, const std::string& word, int index, std::vector<TrieSnapshot>& snapshots);
 
 
 };
