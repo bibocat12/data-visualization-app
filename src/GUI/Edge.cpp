@@ -30,6 +30,7 @@ void Edge::setDirected(bool isDirected)
 
 void Edge::setColor(sf::Color color)
 {
+	if (line.getFillColor() == color) return;
 	this->color = color;
 	line.setFillColor(color);
 }

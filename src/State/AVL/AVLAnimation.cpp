@@ -602,7 +602,6 @@ void AVLMainState::initDeleteFrames(int deleteValue)
 				if (preparent[i] >= indexValue)
 					preparent[i]++;
 			}
-
 		}
 		Engine::Frame b_frame, w_frame;
 
@@ -667,7 +666,9 @@ void AVLMainState::initDeleteFrames(int deleteValue)
 			else
 				y = i;
 		}
+
 		if (x != -1)
+
 		{
 			changeBEdge(x, 0, 59, preb_edges[y], b_edges[x]);
 			changeWEdge(x, 0, 59, prew_edges[y], w_edges[x]);
@@ -763,12 +764,14 @@ void AVLMainState::initSearchFrames()
 
 	}
 
+
 	Node node = w_nodes[order];
 	node.setFillColor(W_NODE_COLOR_HOVER);
 	changeBNode(order, 0, 59, b_nodes[order], node);
 	node = b_nodes[order];
 	node.setFillColor(B_NODE_COLOR_HOVER);
 	changeWNode(order, 0, 59, w_nodes[order], node);
+
 
 	if (inorder[order] == ValueFind)
 	{

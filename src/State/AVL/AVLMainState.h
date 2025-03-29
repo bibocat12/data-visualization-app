@@ -145,11 +145,17 @@ public:
 	void initEmptyFrames(int count);
     void initCreateFrames(std::vector<int> elements);
     void initInsertFrames();
+
 	int deleteValue = 0;
     void initDeleteFrames(int deleteValue);
 	void initSearchFrames();
     std::vector<int> searchPath;
     int ValueFind = 0;
+=========
+    void initDeleteFrames(int value);
+
+	void initSearchFrames(int value);
+>>>>>>>>> Temporary merge branch 2
 	void initInorderFrames();
 
     void createInorderFrames();

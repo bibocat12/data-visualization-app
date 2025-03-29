@@ -32,6 +32,7 @@ public:
 	void typedOnAlpha(sf::Event event, sf::RenderWindow& window);
 	bool isMouseOver(sf::RenderWindow& window);
 	void insertNum(int num);
+	void insertText(std::string st);
 	void setInvisible();
 	void setVisible();
 	void reset();

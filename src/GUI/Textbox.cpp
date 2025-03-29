@@ -191,6 +191,14 @@ void Textbox::insertNum(int num)
 	}
 }
 
+void Textbox::insertText(std::string st)
+{
+	reset();
+	for (char ch : st) {
+		inputLogic(ch);
+	}
+}
+
 void Textbox::setInvisible()
 {
 	textbox.setPosition(sf::Vector2f {-1000, 1000});
