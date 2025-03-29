@@ -77,10 +77,10 @@ public:
 
 
 public:
-	Node b_nodes[80];
-	Node w_nodes[80];
-	Edge b_edges[80];
-	Edge w_edges[80];
+	Node b_nodes[100];
+	Node w_nodes[100];
+	Edge b_edges[100];
+	Edge w_edges[100];
 
 	Tree234 tree234;
 	const int maxDepth = 10;
@@ -99,12 +99,14 @@ public:
 	void updateFrames();
 	void initPreTree(Tree234::Node* root);
 	void initTreeFrames();
+	void merge(Tree234::Node* child, Tree234::Node* sibling, int index1, int index2);
 	void split(Tree234::Node* root, int index1, int index2);
 	void appearNode(int nodeId, int index1, int index2);
 	void deleteEdge(int edgeId, int index1, int index2);
 	void connectEdge(int edgeId, int index1, int index2);
 	void moveEdge(int edgeId, sf::Vector2f diff, int index1, int index2);
 	void moveNode(int nodeId, sf::Vector2f diff, int index1, int index2);
+	void moveNodeWithEdge(Tree234::Node* cur, Tree234::Node* par, sf::Vector2f diff, int index1, int index2);
 	void preInitCreateFrames(std::vector<int> &nums);
 	void initCreateFrames(std::vector<int> &nums);
 	void preInitInsertFrames(int value);

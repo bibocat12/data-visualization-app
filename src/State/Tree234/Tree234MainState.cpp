@@ -293,7 +293,7 @@ void Tree234MainState::draw()
 	okButton.drawTo(*m_context->window);
 	
 	currentFrame.drawAll(*m_context->window);
-	if (isSelectedCreateFrames || isSelectedDeleteFrames || isSelectedInsertFrames || isSelectedSearchFrames) {
+	if (isSelectedDeleteFrames || isSelectedInsertFrames || isSelectedSearchFrames) {
 		codePanel.draw(*m_context->window);
 	}
 	m_context->window->display();
@@ -414,7 +414,7 @@ void Tree234MainState::handleHomeButtonEvents(sf::Event event)
 
 void Tree234MainState::handleCreateButtonEvents(sf::Event event)
 {
-	createTextbox.setLimNum(63);
+	createTextbox.setLimNum(40);
 	createButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (createButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedCreateButton ^= 1;
@@ -657,18 +657,22 @@ void Tree234MainState::setEdgePos(Tree234::Node* par, Tree234::Node* cur, int id
 	b_edges[id].setStart(middlePoint(cur->nodes));
 	w_edges[id].setStart(middlePoint(cur->nodes));
 	if (cur == par->children[0]) {
+		if (par->nodes.size() == 0) return;
 		b_edges[id].setEnd(b_nodes[par->nodes[0]].getPosition() + sf::Vector2f(-SIDE / 2, SIDE / 2));
 		w_edges[id].setEnd(w_nodes[par->nodes[0]].getPosition() + sf::Vector2f(-SIDE / 2, SIDE / 2));
 	}
 	if (cur == par->children[1]) {
+		if (par->nodes.size() == 0) return;
 		b_edges[id].setEnd(b_nodes[par->nodes[0]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 		w_edges[id].setEnd(w_nodes[par->nodes[0]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 	}
 	if (cur == par->children[2]) {
+		if (par->nodes.size() < 2) return;
 		b_edges[id].setEnd(b_nodes[par->nodes[1]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 		w_edges[id].setEnd(w_nodes[par->nodes[1]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 	}
 	if (cur == par->children[3]) {
+		if (par->nodes.size() < 3) return;
 		b_edges[id].setEnd(b_nodes[par->nodes[2]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 		w_edges[id].setEnd(w_nodes[par->nodes[2]].getPosition() + sf::Vector2f(SIDE / 2, SIDE / 2));
 	}
