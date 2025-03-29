@@ -46,15 +46,13 @@ void Tree234::insert(int key) {
         typeSnapshots.back() = "splitRoot";
     }
     insertNonFull(root, key);
-    takeSnapshot();
-    typeSnapshots.back() = "insert";
 }
 
 void Tree234::resetState()
 {
     snapshots.clear();
     typeSnapshots.clear();
-    operatedNodes.clear();
+    idxes.clear();
     operatedNodes.clear();
 }
 
@@ -79,6 +77,9 @@ void Tree234::insertNonFull(Node* node, int key) {
     if (node->isLeaf()) {
         node->keys.push_back(key);
         std::sort(node->keys.begin(), node->keys.end());
+        operatedNodes.push_back(std::vector<Node*> {node});
+        takeSnapshot();
+        typeSnapshots.back() = "insert";
     }
     else {
         while (i >= 0 && key < node->keys[i]) {
@@ -101,7 +102,9 @@ void Tree234::insertNonFull(Node* node, int key) {
 }
 
 void Tree234::remove(int key) {
+    resetState();
     if (!root) return;
+    takeSnapshot();
     remove(root, key);
     if (root->keys.empty()) {
         Node* oldRoot = root;
@@ -123,17 +126,21 @@ bool Tree234::remove(Node* node, int key) {
     }
     if (idx < node->keys.size() && node->keys[idx] == key) {
         if (node->isLeaf()) {
+            idxes.push_back(idx);
+            operatedNodes.push_back(std::vector<Node*> {node});
+            if (!snapshots.empty()) preOperated(root, snapshots.back());
             node->keys.erase(node->keys.begin() + idx);
             takeSnapshot();
-            return true; // Key found and removed
+            typeSnapshots.back() = "removeLeaf";
+            return true; 
         }
         else {
             removeFromNonLeaf(node, idx);
-            return true; // Key found and removed
+            return true; 
         }
     }
     else {
-        if (node->isLeaf()) return false; // Key not found
+        if (node->isLeaf()) return false;
         bool flag = (idx == node->keys.size());
         if (node->children[idx]->keys.size() < 2) {
             fill(node, idx);
@@ -151,14 +158,22 @@ void Tree234::removeFromNonLeaf(Node* node, int idx) {
     int key = node->keys[idx];
     if (node->children[idx]->keys.size() >= 2) {
         int pred = getPredecessor(node, idx);
+        operatedNodes.push_back(std::vector<Node*> {node});
+        if (!snapshots.empty()) preOperated(root, snapshots.back());
+        idxes.push_back(idx);
         node->keys[idx] = pred;
         takeSnapshot();
+        typeSnapshots.back() = "replace";
         remove(node->children[idx], pred);
     }
     else if (node->children[idx + 1]->keys.size() >= 2) {
         int succ = getSuccessor(node, idx);
+        operatedNodes.push_back(std::vector<Node*> {node});
+        if (!snapshots.empty()) preOperated(root, snapshots.back());
+        idxes.push_back(idx);
         node->keys[idx] = succ;
         takeSnapshot();
+        typeSnapshots.back() = "replace";
         remove(node->children[idx + 1], succ);
     }
     else {
@@ -263,18 +278,31 @@ void Tree234::merge(Node* node, int idx) {
     Node* sibling = node->children[idx + 1];
 
     child->keys.push_back(node->keys[idx]);
+    operatedNodes.push_back(std::vector<Node*> {child});
     takeSnapshot();
+    typeSnapshots.back() = "push_backNode";
+
+    operatedNodes.push_back(std::vector<Node*> {child});
+    operatedNodes.back().push_back(sibling);
+    if (!snapshots.empty()) preOperated(root, snapshots.back());
     child->keys.insert(child->keys.end(), sibling->keys.begin(), sibling->keys.end());
-    takeSnapshot();
+
     if (!child->isLeaf()) {
         child->children.insert(child->children.end(), sibling->children.begin(), sibling->children.end());
-        takeSnapshot();
     }
-    node->keys.erase(node->keys.begin() + idx);
-    takeSnapshot();
     node->children.erase(node->children.begin() + idx + 1);
     delete sibling;
     takeSnapshot();
+    typeSnapshots.back() = "mergeSibling";
+    
+    idxes.push_back(idx);
+    operatedNodes.push_back(std::vector<Node*> {node});
+    if (!snapshots.empty()) preOperated(root, snapshots.back());
+    node->keys.erase(node->keys.begin() + idx);
+    operatedNodes.back().push_back(child);
+    takeSnapshot();
+    typeSnapshots.back() = "remove";
+
 }
 
 bool Tree234::search(int key) {
@@ -296,7 +324,9 @@ bool Tree234::search(Node* node, int key) const {
 
 void Tree234::takeSnapshot() {
     snapshots.push_back(cloneTree(root));
-    typeSnapshots.push_back("");
+    if (typeSnapshots.size() < snapshots.size()) {
+        typeSnapshots.push_back("");
+    }
     if (operatedNodes.size() < snapshots.size()) {
         std::vector<Node*> oprNodes;
         operatedNodes.push_back(oprNodes);
@@ -326,8 +356,12 @@ Tree234::Node* Tree234::cloneTree(Node* node) {
 void Tree234::preOperated(Node* node, Node* snapshotNode)
 {
     if (!node) return;
-    if (operatedNodes.size() > snapshots.size() && !operatedNodes.empty() && operatedNodes.back().front() == node) {
-        operatedNodes.back().front() = snapshotNode;
+    if (operatedNodes.size() > snapshots.size()) {
+        for (auto& oprNode : operatedNodes.back()) {
+            if (oprNode == node) {
+                oprNode = snapshotNode;
+            }
+        }
     }
     for (int i = 0; i < node->children.size(); i++) {
         preOperated(node->children[i], snapshotNode->children[i]);
