@@ -69,13 +69,12 @@ public:
 	Engine::Frame staticFrame;
 
 private:
-	static constexpr int maxNodes = 64;
-
 public:
 
 	const float RADIUS = 20;
 	Graph graph;
 	ForceGraph fGraph;
+	Edge tmpEdge;
 
 	void initPreGraph();
 	void deleteAllFrames();

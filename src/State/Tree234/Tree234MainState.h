@@ -17,28 +17,29 @@
 #include "../../GUI/portable-file-dialogs.h"
 #include "../../GUI/Edge.h"
 
-#include "Heap.h"
+#include "Tree234.h"
 
 #include "../../App.h"
 #include "../MenuState.h"
 
 #include <vector>
+#include <queue>
+#include <array>
 #include <fstream>
 #include <cstdlib>
 #include <string>
 
-
-class HeapMainState : public Engine::State
-{
-
+class Tree234MainState : public Engine::State {
 public:
-	const float RADIUS = 20;
-	const float spaceX = 400;
-	const float spaceY = 15;
-	const float minSpaceX = 30;
+	const float baseSide = 40;
+	const float baseSpaceX = 40;
+	const float baseSpaceY = 40;
+	float SIDE = 40;
+	float spaceX = 40;
+	float spaceY = 40;
 
-	HeapMainState(std::shared_ptr<Context>& context);
-	~HeapMainState();
+	Tree234MainState(std::shared_ptr<Context>& context);
+	~Tree234MainState();
 	void init() override;
 	void pause() override;
 	void resume() override;
@@ -51,9 +52,8 @@ public:
 	void handleCreateButtonEvents(const sf::Event event);
 	void handleInsertButtonEvents(sf::Event event);
 	void handleDeleteButtonEvents(sf::Event event);
-	void handleExtractButtonEvents(sf::Event event);
 	void handleHomeButtonEvents(sf::Event event);
-	void handleUpdateButtonEvents(sf::Event event);
+	void handleSearchButtonEvents(sf::Event event);
 	void handleThemeButtonEvents(sf::Event event);
 	void handleAniSliderEvents(sf::Event event);
 	void handleSpeedSliderEvents(sf::Event event);
@@ -74,45 +74,54 @@ public:
 	Engine::Frame b_nextFrame;
 	Engine::Frame w_nextFrame;
 	Engine::Frame staticFrame;
-	
-private:
-	static constexpr int limNodes = 31;
-	static constexpr int maxNodes = 64;
+
 
 public:
-	Node b_nodes[maxNodes];
-	Edge b_edges[maxNodes];
-	Node w_nodes[maxNodes];
-	Edge w_edges[maxNodes];
+	Node b_nodes[100];
+	Node w_nodes[100];
+	Edge b_edges[100];
+	Edge w_edges[100];
 
+	Tree234 tree234;
+	const int maxDepth = 10;
+	std::array<std::vector<Tree234::Node*>, 10> nodes;
 
-	void initNode(int n = 0);
-	void initEdge(int n = 0);
+	
+	sf::Vector2f middlePoint(std::vector<int> &nodes);
+	void setEdgePos(Tree234::Node *par, Tree234::Node* cur, int id);
+	void initNode(Node &node, bool isDark);
+	void initEdge(Edge &edge, bool isDark);
 
-	MinHeap heap = MinHeap(maxNodes);
-
-	void connectTwoNodes(int index, int index1, int index2, bool isEnd);
-	void deleteEdge(int index, int index1, int index2, bool isEnd);
-	void swapTwoNodes(int node1, int node2, int index1, int index2, bool isEnd);
-
+	//Animation
+	sf::Vector2f NodePos;
+	void setCodePanelColor(int frameIndex);
 	void deleteAllFrames();
-	void initPreHeap(const std::vector<int> &nums);
-	void preInitCreateFrames(bool isInitState = false);
-	void initCreateFrames(bool isInitState = false);
+	void updateFrames();
+	void initPreTree(Tree234::Node* root);
+	void initTreeFrames();
+	void merge(Tree234::Node* child, Tree234::Node* sibling, int index1, int index2);
+	void split(Tree234::Node* root, int index1, int index2);
+	void appearNode(int nodeId, int index1, int index2);
+	void deleteEdge(int edgeId, int index1, int index2);
+	void connectEdge(int edgeId, int index1, int index2);
+	void moveEdge(int edgeId, sf::Vector2f diff, int index1, int index2);
+	void moveNode(int nodeId, sf::Vector2f diff, int index1, int index2);
+	void moveNodeWithEdge(Tree234::Node* cur, Tree234::Node* par, sf::Vector2f diff, int index1, int index2);
+	void preInitCreateFrames(std::vector<int> &nums);
+	void initCreateFrames(std::vector<int> &nums);
 	void preInitInsertFrames(int value);
 	void initInsertFrames(int value);
-	void preInitUpdateFrames(int id, int newV);
-	void initUpdateFrames(int id, int newV);
-	void preInitDeleteFrames(int id);
-	void initDeleteFrames(int id);
-	void preInitExtractFrames();
-	void initExtractFrames();
+	void preInitSearchFrames(int value);
+	void initSearchFrames(int value);
+	void preInitDeleteFrames(int value);
+	void initDeleteFrames(int value);
 
-	void updateFrames();
 
 	std::vector<Engine::Frame> b_frames;
 	std::vector<Engine::Frame> w_frames;
 	int speed = 1;
+	int totNode = 0;
+	int totEdge = 1;
 
 	void initButton(Button& button, std::string text, sf::Vector2f pos);
 	void switchTheme();
@@ -133,37 +142,27 @@ private:
 	Button createButton;
 	Button insertButton;
 	Button deleteButton;
-	Button updateButton;
-	Button extractButton;
+	Button searchButton;
 
 	bool isSelectedInsertButton = false;
 	bool isSelectedDeleteButton = false;
-	bool isSelectedExtractButton = false;
 	bool isSelectedCreateButton = false;
-	bool isSelectedUpdateButton = false;
+	bool isSelectedSearchButton = false;
 
-	std::vector<int> heapElements;
 	bool isSelectedCreateFrames = false;
 	std::vector<int> createNums;
-	std::vector<std::vector<std::pair<int, int>>> createArrs;
-	bool isLess;
 
 	bool isSelectedInsertFrames = false;
 	int insertValue;
-	std::vector<std::pair<int, int>> insertArrs;
 
 	bool isSelectedDeleteFrames = false;
-	int deleteId;
-	std::vector<std::vector<std::pair<int, int>>> deleteArrs;
+	int deleteValue;
 
-	bool isSelectedUpdateFrames = false;
-	int updateId, updateValue;
-	std::vector<std::pair<int, int>> updateArrs;
-
-	std::vector<std::pair<int, int>> extractArrs;
-	bool isSelectedExtractFrames = false;
+	bool isSelectedSearchFrames = false;
+	int searchValue;
 
 	Panel codePanel;
+	sf::Color codePanelColor[60][7];
 	Slider aniSlider;
 	Slider speedSlider;
 	ImageButton playButton;
@@ -181,9 +180,7 @@ private:
 	Textbox insertTextbox;
 	Textbox deleteTextbox;
 	Textbox createTextbox;
-	Textbox updateTextboxX;
-	Textbox updateTextboxV;
-	ImageButton randomUpdateButton;
+	Textbox searchTextbox;
 
 public:
 	void initFunctionButton();

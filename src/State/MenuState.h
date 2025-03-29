@@ -17,6 +17,12 @@
 #include "../GUI/ImageButton.h"
 #include "../GUI/Label.h"
 
+#include "SinglyLinkedListMainState.h"
+#include "Heap/HeapMainState.h"
+#include "AVL/AVLMainState.h"
+#include "Graph/GraphMainState.h"
+#include "Tree234/Tree234MainState.h"
+
 #include <memory>
 #include <stack>
 #include <iostream>

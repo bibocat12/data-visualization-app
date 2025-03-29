@@ -1,10 +1,11 @@
-﻿#pragma once
+#pragma once
 
 #include "../../StateMachine/State.h"
 #include "../../StateMachine/StateMachine.h"
 #include "../../StateMachine/AssetManager.h"
 #include "../../StateMachine/DEFINITION.h"
 #include "../../StateMachine/Frame.h"
+#include "../../Utils.h"
 
 #include "../../GUI/Button.h"
 #include "../../GUI/ImageButton.h"
@@ -16,9 +17,11 @@
 #include "../../GUI/portable-file-dialogs.h"
 #include "../../GUI/Edge.h"
 
-#include "AVLTree.h"
+
 #include "../../App.h"
 #include "../MenuState.h"
+
+#include "Trie.h"
 
 #include <vector>
 #include <fstream>
@@ -27,10 +30,10 @@
 #include <map>
 
 
-class AVLMainState : public Engine::State {
+class TrieMainState : public Engine::State {
 public:
     // Constants
-    const float MAX_RADIUS = 30;
+    const float MAX_RADIUS = 15;
     const float MED_RADIUS = 20;
     const float MIN_RADIUS = 15;
     const float SM_RADIUS = 10;
@@ -47,11 +50,11 @@ public:
     const float MIN_DISTANCE_Y = 60;
     const float SM_DISTANCE_Y = 50;
     float RADIUS = 25;
-    float PADDING_X = 380;
-    float PADDING_Y = 20;
+    float PADDING_X = 100;
+    float PADDING_Y = 100;
 
-    float DISTANCE_X = 40;
-    float DISTANCE_Y = 80;
+    const float DISTANCE_X = 60;
+    float DISTANCE_Y = 60;
 
     const int LIMIT_NODE_MIN = 30;
     const int LIMIT_NODE_MED = 50;
@@ -73,8 +76,8 @@ public:
 
 
     // Constructor & Destructor
-    AVLMainState(std::shared_ptr<Context>& context);
-    ~AVLMainState();
+    TrieMainState(std::shared_ptr<Context>& context);
+    ~TrieMainState();
 
     // Core Functions
     void init() override;
@@ -90,7 +93,7 @@ public:
     void handleInsertButtonEvents(const sf::Event& event);
     void handleDeleteButtonEvents(const sf::Event& event);
     void handleSearchButtonEvents(const sf::Event& event);
-    void handleInorderButtonEvents(const sf::Event& event);
+    void handleDisplayButtonEvents(const sf::Event& event);
 
     void handleHomeButtonEvents(const sf::Event& event);
     void handleThemeButtonEvents(const sf::Event& event);
@@ -100,7 +103,7 @@ public:
     // Frame Control
     int numFrames = 0;
     int currentFrameIndex = 0;
-	int prevFrameIndex = 0;
+    int prevFrameIndex = 0;
     bool isShowing = false;
     bool isPaused = false;
     bool isPlaying = false;
@@ -113,22 +116,25 @@ public:
     Engine::Frame b_currentFrame;
     Engine::Frame w_currentFrame;
 
+	sf::Color colorPanel[3000][8];
+
 
     // Node & Edge Data
-    Node b_nodes[100];
-    Edge b_edges[100];
-    Node w_nodes[100];
-    Edge w_edges[100];
+    Node b_nodes[2000];
+    Edge b_edges[2000];
+    Node w_nodes[2000];
+    Edge w_edges[2000];
 
     Node preb_nodes[100];
     Node prew_nodes[100];
     Edge preb_edges[100];
     Edge prew_edges[100];
 
-    AVLTree avl;
+    
 
     // Node Manipulation
-    void initNode(std::vector<int>& elements, std::vector<int>& depth);
+    void initNode(Trie::TrieSnapshot& snapshot);
+	void initEdge(Trie::TrieSnapshot& snapshot);
     void resetNodePosRad();
     void initEdge(std::vector<int>& parent);
     void changeBNode(int index, int index1, int index2, Node from, Node to);
@@ -136,28 +142,31 @@ public:
     void changeBEdge(int index, int index1, int index2, Edge from, Edge to);
     void changeWEdge(int index, int index1, int index2, Edge from, Edge to);
     void connectTwoNodes(int index, int index1, int index2, bool isEnd);
+    void setCodePanelColor(int frameIndex);
+
+	sf::Color codePanelColor[60][8];
 
     // Frame Initialization
 
-	std::string currentState = "no";
+    std::string currentState = "no";
 
     void deleteAllFrames();
-	void initEmptyFrames(int count);
-    void initCreateFrames(std::vector<int> elements);
+
+    void initCreateFrames(std::vector<std::string> words);
     void initInsertFrames();
 
-	int deleteValue = 0;
+    int deleteValue = 0;
     void initDeleteFrames(int deleteValue);
-	void initSearchFrames();
+    void initSearchFrames();
     std::vector<int> searchPath;
     int ValueFind = 0;
+    float orderFinal[3000];
+	float totalChild[3000];
 
-	void initInorderFrames();
-
-    void createInorderFrames();
-	void createInsertFrames(int value);
-	void createDeleteFrames(int value);
-	void createSearchFrames(int value);
+    void createInsertFrames(std::string word);
+    void createDeleteFrames(std::string word);
+    void createSearchFrames(std::string word);
+	void createDisplayFrames();
 
 
     void updateFrames();
@@ -168,9 +177,11 @@ public:
     sf::Sprite background;
     std::vector<Engine::Frame> b_frames;
     std::vector<Engine::Frame> w_frames;
-	std::vector<bool> isFrameActive;
-	std::vector<int> inorderSnapshot;
-	std::vector<AVLTree::TreeSnapshot> snapshots;
+    std::vector<bool> isFrameActive;
+    std::vector<int> inorderSnapshot;
+	Trie trie;
+	std::vector<Trie::TrieSnapshot> snapshots;
+
     int speed = 1;
 
     // UI Initialization
@@ -195,13 +206,13 @@ private:
     Button insertButton;
     Button searchButton;
     Button deleteButton;
-    Button inorderButton;
+	Button displayButton;
 
     bool isSelectedInsertButton = false;
     bool isSelectedDeleteButton = false;
     bool isSelectedSearchButton = false;
     bool isSelectedCreateButton = false;
-    bool isSelectedInorderButton = false;
+	bool isSelectedDisplayButton = false;
 
     // UI Panels & Sliders
     Panel codePanel;

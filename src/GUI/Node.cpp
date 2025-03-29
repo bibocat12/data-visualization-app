@@ -8,6 +8,11 @@ Node::~Node()
 {
 }
 
+void Node::setShape(bool isCircle)
+{ 
+	this->isCircle = isCircle;
+}
+
 void Node::initTextUnder(sf::Color color, int size)
 {
 	textSizeUnder = size;
@@ -45,18 +50,17 @@ void Node::setFont(sf::Font& font)
 {
 	text.setFont(font);
 	textUnder.setFont(font);
-
-
-
 }
 
 void Node::setFillColor(sf::Color color)
 {
-	shape.setFillColor(color);
+	if (fillColor == color) return;
+	if (isCircle) shape.setFillColor(color);
+	else squareShape.setFillColor(color);
 	fillColor = color;
 }
 
-void Node::setCharacterSize(int size)
+void Node::setCharacterSize(float size)
 {
 	text.setCharacterSize(size);
 }
@@ -64,14 +68,29 @@ void Node::setCharacterSize(int size)
 void Node::setPosition(sf::Vector2f pos)
 {
 	this->position = pos;
-	shape.setOrigin(shape.getRadius(), shape.getRadius());
-	shape.setPosition(pos);
-	sf::FloatRect textBounds = text.getLocalBounds();
-	sf::FloatRect shapeBounds = shape.getGlobalBounds();
-	text.setOrigin(textBounds.left + textBounds.width / 2.0f,
-		textBounds.top + textBounds.height / 2.0f);
-	text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
-		shapeBounds.top + shapeBounds.height / 2.0f);
+	if (isCircle) {
+		shape.setOrigin(shape.getRadius(), shape.getRadius());
+		shape.setPosition(pos);
+		sf::FloatRect textBounds = text.getLocalBounds();
+		sf::FloatRect shapeBounds = shape.getGlobalBounds();
+		text.setOrigin(textBounds.left + textBounds.width / 2.0f,
+			textBounds.top + textBounds.height / 2.0f);
+		text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
+			shapeBounds.top + shapeBounds.height / 2.0f);
+	}
+	else {
+		squareShape.setOrigin(squareShape.getGlobalBounds().width / 2.0f,
+			squareShape.getGlobalBounds().height / 2.0f);
+		squareShape.setPosition(pos);
+
+		sf::FloatRect textBounds = text.getLocalBounds();
+		sf::FloatRect shapeBounds = squareShape.getGlobalBounds();  
+
+		text.setOrigin(textBounds.left + textBounds.width / 2.0f,
+			textBounds.top + textBounds.height / 2.0f);
+		text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
+			shapeBounds.top + shapeBounds.height / 2.0f);
+	}
 }
 
 sf::Vector2f Node::getPosition()
@@ -79,12 +98,18 @@ sf::Vector2f Node::getPosition()
 	return position;
 }
 
+sf::FloatRect Node::getGlobalBounds()
+{
+	return squareShape.getGlobalBounds();
+}
+
 void Node::drawTo(sf::RenderWindow& window)
 {
 	this->setPosition(position);
-	//textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
-	//textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
-	window.draw(shape);
+	if (isCircle) window.draw(shape);
+	else {
+		window.draw(squareShape);
+	}
 	window.draw(text);
 	if (isSetTextUnder)
 		window.draw(textUnder); 
@@ -120,15 +145,23 @@ void Node::setRadius(float radius)
 	shape.setRadius(radius);
 }
 
+void Node::setSide(float length)
+{
+	squareShape.setSize(sf::Vector2f(length, length));
+}
+
 void Node::setOutlineColor(sf::Color color)
 {
-	shape.setOutlineColor(color);
+	if (outlineColor == color) return;
+	if (isCircle) shape.setOutlineColor(color);
+	else squareShape.setOutlineColor(color);
 	outlineColor = color;
 }
 
 void Node::setOutlineThickness(float thickness)
 {
-	shape.setOutlineThickness(thickness);
+	if (isCircle) shape.setOutlineThickness(thickness);
+	else squareShape.setOutlineThickness(thickness);
 }
 
 void Node::setString(std::string str)
@@ -138,6 +171,7 @@ void Node::setString(std::string str)
 
 void Node::setTextColor(sf::Color color)
 {
+	if (text.getFillColor() == color) return;
 	text.setFillColor(color);
 }
 
