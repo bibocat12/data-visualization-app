@@ -308,13 +308,10 @@ void HeapMainState::draw()
 	uploadFileButton.drawTo(*m_context->window);
 	okButtonBackground.drawTo(*m_context->window);
 	okButton.drawTo(*m_context->window);
-
-	//std::cerr << "currentframe index" << currentFrameIndex << std::endl;
-	//std::cerr << "currentframe size" << b_frames.size() << std::endl;
-	//for (int x : breakpoints) std::cerr << x << " ";
-	//std::cerr << std::endl;
 	currentFrame.drawAll(*m_context->window);
-
+	if (isSelectedCreateFrames || isSelectedInsertFrames || isSelectedDeleteFrames || isSelectedUpdateFrames || isSelectedExtractFrames) {
+		codePanel.draw(*m_context->window);
+	}
 	m_context->window->display();
 
 }
@@ -605,6 +602,9 @@ void HeapMainState::handleUpdateButtonEvents(sf::Event event)
 		updateTextboxX.setInvisible();
 		updateTextboxV.setSelected(false);
 		updateTextboxV.setInvisible();
+		if (!isSelectedUpdateButton) {
+			randomUpdateButton.setPosition(sf::Vector2f(-1000, -1000));
+		}
 		if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedExtractButton && !isSelectedUpdateButton) {
 			randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
 			randomUpdateButton.setPosition(sf::Vector2f{ -1000, -1000 });
@@ -756,6 +756,7 @@ void HeapMainState::initNode(int n)
 void HeapMainState::initEdge(int n)
 {
 	n = std::max(n, heap.Size());
+	sf::Vector2f start, end;
 	for (int i = 1; i < n; i++)
 	{
 		Edge edge;
@@ -764,22 +765,34 @@ void HeapMainState::initEdge(int n)
 		if (i % 2 == 1) { // left child
 			//find center of the node
 			sf::Vector2f center = b_nodes[i].getPosition();
-			edge.setStart(sf::Vector2f(static_cast<float>(center.x + cos(DEG_TO_RAD(30)) * RADIUS), static_cast<float>(center.y - sin(DEG_TO_RAD(30)) * RADIUS)));
-			
+			start = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
+
 			//find center of parent
 			center = b_nodes[heap.parent(i)].getPosition();
-			edge.setEnd(sf::Vector2f(static_cast<float>(center.x - cos(DEG_TO_RAD(30)) * RADIUS), static_cast<float>(center.y + sin(DEG_TO_RAD(30)) * RADIUS)));
+			end = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
 		}
 		else { // right child
+
 			//find center of the node
 			sf::Vector2f center = b_nodes[i].getPosition();
-			edge.setEnd(sf::Vector2f(static_cast<float>(center.x - cos(DEG_TO_RAD(30)) * RADIUS), static_cast<float>(center.y - sin(DEG_TO_RAD(30)) * RADIUS)));
-			
+			start = sf::Vector2f(center.x - cos(DEG_TO_RAD(30)) * RADIUS, center.y - sin(DEG_TO_RAD(30)) * RADIUS);
+
 			//find center of parent
 			center = b_nodes[heap.parent(i)].getPosition();
-			edge.setStart(sf::Vector2f(static_cast<float>(center.x + cos(DEG_TO_RAD(30)) * RADIUS), static_cast<float>(center.y + sin(DEG_TO_RAD(30)) * RADIUS)));
+			end = sf::Vector2f(center.x + cos(DEG_TO_RAD(30)) * RADIUS, center.y + sin(DEG_TO_RAD(30)) * RADIUS);
 		}
 
+		float _tan = abs(end.y - start.y) / abs(end.x - start.x);
+		sf::Vector2f posEndEdge;
+		if (i % 2 == 1) {
+			posEndEdge.x = start.x + abs(end.x - start.x);
+		}
+		else {
+			posEndEdge.x = start.x - abs(end.x - start.x);
+		}
+		posEndEdge.y = start.y - abs(posEndEdge.x - start.x) * _tan;
+		edge.setStart(start);
+		edge.setEnd(posEndEdge);
 		b_edges[i] = edge;
 		edge.setColor(sf::Color::White);			// set color for edge in black theme
 		edge.setDirected(false);
