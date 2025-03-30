@@ -96,6 +96,7 @@ public:
 	void swapTwoNodes(int node1, int node2, int index1, int index2, bool isEnd);
 
 	void deleteAllFrames();
+	void setCodePanelColor(int frameIndex);
 	void initPreHeap(const std::vector<int> &nums);
 	void preInitCreateFrames(bool isInitState = false);
 	void initCreateFrames(bool isInitState = false);
@@ -164,6 +165,7 @@ private:
 	bool isSelectedExtractFrames = false;
 
 	Panel codePanel;
+	sf::Color codePanelColor[60][7];
 	Slider aniSlider;
 	Slider speedSlider;
 	ImageButton playButton;
