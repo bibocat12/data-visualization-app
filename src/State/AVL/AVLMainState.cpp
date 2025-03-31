@@ -90,7 +90,7 @@ void AVLMainState::draw() {
 
     themeButton.drawTo(*m_context->window);
     homeButton.drawTo(*m_context->window);
-    //codePanel.draw(*m_context->window);
+    codePanel.draw(*m_context->window);
 
     aniSlider.draw(*m_context->window);
     speedSlider.draw(*m_context->window);
@@ -607,12 +607,19 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
             for (int x : breakpoints)
                 if (x > currentFrameIndex) {
                     currentFrameIndex = x;
+                    
                     break;
                 }
+                else
+                {
+					
+                }
+            std::cerr << breakpoints.size() << std::endl;
             aniSlider.setPart(currentFrameIndex);
         }
         if (previousButton.isMouseOverCircle(*m_context->window)) {
             isPaused = true;
+           
             for (int i = breakpoints.size() - 1; i >= 0; i--) {
                 if (breakpoints[i] < currentFrameIndex) {
                     currentFrameIndex = breakpoints[i];
@@ -620,6 +627,7 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
                 }
             }
             aniSlider.setPart(currentFrameIndex);
+			
 
         }
         if (forwardButton.isMouseOverCircle(*m_context->window)) {

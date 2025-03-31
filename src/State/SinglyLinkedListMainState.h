@@ -16,7 +16,7 @@
 
 
 #include "SinglyLinkedList.h"
-#include "SinglyLinkedListFrame.h"
+
 
 #include "../App.h"
 #include "MenuState.h"
@@ -58,10 +58,7 @@ public:
 	void draw() override;
 
 	void handleButtonEvents(const sf::Event& event);
-
 	void handleCreateButtonEvents(const sf::Event event);
-
-
 	void handleInsertButtonEvents(sf::Event event);
 	void handleDeleteButtonEvents(sf::Event event);
 	void handleSearchButtonEvents(sf::Event event);
@@ -73,13 +70,20 @@ public:
 
 	int numFrames = 0;
 	int currentFrameIndex = 0;
+	int prevFrameIndex = 0;
 	bool isShowing = false;
 	bool isPaused = false;
 	bool isPlaying = false;
 	bool isEnd = false;
 
-
-
+	int kInsert = 0;
+	int vInsert = 0;
+	int kDelete = 0;
+	int vDelete = 0;
+	int kSearch = 0;
+	int kUpdate = 0;
+	int oldVUpdate = 0;
+	int newVUpdate = 0;
 	std::vector<int> breakpoints;
 
 	Engine::Frame currentFrame;
@@ -89,22 +93,47 @@ public:
 	std::vector<Engine::Frame> w_frames;
 
 	int speed = 1;
+	std::string currentState = "no";
+
+	sf::Color codePanelColor[60][7];
+	
+	void initCreateFrames();
+	void initInsertFrames();
+	void initDeleteFrames();
+	void initUpdateFrames();
+	void initSearchFrames();
+
+	void createCreateFrames(const std::vector<int>& nums);
+	void createInsertFrames(int k, int v);
+	void createDeleteFrame(int v);
+	void createSearchFrames(int num);
+	void createUpdateFrames(int oldV, int newV);
+
+	void deleteAllFrames();
+
+	void setCodePanelColor(int frameIndex);
 
 
 
+	Node b_nodes[100];
+	Edge b_edges[100];
+	Node w_nodes[100];
+	Edge w_edges[100];
+	Node preb_nodes[100];
+	Edge preb_edges[100];
+	Node prew_nodes[100];
+	Edge prew_edges[100];
 
 
-	Node b_nodes[18];
-	Edge b_edges[18];
-	Node w_nodes[18];
-	Edge w_edges[18];
 
+	void initNode(std::vector<int>& getAllElements);
+	void initEdge(std::vector<int>& getAllElements);
+	void changeBNode(int index, int index1, int index2, Node from, Node to);
+	void changeWNode(int index, int index1, int index2, Node from, Node to);
+	void changeBEdge(int index, int index1, int index2, Edge from, Edge to);
+	void changeWEdge(int index, int index1, int index2, Edge from, Edge to);
 
-	void initNode();
-	void initEdge();
-	SinglyLinkedListFrame m_frames;
 	SinglyLinkedList LinkedList;
-	SinglyLinkedList LinkedList2;
 
 	sf::Text warningText;
 	bool isWarning = false;
@@ -114,8 +143,6 @@ public:
 
 
 	sf::Sprite background;
-
-
 
 
 	void initButton(Button& button, std::string text, sf::Vector2f pos);
