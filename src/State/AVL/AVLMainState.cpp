@@ -556,8 +556,8 @@ void AVLMainState::handleInorderButtonEvents(const sf::Event& event)
     {
 
         inorderButton.setBackColor(hoverButtonColor);
-        okButtonBackground.setPosition(sf::Vector2f{ 5 + inorderButton.getPositon().x + inorderButton.getGlobalBounds().width, inorderButton.getPositon().y });
-        okButton.setPosition(sf::Vector2f{ inorderButton.getPositon().x + (inorderButton.getGlobalBounds().width + 50) , inorderButton.getPositon().y });
+        okButtonBackground.setPosition(sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+        okButton.setPosition(sf::Vector2f{ createButton.getPositon().x + (createButton.getGlobalBounds().width + 50) , createButton.getPositon().y });
         if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
             (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed
                 && event.mouseButton.button == sf::Mouse::Left))
