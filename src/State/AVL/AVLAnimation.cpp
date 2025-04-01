@@ -287,7 +287,7 @@ void AVLMainState::initCreateFrames(std::vector<int> elements)
 		codePanel.setText(codeLines[i], i);
 
 	deleteAllFrames();
-	
+	breakpoints.clear();
 	// Init frames
 	Engine::Frame b_frame, w_frame;
 	avl.clear();

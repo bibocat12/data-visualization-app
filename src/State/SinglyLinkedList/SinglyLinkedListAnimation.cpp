@@ -303,6 +303,11 @@ void SinglyLinkedListMainState::initInsertFrames()
 
 	if (curBreakpoint < kInsert)
 	{
+		for(int i = 0;i < 60;i++)
+			if(i < 30)
+				codePanelColor[i][0] = sf::Color::Red;
+			else
+				codePanelColor[i][1] = sf::Color::Red;
 		Node node = b_nodes[curBreakpoint];
 		node.setFillColor(B_NODE_COLOR_HOVER);
 		changeBNode(curBreakpoint, 0, 59, b_nodes[curBreakpoint], node);
@@ -314,7 +319,11 @@ void SinglyLinkedListMainState::initInsertFrames()
 	}
 	else
 	{
-
+		for (int i = 0; i < 60; i++)
+			if (i < 30)
+				codePanelColor[i][0] = sf::Color::Red;
+			else
+				codePanelColor[i][2] = sf::Color::Red;
 
 		for (int i = allElements.size() - 1; i >= kInsert; i--)
 		{
@@ -570,7 +579,8 @@ void SinglyLinkedListMainState::initUpdateFrames()
 	std::vector<std::string> codeLines = {
 		"node = head",
 		"while node != nullptr",
-		"    if node->val == oldV then node->val = newV",
+		"    if node->val == oldV",
+		"		node->val = newV",
 		"    node = node -> next",
 		"end"
 	};
@@ -600,7 +610,7 @@ void SinglyLinkedListMainState::initUpdateFrames()
 			if (step < 30)
 				codePanelColor[step][1] = sf::Color::Red;
 			else
-				codePanelColor[step][3] = sf::Color::Red;
+				codePanelColor[step][4] = sf::Color::Red;
 		}
 		Node node = b_nodes[curBreakpoint];
 		node.setFillColor(B_NODE_COLOR_HOVER);
@@ -630,7 +640,7 @@ void SinglyLinkedListMainState::initUpdateFrames()
 		if (step < 30)
 			codePanelColor[step][1] = sf::Color::Red;
 		else
-			codePanelColor[step][3] = sf::Color::Red;
+			codePanelColor[step][4] = sf::Color::Red;
 	}
 	if (curBreakpoint < kUpdate)
 	{
@@ -645,10 +655,12 @@ void SinglyLinkedListMainState::initUpdateFrames()
 	else
 	{
 		for (int i = 0; i < 60; i++)
-			if (i < 30)
+			if (i < 20)
 				codePanelColor[i][1] = sf::Color::Red;
-			else
+			else if (i < 40)
 				codePanelColor[i][2] = sf::Color::Red;
+			else
+				codePanelColor[i][3] = sf::Color::Red;
 		allElements[kUpdate] = newVUpdate;
 		initNode(allElements);
 		initEdge(allElements);
