@@ -17,7 +17,8 @@
 #include "../GUI/ImageButton.h"
 #include "../GUI/Label.h"
 
-#include "SinglyLinkedListMainState.h"
+#include "SinglyLinkedList/SinglyLinkedListMainState.h"
+#include "Trie/TrieMainState.h"
 #include "Heap/HeapMainState.h"
 #include "AVL/AVLMainState.h"
 #include "Graph/GraphMainState.h"

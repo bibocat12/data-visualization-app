@@ -139,7 +139,8 @@ public:
 
     // Frame Initialization
 
-	std::string currentState = "no";
+    sf::Color codePanelColor[60][9];
+    std::string currentState = "no";
 
     void deleteAllFrames();
 	void initEmptyFrames(int count);
@@ -158,6 +159,8 @@ public:
 	void createInsertFrames(int value);
 	void createDeleteFrames(int value);
 	void createSearchFrames(int value);
+
+	void setCodePanelColor(int frameIndex);
 
 
     void updateFrames();

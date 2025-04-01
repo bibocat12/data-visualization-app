@@ -1,8 +1,5 @@
 #include "MenuState.h"
 
-#include "Trie/TrieMainState.h"
-
-
 MenuState::MenuState(std::shared_ptr<Context>& context) : m_context(context)
 {
 
@@ -61,10 +58,6 @@ void MenuState::switchTheme() {
 
 void MenuState::init()
 {
-	background.setTexture(m_context->assetManager->getTexture("background"));
-	background.setScale(0.5, 0.5);
-	background.setPosition(0, 0);
-
 	testingEvent.setFont(m_context->assetManager->getFont("arial"));
 	testingEvent.setCharacterSize(24);
 	testingEvent.setFillColor(sf::Color::Black);
@@ -90,11 +83,11 @@ void MenuState::init()
 	float spaceY = 50.f;
 
 	buttons.push_back(initButton("Singly Linked List", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375}));
-	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
-	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
-	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{spaceX, 375 + spaceY + buttonSize.y}));
-	buttons.push_back(initButton("2-3-4 Tree", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
-	buttons.push_back(initButton("Graph", m_context->assetManager->getTexture("SinglyLinkedList"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("Heap", m_context->assetManager->getTexture("Heap"), sf::Vector2f{2 * spaceX + buttonSize.x, 375}));
+	buttons.push_back(initButton("AVL Tree", m_context->assetManager->getTexture("AVL"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375}));
+	buttons.push_back(initButton("Trie", m_context->assetManager->getTexture("Trie"), sf::Vector2f{spaceX, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("2-3-4 Tree", m_context->assetManager->getTexture("Tree234"), sf::Vector2f{2 * spaceX + buttonSize.x, 375 + spaceY + buttonSize.y}));
+	buttons.push_back(initButton("Graph", m_context->assetManager->getTexture("Graph"), sf::Vector2f{3 * spaceX + 2 * buttonSize.x, 375 + spaceY + buttonSize.y}));
 	themeButton.setPosition(sf::Vector2f{ 1450, 30 });
 
 }
@@ -119,8 +112,9 @@ void MenuState::processEvents()
 			return;
 		}
 
+		std::vector<std::string> texture = { "SinglyLinkedList", "Heap", "AVL", "Trie", "Tree234", "Graph" };
 		for (int i = 0; i < (int)buttons.size(); i++) {
-			buttons[i].second.handleHover(*m_context->window, m_context->assetManager->getTexture("SinglyLinkedList"), m_context->assetManager->getTexture("SinglyLinkedList"));
+			buttons[i].second.handleHover(*m_context->window, m_context->assetManager->getTexture(texture[i]), m_context->assetManager->getTexture(texture[i]));
 			buttons[i].first.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 
 			if (i == 0 && buttons[i].first.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {

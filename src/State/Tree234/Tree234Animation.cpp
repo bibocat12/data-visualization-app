@@ -444,11 +444,13 @@ void Tree234MainState::initInsertFrames(int value)
 				split(tree234.operatedNodes[i][0], 5, 59);
 			} 
 			else if (type == "splitChild") {
-				codePanelColor[i][0] = sf::Color::Red;
-				codePanelColor[i][1] = sf::Color::Red;
-				if (i == 59) {
-					codePanelColor[i][0] = LavenderSoft;
-					codePanelColor[i][1] = LavenderSoft;
+				for (int j = 0; j < 59; j++) {
+					codePanelColor[j][0] = sf::Color::Red;
+					codePanelColor[j][1] = sf::Color::Red;
+					if (j == 59) {
+						codePanelColor[j][0] = LavenderSoft;
+						codePanelColor[j][1] = LavenderSoft;
+					}
 				}
 
 				initPreTree(tree234.snapshots[i - 1]);
@@ -490,7 +492,7 @@ void Tree234MainState::initInsertFrames(int value)
 				}
 
 				initPreTree(tree234.snapshots[i - 1]);
-				for (int j = 0; j < 5; j++) {
+				for (int j = 0; j < 20; j++) {
 					initTreeFrames();
 				}
 				initPreTree(tree234.snapshots[i]);
@@ -498,7 +500,7 @@ void Tree234MainState::initInsertFrames(int value)
 				while (idx < tree234.operatedNodes[i][0]->keys.size() && tree234.operatedNodes[i][0]->keys[idx] < value) {
 					idx++;
 				}
-				appearNode(tree234.operatedNodes[i][0]->nodes[idx], 5, 59);
+				appearNode(tree234.operatedNodes[i][0]->nodes[idx], 20, 59);
 			}
 			
 			return;

@@ -23,11 +23,11 @@ void GraphMainState::switchTheme() {
 		title.setFillColor(textColor);
 		fGraph.setColor(textColor, 0);
 		for (int i = 0; i < (int)frames.size(); i++) {
-			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numNodes; j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
 				frames[i].getNode("1nodes" + std::to_string(j)).setTextColor(textColor);
 			}
-			for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numEdges; j++) {
 				if (frames[i].getEdge("2edges" + std::to_string(j)).getColor() == sf::Color::Black) {
 					frames[i].getEdge("2edges" + std::to_string(j)).setColor(sf::Color::White);
 				}
@@ -55,11 +55,11 @@ void GraphMainState::switchTheme() {
 		title.setFillColor(textColor);
 		fGraph.setColor(textColor, 0);
 		for (int i = 0; i < (int)frames.size(); i++) {
-			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numNodes; j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setOutlineColor(textColor);
 				frames[i].getNode("1nodes" + std::to_string(j)).setTextColor(textColor);
 			}
-			for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numEdges; j++) {
 				if (frames[i].getEdge("2edges" + std::to_string(j)).getColor() == sf::Color::White) {
 					frames[i].getEdge("2edges" + std::to_string(j)).setColor(sf::Color::Black);
 				}
@@ -107,7 +107,7 @@ void GraphMainState::initFunctionButton() {
 	createTextboxE.setConstText("E = ");
 	createTextboxE.setLimit(true, 2);
 
-	initTextbox(inputTextbox[numMatrix - 1], 15, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{5 + settingsButton.getPositon().x + settingsButton.getGlobalBounds().width, settingsButton.getPositon().y });
+	initTextbox(inputTextbox[numMatrix - 1], 15, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
 	inputTextbox[numMatrix - 1].setConstText(std::to_string(numMatrix) + "   ");
 	inputTextbox[numMatrix - 1].setLimit(true, 38);
 	inputTextbox[numMatrix - 1].setBox(sf::Vector2f(400, 30), BeigeGrey);
@@ -313,10 +313,10 @@ void GraphMainState::update(const sf::Time& dt)
 	if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) {
 		fGraph.update(dt.asSeconds());
 		for (int i = 0; i < (int)frames.size(); i++) {
-			for (int j = 0; j < (int)fGraph.nodes.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numNodes; j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
 			}
-			for (int j = 0; j < (int)fGraph.edges.size(); j++) {
+			for (int j = 0; j < (int)fGraph.numEdges; j++) {
 				frames[i].getEdge("2edges" + std::to_string(j)).setStart(fGraph.edges[j].edge.getStart());
 				frames[i].getEdge("2edges" + std::to_string(j)).setEnd(fGraph.edges[j].edge.getEnd());
 			}
@@ -369,6 +369,10 @@ void GraphMainState::draw()
 		inputTextbox[i].drawTo(*m_context->window);
 	}
 	uploadFileButton.drawTo(*m_context->window);
+
+	if (isSelectedMstFrames || isSelectedShortestPathFrames) {
+		codePanel.draw(*m_context->window);
+	}
 	if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) {
 		if(isSelectedMstFrames || isSelectedShortestPathFrames) codePanel.draw(*m_context->window);
 		fGraph.draw(*m_context->window);
@@ -535,7 +539,6 @@ void GraphMainState::handleButtonEvents(const sf::Event& event)
 	handleInputButtonEvents(event);
 	handleHomeButtonEvents(event);
 	handleThemeButtonEvents(event);
-
 }
 
 void GraphMainState::handleSettingsButtonEvents(const sf::Event event)
@@ -637,7 +640,6 @@ void GraphMainState::handleCreateButtonEvents(sf::Event event)
 				fGraph.addNode(randomNodePosition(), std::to_string(i));
 			}
 			fGraph.setFixed(isFixed);
-			
 			if (isDirected) e = std::min(e, n * (n - 1));
 			else e = std::min(e, n * (n - 1) / 2);
 
@@ -837,7 +839,7 @@ void GraphMainState::handleMstButtonEvents(sf::Event event)
 
 void GraphMainState::handleShortestPathButtonEvents(sf::Event event)
 {
-	shortestPathTextbox.setLimNum((int) fGraph.nodes.size());
+	shortestPathTextbox.setLimNum((int) fGraph.numNodes);
 	shortestPathButton.handleHover(*m_context->window, normalButtonColor, hoverButtonColor);
 	if (shortestPathButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 		isSelectedSettingsButton = false;
@@ -858,7 +860,7 @@ void GraphMainState::handleShortestPathButtonEvents(sf::Event event)
 		shortestPathTextbox.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = Utils::rand(1, (int) fGraph.nodes.size());
+			int randomNum = Utils::rand(1, (int) fGraph.numNodes);
 			shortestPathTextbox.insertNum(randomNum);
 		}
 
@@ -868,7 +870,7 @@ void GraphMainState::handleShortestPathButtonEvents(sf::Event event)
 			shortestPathTextbox.setSelected(false);
 
 			//do sth
-			if(0 < source && source <= (int) fGraph.nodes.size()) preInitShortestPathFrames(source);
+			if(0 < source && source <= (int) fGraph.numNodes) preInitShortestPathFrames(source);
 		}
 	}
 	else {

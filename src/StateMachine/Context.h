@@ -17,6 +17,5 @@ struct Context {
 		themeType = std::make_unique<int>();
 
 		TIME_PER_FRAME = std::make_unique<sf::Time>(sf::seconds(1.f / 60.f)); 
-
 	};
 };
