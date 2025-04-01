@@ -1,25 +1,25 @@
 #pragma once
-#include "../StateMachine/State.h"
-#include "../StateMachine/StateMachine.h"
-#include "../StateMachine/AssetManager.h"
-#include "../StateMachine/DEFINITION.h"
-#include "../StateMachine/Frame.h"
-#include "../GUI/Button.h"
-#include "../GUI/ImageButton.h"
-#include "../GUI/Node.h"
-#include "../GUI/Textbox.h"
-#include "../GUI/Label.h"
-#include "../GUI/Slider.h"
-#include "../GUI/Panel.h"
-#include "../GUI/portable-file-dialogs.h"
-#include "../GUI/Edge.h"
+#include "../../StateMachine/State.h"
+#include "../../StateMachine/StateMachine.h"
+#include "../../StateMachine/AssetManager.h"
+#include "../../StateMachine/DEFINITION.h"
+#include "../../StateMachine/Frame.h"
+#include "../../GUI/Button.h"
+#include "../../GUI/ImageButton.h"
+#include "../../GUI/Node.h"
+#include "../../GUI/Textbox.h"
+#include "../../GUI/Label.h"
+#include "../../GUI/Slider.h"
+#include "../../GUI/Panel.h"
+#include "../../GUI/portable-file-dialogs.h"
+#include "../../GUI/Edge.h"
 
 
 #include "SinglyLinkedList.h"
 
 
-#include "../App.h"
-#include "MenuState.h"
+#include "../../App.h"
+#include "../MenuState.h"
 
 
 #include <vector>

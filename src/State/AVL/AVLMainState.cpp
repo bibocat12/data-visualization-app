@@ -20,8 +20,8 @@ AVLMainState::AVLMainState(std::shared_ptr<Context>& context) : m_context(contex
     // Init speed slider
     initSpeedSlider();
 
-    std::vector<int> nums = { 2,24,27,34,36,37,43,51,52,56,60,64,85,94,98 };
-    initCreateFrames(nums);
+    //std::vector<int> nums = { 2,24,27,34,36,37,43,51,52,56,60,64,85,94,98 };
+    //initCreateFrames(nums);
 
 
 }
@@ -90,7 +90,9 @@ void AVLMainState::draw() {
 
     themeButton.drawTo(*m_context->window);
     homeButton.drawTo(*m_context->window);
-    codePanel.draw(*m_context->window);
+    if (currentState == "create" || currentState == "inorder" || currentState == "insert" || currentState == "delete" || currentState == "search") {
+        codePanel.draw(*m_context->window);
+    }
 
     aniSlider.draw(*m_context->window);
     speedSlider.draw(*m_context->window);

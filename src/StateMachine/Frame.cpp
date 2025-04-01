@@ -67,8 +67,16 @@ namespace Engine
         for (auto& button : buttonMap)
             button.second.drawTo(window);
 
-        for (auto& edge : edgeMap)
+        Edge* tmpEdge = nullptr;
+        for (auto& edge : edgeMap) {
+            if (edge.first.front() == '9') {
+                tmpEdge = &edge.second;
+            }
             edge.second.drawTo(window);
+        }
+        if (tmpEdge) {
+            tmpEdge->drawTo(window);
+        }
 
         for (auto& node : nodeMap)
             node.second.drawTo(window);

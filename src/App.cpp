@@ -17,6 +17,11 @@ App::App()
 	m_context->assetManager->loadTexture("background", "assets/img/background/light.jpg");
 	m_context->assetManager->loadTexture("buttonPlay", "assets/img/button/buttonPlay.jpg");
 	m_context->assetManager->loadTexture("SinglyLinkedList", "assets/img/button/SinglyLinkedList.png");
+	m_context->assetManager->loadTexture("Heap", "assets/img/button/Heap.png");
+	m_context->assetManager->loadTexture("Graph", "assets/img/button/Graph.png");
+	m_context->assetManager->loadTexture("Tree234", "assets/img/button/Tree234.png");
+	m_context->assetManager->loadTexture("AVL", "assets/img/button/AVL.png");
+	m_context->assetManager->loadTexture("Trie", "assets/img/button/Trie.png");
 	m_context->assetManager->loadTexture("LightTheme", "assets/img/button/LightTheme.png");
 	m_context->assetManager->loadTexture("DarkTheme", "assets/img/button/DarkTheme.png");
 	m_context->assetManager->loadTexture("HomeButton", "assets/img/button/HomeButton.png");
