@@ -292,7 +292,9 @@ void SinglyLinkedListMainState::draw()
 
 	themeButton.drawTo(*m_context->window);
 	homeButton.drawTo(*m_context->window);
-	codePanel.draw(*m_context->window);
+	if (currentState == "create" || currentState == "insert" || currentState == "delete" || currentState == "search" || currentState == "update") {
+		codePanel.draw(*m_context->window);
+	}
 
 	aniSlider.draw(*m_context->window);
 	speedSlider.draw(*m_context->window);

@@ -75,6 +75,8 @@ public:
 	Graph graph;
 	ForceGraph fGraph;
 	Edge tmpEdge;
+	Node nodes[100];
+	Edge edges[100];
 
 	void initPreGraph();
 	void deleteAllFrames();
@@ -131,6 +133,8 @@ private:
 	std::vector<std::array<int, 3>> spArrs;
 
 	void deleteOldFrames();
+	void setCodePanelColor(int frameIndex);
+	sf::Color codePanelColor[60][7];
 	Panel codePanel;
 	Slider aniSlider;
 	Slider speedSlider;
