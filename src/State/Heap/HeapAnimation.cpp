@@ -169,6 +169,18 @@ void HeapMainState::deleteAllFrames()
 	for (int i = 0; i < 7; i++) {
 		codePanel.setLineColor(i, LavenderSoft);
 	}
+	for (int i = 0; i < 60; i++) {
+		for (int j = 0; j < 7; j++) {
+			codePanelColor[i][j] = LavenderSoft;
+		}
+	}
+}
+
+void HeapMainState::setCodePanelColor(int frameIndex)
+{
+	for (int i = 0; i < 7; i++) {
+		codePanel.setLineColor(i, codePanelColor[frameIndex][i]);
+	}
 }
 
 void HeapMainState::initPreHeap(const std::vector<int>& nums)
@@ -240,8 +252,6 @@ void HeapMainState::initCreateFrames(bool isInitState)
 	deleteAllFrames();
 
 	if (currentFrameIndex < 60) {
-		int firstIndex = static_cast<int>(b_frames.size());
-		int lastIndex = firstIndex + 60 - 1;
 		for (int i = 0; i < 60; i++)
 		{
 			Engine::Frame b_frame, w_frame;
@@ -250,13 +260,14 @@ void HeapMainState::initCreateFrames(bool isInitState)
 				w_nodes[j].setString(std::to_string(createArrs[0][j].second));
 				b_nodes[j].setTextUnder(std::to_string(createArrs[0][j].first));
 				w_nodes[j].setTextUnder(std::to_string(createArrs[0][j].first));
-				b_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
-				w_nodes[j].setRadius(RADIUS * static_cast<float>(i + 1) / 60);
-				codePanel.setLineColor(0, sf::Color::Red);
-				codePanel.setLineColor(1, sf::Color::Red);
+				float t = static_cast<float>(i + 1) / 60;
+				b_nodes[j].setRadius(RADIUS * t);
+				w_nodes[j].setRadius(RADIUS * t);
+				codePanelColor[i][0] = sf::Color::Red;
+				codePanelColor[i][1] = sf::Color::Red;
 				if (i == 59 && j == (int)createArrs[0].size() - 1) {
-					codePanel.setLineColor(0, LavenderSoft);
-					codePanel.setLineColor(1, LavenderSoft);
+					codePanelColor[i][0] = LavenderSoft;
+					codePanelColor[i][1] = LavenderSoft;
 				}
 				if (j == 0) {
 					if (i < 59) {
@@ -274,19 +285,13 @@ void HeapMainState::initCreateFrames(bool isInitState)
 				b_frame.addEdge("2bedges" + std::to_string(createArrs[0][j].first), b_edges[j]);
 				w_frame.addEdge("2wedges" + std::to_string(createArrs[0][j].first), w_edges[j]);
 			}
-			if (!isInitState) {
-				b_frame.addPanel("3bcodePanel", codePanel);
-				w_frame.addPanel("3wcodePanel", codePanel);
-			}
 			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
 		}
 		for (int i = 1; i < (int)createArrs[0].size(); i++)
-			connectTwoNodes(i, firstIndex, lastIndex, 1);
+			connectTwoNodes(i, 0, 59, 1);
 	}
 	else {
-		// build current state
-		//std::cerr << b_frames.size() << " " << currentFrameIndex << "\n";
 		int preFrames = 60;
 		bool ok = 0;
 		for (int i = 1; i < (int)createArrs.size(); i++) {
@@ -307,12 +312,12 @@ void HeapMainState::initCreateFrames(bool isInitState)
 					for (int k = 0; k < 60; k++)
 					{
 						initPreHeap(elements);
-						codePanel.setLineColor(2, sf::Color::Red);
-						codePanel.setLineColor(3, sf::Color::Red);
-
-						b_frames[k].addPanel("3bcodePanel", codePanel);
-						w_frames[k].addPanel("3wcodePanel", codePanel);
-
+						codePanelColor[k][2] = sf::Color::Red;
+						codePanelColor[k][3] = sf::Color::Red;
+						if (k == 59 && i == (int)createArrs.size() - 1) {
+							codePanelColor[k][2] = LavenderSoft;
+							codePanelColor[k][3] = LavenderSoft;
+						}
 					}
 					swapTwoNodes(cur.first, child.first, firstIndex, lastIndex, 1);
 
@@ -320,15 +325,6 @@ void HeapMainState::initCreateFrames(bool isInitState)
 					break;
 				}
 				std::swap(elements[createArrs[i][j].first], elements[createArrs[i][j + 1].first]);
-			}
-
-			if (i == (int)createArrs.size() - 1 && !isInitState) {
-				codePanel.setLineColor(2, LavenderSoft);
-				codePanel.setLineColor(3, LavenderSoft);
-				b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(2, LavenderSoft);
-				b_frames[b_frames.size() - 1].getPanel("3bcodePanel").setLineColor(3, LavenderSoft);
-				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(2, LavenderSoft);
-				w_frames[w_frames.size() - 1].getPanel("3wcodePanel").setLineColor(3, LavenderSoft);
 			}
 
 			if (ok) {
@@ -407,16 +403,14 @@ void HeapMainState::initInsertFrames(int value)
 					w_nodes[id].setFillColor(sf::Color::White);
 				}
 			}
-			codePanel.setLineColor(0, sf::Color::Red);
+			codePanelColor[i][0] = sf::Color::Red;
 			if (i == 59) {
-				codePanel.setLineColor(0, LavenderSoft);
+				codePanelColor[i][0] = LavenderSoft;
 			}
 
 			initPreHeap(heapElements);
 			b_frames[i].addNode("1bnodes" + std::to_string(id), b_nodes[id]);
 			w_frames[i].addNode("1wnodes" + std::to_string(id), w_nodes[id]);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 
 		}
 		if (id) {
@@ -432,18 +426,16 @@ void HeapMainState::initInsertFrames(int value)
 			if (preFrames > currentFrameIndex) {
 				for (int i = 0; i < 60; i++)
 				{
-					codePanel.setLineColor(1, sf::Color::Red);
-					codePanel.setLineColor(2, sf::Color::Red);
-					codePanel.setLineColor(3, sf::Color::Red);
+					codePanelColor[i][1] = sf::Color::Red;
+					codePanelColor[i][2] = sf::Color::Red;
+					codePanelColor[i][3] = sf::Color::Red;
 					if (h == (int)insertArrs.size() - 1 && i == 59) {
-						codePanel.setLineColor(1, LavenderSoft);
-						codePanel.setLineColor(2, LavenderSoft);
-						codePanel.setLineColor(3, LavenderSoft);
+						codePanelColor[i][1] = LavenderSoft;
+						codePanelColor[i][2] = LavenderSoft;
+						codePanelColor[i][3] = LavenderSoft;
 					}
 
 					initPreHeap(elements);
-					b_frames[i].addPanel("3bcodePanel", codePanel);
-					w_frames[i].addPanel("3wcodePanel", codePanel);
 
 				}
 				swapTwoNodes(id, heap.parent(id), 0, 59, 1);
@@ -506,7 +498,7 @@ void HeapMainState::preInitUpdateFrames(int id, int newV)
 void HeapMainState::initUpdateFrames(int id, int newV)
 {
 	deleteAllFrames();
-	initNode();
+	//initNode();
 	auto elements = heapElements;
 
 	int preFrames = 0;
@@ -516,7 +508,7 @@ void HeapMainState::initUpdateFrames(int id, int newV)
 		for (int i = 0; i < 60; i++)
 		{
 			initPreHeap(elements);
-			codePanel.setLineColor(0, sf::Color::Red);
+			codePanelColor[i][0] = sf::Color::Red;
 			b_nodes[id].setFillColor(sf::Color::Red);
 			w_nodes[id].setFillColor(Orange);
 
@@ -537,14 +529,12 @@ void HeapMainState::initUpdateFrames(int id, int newV)
 					w_nodes[id].setFillColor(sf::Color::White);
 				}
 				if (i == 59) {
-					codePanel.setLineColor(0, LavenderSoft);
+					codePanelColor[i][0] = LavenderSoft;
 				}
 			}
 
 			b_frames[i].addNode("1bnodes" + std::to_string(id), b_nodes[id]);
 			w_frames[i].addNode("1wnodes" + std::to_string(id), w_nodes[id]);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 		}
 		return;
 	}
@@ -561,25 +551,23 @@ void HeapMainState::initUpdateFrames(int id, int newV)
 		if (preFrames > currentFrameIndex) {
 			for (int j = 0; j < 60; j++) {
 				if (isLess) {
-					codePanel.setLineColor(1, sf::Color::Red);
-					codePanel.setLineColor(2, sf::Color::Red);
-					codePanel.setLineColor(3, sf::Color::Red);
+					codePanelColor[j][1] = sf::Color::Red;
+					codePanelColor[j][2] = sf::Color::Red;
+					codePanelColor[j][3] = sf::Color::Red;
 					if (j == 59 && i + 1 >= (int)updateArrs.size() - 1) {
-						codePanel.setLineColor(1, LavenderSoft);
-						codePanel.setLineColor(2, LavenderSoft);
-						codePanel.setLineColor(3, LavenderSoft);
+						codePanelColor[j][1] = LavenderSoft;
+						codePanelColor[j][2] = LavenderSoft;
+						codePanelColor[j][3] = LavenderSoft;
 					}
 				}
 				else {
-					codePanel.setLineColor(4, sf::Color::Red);
+					codePanelColor[j][4] = sf::Color::Red;
 					if (j == 59 && i + 2 >= (int)updateArrs.size() - 1) {
-						codePanel.setLineColor(4, LavenderSoft);
+						codePanelColor[j][4] = LavenderSoft;
 					}
 				}
 
 				initPreHeap(elements);
-				b_frames[j].addPanel("3bcodePanel", codePanel);
-				w_frames[j].addPanel("3wcodePanel", codePanel);
 			}
 			if (isLess) {
 				swapTwoNodes(cur.first, heap.parent(cur.first), 0, 59, 1);
@@ -671,18 +659,16 @@ void HeapMainState::initDeleteFrames(int id)
 		if (preFrames > currentFrameIndex) {
 			for (int i = 0; i < 60; i++)
 			{
-				codePanel.setLineColor(0, sf::Color::Red);
-				codePanel.setLineColor(1, sf::Color::Red);
-				codePanel.setLineColor(2, sf::Color::Red);
+				codePanelColor[i][0] = sf::Color::Red;
+				codePanelColor[i][1] = sf::Color::Red;
+				codePanelColor[i][2] = sf::Color::Red;
 				if (i == 59 && h == (int)deleteArrs[0].size() - 1) {
-					codePanel.setLineColor(0, LavenderSoft);
-					codePanel.setLineColor(1, LavenderSoft);
-					codePanel.setLineColor(2, LavenderSoft);
+					codePanelColor[i][0] = LavenderSoft;
+					codePanelColor[i][1] = LavenderSoft;
+					codePanelColor[i][2] = LavenderSoft;
 				}
 
 				initPreHeap(elements);
-				b_frames[i].addPanel("3bcodePanel", codePanel);
-				w_frames[i].addPanel("3wcodePanel", codePanel);
 			}
 			swapTwoNodes(child.first, par.first, 0, 59, 1);
 			return;
@@ -695,7 +681,7 @@ void HeapMainState::initDeleteFrames(int id)
 	if (preFrames > currentFrameIndex) {
 		for (int i = 0; i < 60; i++)
 		{
-			codePanel.setLineColor(4, sf::Color::Red);
+			codePanelColor[i][4] = sf::Color::Red;
 			b_nodes[0].setFillColor(sf::Color::Red);
 			w_nodes[0].setFillColor(Orange);
 
@@ -704,14 +690,12 @@ void HeapMainState::initDeleteFrames(int id)
 			if (i == 59) {
 				b_nodes[0].setCharacterSize(0);
 				w_nodes[0].setCharacterSize(0);
-				codePanel.setLineColor(4, LavenderSoft);
+				codePanelColor[i][4] = LavenderSoft;
 			}
 
 			initPreHeap(elements);
 			b_frames[i].addNode("1bnodes" + std::to_string(0), b_nodes[0]);
 			w_frames[i].addNode("1wnodes" + std::to_string(0), w_nodes[0]);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 		}
 		return;
 	}
@@ -725,13 +709,11 @@ void HeapMainState::initDeleteFrames(int id)
 	if (preFrames > currentFrameIndex) {
 		for (int i = 0; i < 60; i++)
 		{
-			codePanel.setLineColor(4, sf::Color::Red);
+			codePanelColor[i][4] = sf::Color::Red;
 			if (i == 59) {
-				codePanel.setLineColor(4, LavenderSoft);
+				codePanelColor[i][4] = LavenderSoft;
 			}
 			initPreHeap(elements);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 			if (i == 0) {
 				b_nodes[heap.Size()].setTextUnder("");
 				w_nodes[heap.Size()].setTextUnder("");
@@ -765,14 +747,12 @@ void HeapMainState::initDeleteFrames(int id)
 		preFrames += 60;
 		if (preFrames > currentFrameIndex) {
 			for (int i = 0; i < 60; i++) {
-				codePanel.setLineColor(5, sf::Color::Red);
+				codePanelColor[i][5] = sf::Color::Red;
 				if (i == 59 && h + 2 >= (int)deleteArrs[1].size() - 1) {
-					codePanel.setLineColor(5, LavenderSoft);
+					codePanelColor[i][5] = LavenderSoft;
 				}
 
 				initPreHeap(elements);
-				b_frames[i].addPanel("3bcodePanel", codePanel);
-				w_frames[i].addPanel("3wcodePanel", codePanel);
 			}
 			swapTwoNodes(cur.first, child.first, 0, 59, 1);
 			return;
@@ -845,7 +825,7 @@ void HeapMainState::initExtractFrames()
 	if (preFrames > currentFrameIndex) {
 		for (int i = 0; i < 60; i++)
 		{
-			codePanel.setLineColor(0, sf::Color::Red);
+			codePanelColor[i][0] = sf::Color::Red;
 			b_nodes[0].setFillColor(sf::Color::Red);
 			w_nodes[0].setFillColor(Orange);
 
@@ -854,14 +834,12 @@ void HeapMainState::initExtractFrames()
 			if (i == 59) {
 				b_nodes[0].setCharacterSize(0);
 				w_nodes[0].setCharacterSize(0);
-				codePanel.setLineColor(0, LavenderSoft);
+				codePanelColor[i][0] = LavenderSoft;
 			}
 
 			initPreHeap(elements);
 			b_frames[i].addNode("1bnodes" + std::to_string(0), b_nodes[0]);
 			w_frames[i].addNode("1wnodes" + std::to_string(0), w_nodes[0]);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 		}
 		return;
 	}
@@ -875,14 +853,12 @@ void HeapMainState::initExtractFrames()
 	if (preFrames > currentFrameIndex) {
 		for (int i = 0; i < 60; i++)
 		{
-			codePanel.setLineColor(0, sf::Color::Red);
+			codePanelColor[i][0] = sf::Color::Red;
 			if (i == 59) {
-				codePanel.setLineColor(0, LavenderSoft);
+				codePanelColor[i][0] = LavenderSoft;
 			}
 
 			initPreHeap(elements);
-			b_frames[i].addPanel("3bcodePanel", codePanel);
-			w_frames[i].addPanel("3wcodePanel", codePanel);
 			if (i == 0) {
 				b_nodes[heap.Size()].setTextUnder("");
 				w_nodes[heap.Size()].setTextUnder("");
@@ -916,18 +892,16 @@ void HeapMainState::initExtractFrames()
 		preFrames += 60;
 		if (preFrames > currentFrameIndex) {
 			for (int i = 0; i < 60; i++) {
-				codePanel.setLineColor(2, sf::Color::Red);
-				codePanel.setLineColor(3, sf::Color::Red);
-				codePanel.setLineColor(4, sf::Color::Red);
+				codePanelColor[i][2] = sf::Color::Red;
+				codePanelColor[i][3] = sf::Color::Red;
+				codePanelColor[i][4] = sf::Color::Red;
 				if (i == 59 && h + 2 >= (int)extractArrs.size() - 1) {
-					codePanel.setLineColor(2, LavenderSoft);
-					codePanel.setLineColor(3, LavenderSoft);
-					codePanel.setLineColor(4, LavenderSoft);
+					codePanelColor[i][2] = LavenderSoft;
+					codePanelColor[i][3] = LavenderSoft;
+					codePanelColor[i][4] = LavenderSoft;
 				}
 
 				initPreHeap(elements);
-				b_frames[i].addPanel("3bcodePanel", codePanel);
-				w_frames[i].addPanel("3wcodePanel", codePanel);
 			}
 			swapTwoNodes(cur.first, child.first, 0, 59, 1);
 			return;
@@ -967,8 +941,10 @@ void HeapMainState::updateFrames()
 			if (currentFrameIndex < numFrames - 1)
 			{
 				isEnd = false;
-				b_currentFrame = b_frames[currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex)];
-				w_currentFrame = w_frames[currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex)];
+				int curFrame = currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex);
+				b_currentFrame = b_frames[curFrame];
+				w_currentFrame = w_frames[curFrame];
+				setCodePanelColor(curFrame);
 
 				if (*m_context->themeType == 0)
 					currentFrame = b_currentFrame;
@@ -986,6 +962,7 @@ void HeapMainState::updateFrames()
 				isPaused = true;
 				currentFrameIndex = numFrames - 1;
 				aniSlider.setPart(currentFrameIndex + 1);
+				setCodePanelColor(59);
 				if (*m_context->themeType == 0)
 					currentFrame = b_frames.back();
 				else

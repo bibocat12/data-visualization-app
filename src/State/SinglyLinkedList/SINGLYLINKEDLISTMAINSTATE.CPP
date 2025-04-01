@@ -164,7 +164,7 @@ void SinglyLinkedListMainState::initButton(Button& button, std::string text, sf:
 	button.setPosition(pos);
 }
 
-SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context), m_frames(context)
+SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& context) : m_context(context)
 {
 	// Init context
 
@@ -186,9 +186,7 @@ SinglyLinkedListMainState::SinglyLinkedListMainState(std::shared_ptr<Context>& c
 	// Init speed slider
 	initSpeedSlider();
 
-	// Init node and edge
-	initNode();
-	initEdge();
+
 
 
 	warningText.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
@@ -268,18 +266,14 @@ void SinglyLinkedListMainState::update(const sf::Time& dt)
 	else
 		pauseButton.setPosition(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - pauseButton.getGlobalBounds().width) / 2, aniSlider.getPositon().y + aniSlider.getGlobalBounds().height + 15 });
 
-
-
-
 	if (isPaused == false && isPlaying == true)
-		aniSlider.setPart(currentFrameIndex);
+		aniSlider.setPart(currentFrameIndex + 1);
 
-	if (isPaused == true && isPlaying == true)
-	{
+	if (isPaused == true && isPlaying == true) {
 		int part = aniSlider.getPartIndex();
 		currentFrameIndex = part;
-
 	}
+
 	updateFrames();
 }
 
@@ -298,7 +292,9 @@ void SinglyLinkedListMainState::draw()
 
 	themeButton.drawTo(*m_context->window);
 	homeButton.drawTo(*m_context->window);
-	//codePanel.draw(*m_context->window);
+	if (currentState == "create" || currentState == "insert" || currentState == "delete" || currentState == "search" || currentState == "update") {
+		codePanel.draw(*m_context->window);
+	}
 
 	aniSlider.draw(*m_context->window);
 	speedSlider.draw(*m_context->window);
@@ -354,47 +350,7 @@ int SinglyLinkedListMainState::checkNumber(std::string str)
 
 }
 
-void SinglyLinkedListMainState::initNode()
-{
-	for (int i = 0; i < 18; i++)
-	{
-		Node node;
 
-		node.setFillColor(sf::Color::White);			// set color for node in white theme
-		node.setOutlineColor(sf::Color::Red);
-		node.setOutlineThickness(5);
-		node.setRadius(RADIUS);
-		node.setPosition(sf::Vector2f(PADDING_X + i * DISTANCE_X, 400));
-		node.setCharacterSize(20);
-		node.setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
-		node.setTextColor(sf::Color::Black);
-
-
-		b_nodes[i] = node;
-
-		node.setFillColor(sf::Color::White);			// set color for node in black theme
-		node.setOutlineColor(Orange);
-		w_nodes[i] = node;
-	}
-}
-void SinglyLinkedListMainState::initEdge()
-{
-	for (int i = 0; i < 18; i++)
-	{
-		Edge edge;
-		edge.setColor(sf::Color::Black);			// set color for edge in white theme
-		edge.setThickness(5);
-		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
-		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
-		b_edges[i] = edge;
-		edge.setColor(sf::Color::White);			// set color for edge in black theme
-		edge.setThickness(5);
-		edge.setStart(sf::Vector2f(PADDING_X + i * DISTANCE_X, EDGE_Y));
-		edge.setEnd(sf::Vector2f(PADDING_X + (i + 1) * DISTANCE_X, EDGE_Y));
-		edge.setDirected(true);
-		w_edges[i] = edge;
-	}
-}
 
 
 void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
@@ -442,21 +398,7 @@ void SinglyLinkedListMainState::handleInsertButtonEvents(sf::Event event)
 			insertTextboxV.reset();
 			insertTextboxV.setSelected(false);
 
-			m_frames.setLinkedList(LinkedList);
-			m_frames.initInsertFrames(pos, value);
-			currentFrameIndex = 0;
-			b_frames = m_frames.getBFrames();
-			w_frames = m_frames.getWFrames();
-			breakpoints = m_frames.getBreakpoints();
-			isPlaying = true;
-			isEnd = false;
-			isPaused = false;
-
-			aniSlider.setNumPart(b_frames.size());
-			aniSlider.setPart(0);
-			aniSlider.setBreakpoints(breakpoints);
-
-			LinkedList.insert(pos, value);
+			createInsertFrames(pos, value);
 		}
 	}
 	else {
@@ -502,21 +444,7 @@ void SinglyLinkedListMainState::handleDeleteButtonEvents(sf::Event event)
 			int num = deleteTextbox.getNum();
 			deleteTextbox.reset();
 
-			m_frames.setLinkedList(LinkedList);
-			m_frames.initDeleteFrames(num);
-			currentFrameIndex = 0;
-			b_frames = m_frames.getBFrames();
-			w_frames = m_frames.getWFrames();
-			breakpoints = m_frames.getBreakpoints();
-			isPlaying = true;
-			isEnd = false;
-			isPaused = false;
-
-			aniSlider.setNumPart(b_frames.size());
-			aniSlider.setPart(0);
-			aniSlider.setBreakpoints(breakpoints);
-
-			LinkedList.deleteElement(num);
+			createDeleteFrame(num);
 		}
 	}
 	else {
@@ -557,21 +485,7 @@ void SinglyLinkedListMainState::handleSearchButtonEvents(sf::Event event)
 			int num = searchTextbox.getNum();
 			searchTextbox.reset();
 
-			m_frames.setLinkedList(LinkedList);
-			m_frames.initSearchFrames(num);
-			currentFrameIndex = 0;
-			b_frames = m_frames.getBFrames();
-			w_frames = m_frames.getWFrames();
-			breakpoints = m_frames.getBreakpoints();
-			isPlaying = true;
-			isEnd = false;
-			isPaused = false;
-
-			aniSlider.setNumPart(b_frames.size());
-			aniSlider.setPart(0);
-			aniSlider.setBreakpoints(breakpoints);
-
-
+			createSearchFrames(num);
 		}
 	}
 	else {
@@ -635,27 +549,8 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 						nums.push_back(num);
 					}
 
+					createCreateFrames(nums);
 
-					LinkedList.removeAll();
-					for (int x : nums) {
-						LinkedList.insert(x);
-					}
-
-					m_frames.setLinkedList(LinkedList);
-
-					m_frames.initCreateFrames();
-					b_frames = m_frames.getBFrames();
-					w_frames = m_frames.getWFrames();
-					breakpoints = m_frames.getBreakpoints();
-
-					isPlaying = true;
-					isEnd = false;
-					isEnd = false;
-
-					currentFrameIndex = 0;
-					aniSlider.setNumPart(b_frames.size());
-					aniSlider.setPart(0);
-					aniSlider.setBreakpoints(breakpoints);
 				}
 				else {
 					std::cerr << "Cant open the file\n";
@@ -676,23 +571,11 @@ void SinglyLinkedListMainState::handleCreateButtonEvents(sf::Event event)
 			std::vector<int> allElements;
 			for (int i = 0; i < num; i++) {
 				int x = rand() % 100;
+				allElements.push_back(x);
 				LinkedList.insert(x);
 			}
-			m_frames.setLinkedList(LinkedList);
 
-			m_frames.initCreateFrames();
-			b_frames = m_frames.getBFrames();
-			w_frames = m_frames.getWFrames();
-			breakpoints = m_frames.getBreakpoints();
-
-			isPlaying = true;
-			isEnd = false;
-			isEnd = false;
-
-			currentFrameIndex = 0;
-			aniSlider.setNumPart(b_frames.size());
-			aniSlider.setPart(0);
-			aniSlider.setBreakpoints(breakpoints);
+			createCreateFrames(allElements);
 
 		}
 	}
@@ -749,21 +632,7 @@ void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 			updateTextboxV.reset();
 			updateTextboxV.setSelected(false);
 
-			m_frames.setLinkedList(LinkedList);
-			m_frames.initUpdateFrames(oldV, newV);
-			currentFrameIndex = 0;
-			b_frames = m_frames.getBFrames();
-			w_frames = m_frames.getWFrames();
-			breakpoints = m_frames.getBreakpoints();
-			isPlaying = true;
-			isEnd = false;
-			isPaused = false;
-
-			aniSlider.setNumPart(b_frames.size());
-			aniSlider.setPart(0);
-			aniSlider.setBreakpoints(breakpoints);
-
-			LinkedList.update(oldV, newV);
+			createUpdateFrames(oldV, newV);
 
 
 		}
@@ -791,8 +660,8 @@ void SinglyLinkedListMainState::handleThemeButtonEvents(sf::Event event)
 }
 void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 {
-	if (b_frames.size() == 0) return;
-	aniSlider.setNumPart(b_frames.size());
+	if (numFrames == 0) return;
+	aniSlider.setNumPart(numFrames);
 
 	if (isPlaying == false)
 		return;
@@ -820,8 +689,8 @@ void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 		}
 		if (forwardButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
-			currentFrameIndex = b_frames.size() - 1;
-			aniSlider.setPart(b_frames.size() - 1);
+			currentFrameIndex = numFrames - 1;
+			aniSlider.setPart(numFrames);
 		}
 		if (rewindButton.isMouseOverCircle(*m_context->window)) {
 			isPaused = true;
@@ -847,17 +716,19 @@ void SinglyLinkedListMainState::handleAniSliderEvents(sf::Event event)
 		{
 			isPaused = true;
 			aniSlider.handleEvent(event);
+			currentFrameIndex = aniSlider.getPartIndex();
 			return;
 		}
 	}
-
 	aniSlider.handleEvent(event);
+	currentFrameIndex = aniSlider.getPartIndex();
 }
 void SinglyLinkedListMainState::handleSpeedSliderEvents(sf::Event event)
 {
 	speedSlider.handleEvent(event);
 	std::string st = "1.0x";
 	st[0] = char(speedSlider.getPartIndex() + 1 + '0');
+	*m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / static_cast<float>(speedSlider.getPartIndex() + 1));
 	speedSlider.setMaxText(st);
 }
 void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
@@ -877,48 +748,4 @@ void SinglyLinkedListMainState::handleButtonEvents(const sf::Event& event)
 }
 
 
-void SinglyLinkedListMainState::updateFrames()
-{
-	numFrames = b_frames.size();
-	speed = speedSlider.getPartIndex() + 1;
-	if (isPlaying)
-	{
 
-		if (numFrames > 0)
-		{
-			//std::cerr << currentFrameIndex << std::endl;
-			if (currentFrameIndex < numFrames - 1)
-			{
-				isEnd = false;
-				b_currentFrame = b_frames[currentFrameIndex];
-				w_currentFrame = w_frames[currentFrameIndex];
-
-				if (*m_context->themeType == 0)
-					currentFrame = b_currentFrame;
-				else
-					currentFrame = w_currentFrame;
-
-				if (isPaused == false)
-					currentFrameIndex += speed;
-
-
-			}
-			else
-			{
-				isEnd = true;
-				isPaused = true;
-				currentFrameIndex = numFrames - 1;
-				aniSlider.setPart(currentFrameIndex);
-				if (*m_context->themeType == 0)
-					currentFrame = b_frames.back();
-				else
-					currentFrame = w_frames.back();
-
-			}
-		}
-	}
-
-
-
-
-}

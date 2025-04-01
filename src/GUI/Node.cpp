@@ -152,9 +152,14 @@ void Node::setSide(float length)
 
 void Node::setOutlineColor(sf::Color color)
 {
-	if (outlineColor == color) return;
-	if (isCircle) shape.setOutlineColor(color);
-	else squareShape.setOutlineColor(color);
+	if (isCircle) {
+		if (shape.getOutlineColor() == color) return;
+		shape.setOutlineColor(color);
+	}
+	else {
+		if (squareShape.getOutlineColor() == color) return;
+		squareShape.setOutlineColor(color);
+	}
 	outlineColor = color;
 }
 

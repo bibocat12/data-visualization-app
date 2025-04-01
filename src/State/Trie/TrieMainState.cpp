@@ -41,13 +41,11 @@ void TrieMainState::processEvents() {
             return;
         }
 
-        // Xử lý sự kiện cho các button
         handleButtonEvents(event);
         handleAniSliderEvents(event);
         handleSpeedSliderEvents(event);
     }
 
-    // Xử lý sự kiện cho các textbox
     createTextbox.handleCursor();
     insertTextbox.handleCursor();
     deleteTextbox.handleCursor();
@@ -97,7 +95,9 @@ void TrieMainState::draw() {
 
     themeButton.drawTo(*m_context->window);
     homeButton.drawTo(*m_context->window);
-    codePanel.draw(*m_context->window);
+    if (currentState == "cteate" || currentState == "insert" || currentState == "delete" || currentState == "search") {
+        codePanel.draw(*m_context->window);
+    }
 
     aniSlider.draw(*m_context->window);
     speedSlider.draw(*m_context->window);
@@ -140,7 +140,6 @@ void TrieMainState::switchTheme() {
         hoverButtonColor = LightOrangeYellow;
         themeButton.setBackground(m_context->assetManager->getTexture("LightTheme"));
 
-        // Thay đổi màu chữ cho các button
         createButton.setTextColor(textColor);
         insertButton.setTextColor(textColor);
         deleteButton.setTextColor(textColor);

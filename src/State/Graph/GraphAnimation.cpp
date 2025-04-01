@@ -3,18 +3,27 @@
 void GraphMainState::initPreGraph()
 {
     Engine::Frame frame;
-    for (int i = 0; i < (int)fGraph.nodes.size(); i++)
+    for (int i = 0; i < (int)fGraph.numNodes; i++)
     {
         frame.addNode("1nodes" + std::to_string(i), fGraph.nodes[i].node);
     }
-    for (int i = 0; i < (int)fGraph.edges.size(); i++) {
+    for (int i = 0; i < (int)fGraph.numEdges; i++) {
         frame.addEdge("2edges" + std::to_string(i), fGraph.edges[i].edge);
     }
-    frames.push_back(frame);
+    frames.push_back(std::move(frame));
+
 }
 
 void GraphMainState::deleteAllFrames() {
     frames.clear();
+    for (int i = 0; i < 7; i++) {
+        codePanel.setLineColor(i, LavenderSoft);
+    }
+    for (int i = 0; i < 60; i++) {
+        for (int j = 0; j < 7; j++) {
+            codePanelColor[i][j] = LavenderSoft;
+        }
+    }
 }
 
 void GraphMainState::selectEdge(int edgeIndex, bool isSelected, int index1, int index2)
@@ -25,7 +34,7 @@ void GraphMainState::selectEdge(int edgeIndex, bool isSelected, int index1, int 
     fGraph.nodes[v].node.setFillColor(Orange);
 
     for (int i = index1; i <= index2; i++) {
-        if (((i - index1 + 1) / 10) == 6) {
+        if (((i - index1 + 1) / 20) == 3) {
             if (isSelected) {
                 fGraph.edges[edgeIndex].edge.setColor(Orange);
             }
@@ -33,16 +42,16 @@ void GraphMainState::selectEdge(int edgeIndex, bool isSelected, int index1, int 
                 fGraph.edges[edgeIndex].edge.setColor(textColor);
             }
         }
-        else if (((i - index1 + 1) / 10) % 2 == 1) {
+        else if (((i - index1 + 1) / 20) % 2 == 1) {
             fGraph.edges[edgeIndex].edge.setColor(textColor);
         }
-        else if (((i - index1 + 1) / 10) % 2 == 0) {
+        else if (((i - index1 + 1) / 20) % 2 == 0) {
             fGraph.edges[edgeIndex].edge.setColor(Orange);
         }
 
-        frames[i].getNode("1nodes" + std::to_string(u)).setFillColor(Orange);
-        frames[i].getNode("1nodes" + std::to_string(v)).setFillColor(Orange);
-        frames[i].getEdge("2edges" + std::to_string(edgeIndex)).setColor(fGraph.edges[edgeIndex].edge.getColor());
+        frames[i].addNode("1nodes" + std::to_string(u), fGraph.nodes[u].node);
+        frames[i].addNode("1nodes" + std::to_string(v), fGraph.nodes[v].node);
+        frames[i].addEdge("2edges" + std::to_string(edgeIndex), fGraph.edges[edgeIndex].edge);
     }
 }
 
@@ -60,14 +69,14 @@ void GraphMainState::moveTo(int from, int edgeIndex, int index1, int index2)
         float t = static_cast<float> (i - index1 + 1) / (index2 - index1);
         tmpEdge.setStart(start);
         tmpEdge.setEnd(start + t * (end - start));
-        if(i < index2) frames[i].addEdge("2edges999", tmpEdge);
+        if (i < index2) frames[i].addEdge("9tmpedges999", tmpEdge);
         else {
             int from = fGraph.edges[edgeIndex].from;
             int to = fGraph.edges[edgeIndex].to;
             fGraph.nodes[from].node.setFillColor(Orange);
             fGraph.nodes[to].node.setFillColor(Orange);
-            frames[i].getNode("1nodes" + std::to_string(from)).setFillColor(Orange);
-            frames[i].getNode("1nodes" + std::to_string(to)).setFillColor(Orange);
+            frames[i].addNode("1nodes" + std::to_string(from), fGraph.nodes[from].node);
+            frames[i].addNode("1nodes" + std::to_string(to), fGraph.nodes[to].node);
             frames[i].addEdge("2edges" + std::to_string(edgeIndex), fGraph.edges[edgeIndex].edge);
         }
     }
@@ -133,27 +142,26 @@ void GraphMainState::initMstFrames()
             }
             for (int i = 0; i < 60; i++) {
                 if (i < 20) {
-                    codePanel.setLineColor(2, sf::Color::Red);
+                    codePanelColor[i][2] = sf::Color::Red;
                     if (i == 19) {
-                        codePanel.setLineColor(2, LavenderSoft);
+                        codePanelColor[i][2] = LavenderSoft;
                     }
                 }
                 else {
                     if (mstArrs[k].second) {
-                        codePanel.setLineColor(3, sf::Color::Red);
+                        codePanelColor[i][3] = sf::Color::Red;
                         if (i == 59) {
-                            codePanel.setLineColor(3, LavenderSoft);
+                            codePanelColor[i][3] = LavenderSoft;
                         }
                     }
                     else {
-                        codePanel.setLineColor(4, sf::Color::Red);
+                        codePanelColor[i][4] = sf::Color::Red;
                         if (i == 59) {
-                            codePanel.setLineColor(4, LavenderSoft);
+                            codePanelColor[i][4] = LavenderSoft;
                         }
                     }
                 }
                 initPreGraph();
-                frames[i].addPanel("3codePanel", codePanel);
             }
 
             selectEdge(mstArrs[k].first, mstArrs[k].second, 0, 59);
@@ -167,8 +175,8 @@ void GraphMainState::preInitShortestPathFrames(int s)
 {
     isSelectedMstFrames = false;
     isSelectedShortestPathFrames = true;
-    
-    spArrs = graph.dijkstra(s, (int)fGraph.nodes.size());
+
+    spArrs = graph.dijkstra(s, (int)fGraph.numNodes);
     breakpoints.clear();
     for (int i = 0; i < 7; i++) {
         codePanel.setLineColor(i, LavenderSoft);
@@ -217,7 +225,7 @@ void GraphMainState::initShortestPathFrames(int s)
         auto cur = spArrs[i];
         if (preFrames > currentFrameIndex) {
             for (int j = 0; j < 60; j++) {
-                for (int k = 0; k < (int)fGraph.nodes.size(); k++) {
+                for (int k = 0; k < (int)fGraph.numNodes; k++) {
                     fGraph.nodes[k].node.setTextUnder("1e9");
                 }
                 for (int pre_i = 0; pre_i < i; pre_i++) {
@@ -227,50 +235,49 @@ void GraphMainState::initShortestPathFrames(int s)
                 initPreGraph();
 
                 if (i == 0) {
-                    for (int k = 0; k < (int)fGraph.nodes.size(); k++) {
+                    for (int k = 0; k < (int)fGraph.numNodes; k++) {
                         auto& node = fGraph.nodes[k];
-                        codePanel.setLineColor(0, sf::Color::Red);
+                        codePanelColor[j][0] = sf::Color::Red;
                         if ((j / 10) % 2 == 0) {
                             node.node.setFillColor(Orange);
                         }
                         else {
                             if (k == cur[1] - 1 && j == 59) {
                                 node.node.setFillColor(Orange);
-                            } else node.node.setFillColor(sf::Color::Transparent);
+                            }
+                            else node.node.setFillColor(sf::Color::Transparent);
                         }
                         if (j == 59) {
-                            codePanel.setLineColor(0, LavenderSoft);
+                            codePanelColor[j][0] = LavenderSoft;
                         }
                         node.node.setTextUnder(k == cur[1] - 1 ? "0" : "1e9");
                         frames[j].addNode("1nodes" + std::to_string(k), fGraph.nodes[k].node);
-                        frames[j].addPanel("3codePanel", codePanel);
                     }
 
                 }
                 else {
                     if (j < 10) {
-                        codePanel.setLineColor(2, sf::Color::Red);
+                        codePanelColor[j][2] = sf::Color::Red;
                         if (j == 9) {
-                            codePanel.setLineColor(2, LavenderSoft);
+                            codePanelColor[j][2] = LavenderSoft;
                         }
                     }
                     else {
-                        codePanel.setLineColor(4, sf::Color::Red);
-                        codePanel.setLineColor(5, sf::Color::Red);
-                        codePanel.setLineColor(6, sf::Color::Red);
+                        codePanelColor[j][4] = sf::Color::Red;
+                        codePanelColor[j][5] = sf::Color::Red;
+                        codePanelColor[j][6] = sf::Color::Red;
                         if (j == 59) {
                             fGraph.nodes[cur[1] - 1].node.setTextUnder(std::to_string(cur[2]));
                             frames[j].addNode("1nodes" + std::to_string(cur[1] - 1), fGraph.nodes[cur[1] - 1].node);
-                            codePanel.setLineColor(4, LavenderSoft);
-                            codePanel.setLineColor(5, LavenderSoft);
-                            codePanel.setLineColor(6, LavenderSoft);
+                            codePanelColor[j][4] = LavenderSoft;
+                            codePanelColor[j][5] = LavenderSoft;
+                            codePanelColor[j][6] = LavenderSoft;
                         }
                     }
-                    frames[j].addPanel("3codePanel", codePanel);
                 }
-                
+
             }
-            
+
             if (i != 0) {
                 moveTo(cur[1] - 1, cur[0], 0, 59);
             }
@@ -301,7 +308,9 @@ void GraphMainState::updateFrames()
             if (currentFrameIndex < numFrames - 1)
             {
                 isEnd = false;
-                currentFrame = frames[currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex)];
+                int curFrame = currentFrameIndex - aniSlider.getBreakpoints(currentFrameIndex);
+                currentFrame = frames[curFrame];
+                setCodePanelColor(curFrame);
 
                 if (isPaused == false) {
                     currentFrameIndex += speed;
@@ -314,6 +323,7 @@ void GraphMainState::updateFrames()
                 isPaused = true;
                 currentFrameIndex = numFrames - 1;
                 aniSlider.setPart(currentFrameIndex + 1);
+                setCodePanelColor(59);
                 currentFrame = frames.back();
             }
         }
@@ -332,4 +342,11 @@ void GraphMainState::deleteOldFrames()
     aniSlider.setNumPart(0);
     aniSlider.setPart(0);
     aniSlider.setBreakpoints(breakpoints);
+}
+
+void GraphMainState::setCodePanelColor(int frameIndex)
+{
+    for (int i = 0; i < 7; i++) {
+        codePanel.setLineColor(i, codePanelColor[frameIndex][i]);
+    }
 }

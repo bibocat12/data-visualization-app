@@ -15,7 +15,7 @@ public:
     void addNode(sf::Vector2f pos, const std::string& text = "");
     void addEdge(int from, int to, int weight = 0, bool directed = false);
     void setFixed(bool isFixed);
-    void setColor(sf::Color color, bool changeFillColor);
+    void setColor(sf::Color _color, bool changeFillColor);
     void applyForces(float dt, float optimalEdgeLength);
     void update(float dt);
     void draw(sf::RenderWindow& window);
@@ -24,7 +24,7 @@ public:
     void setDirected(bool isDirected);
     void reset();
 
-private:
+public:
     struct forceNode {
         Node node;
         sf::Vector2f velocity;
@@ -40,12 +40,14 @@ private:
     };
 
 public:
-    std::vector<forceNode> nodes;
-    std::vector<forceEdge> edges;
+    int numNodes = 0;
+    int numEdges = 0;
+    forceNode nodes[100];
+    forceEdge edges[100];
 private:
 
     int selectedNode = -1;
-    float idealEdgeLength = 200.0f;
+    float idealEdgeLength = 300.0f;
     float nodeRadius;
     float edgeThickness;
     sf::Font& font;
