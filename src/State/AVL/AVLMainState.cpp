@@ -272,11 +272,11 @@ void AVLMainState::initButton(Button& button, std::string text, sf::Vector2f pos
 
 
 void AVLMainState::handleButtonEvents(const sf::Event& event) {
+    handleInorderButtonEvents(event);
     handleCreateButtonEvents(event);
     handleInsertButtonEvents(event);
     handleDeleteButtonEvents(event);
     handleSearchButtonEvents(event);
-    handleInorderButtonEvents(event);
     handleHomeButtonEvents(event);
     handleThemeButtonEvents(event);
 }
@@ -373,7 +373,7 @@ void AVLMainState::handleCreateButtonEvents(const sf::Event& event) {
         createTextbox.setInvisible();
         uploadFileButton.setPosition(sf::Vector2f{ -1000, -1000 });
 
-        if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton) {
+        if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedInorderButton) {
             randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
             okButton.setPosition(sf::Vector2f{ -1000, -1000 });
         }
@@ -427,10 +427,11 @@ void AVLMainState::handleInsertButtonEvents(const sf::Event& event) {
             if (!isSelectedInsertButton)
                 if (!isSelectedDeleteButton)
                     if (!isSelectedSearchButton)
-                    {
-                        randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
-                        okButton.setPosition(sf::Vector2f{ -1000, -1000 });
-                    }
+                        if(!isSelectedInorderButton)
+                        {
+                            randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                            okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                        }
     }
 
 
@@ -480,10 +481,11 @@ void AVLMainState::handleDeleteButtonEvents(const sf::Event& event) {
             if (!isSelectedInsertButton)
                 if (!isSelectedDeleteButton)
                     if (!isSelectedSearchButton)
-                    {
-                        randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
-                        okButton.setPosition(sf::Vector2f{ -1000, -1000 });
-                    }
+                        if(!isSelectedInorderButton)
+                        {
+                            randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                            okButton.setPosition(sf::Vector2f{ -1000, -1000 });
+                        }
     }
     // Handle delete button click
 
@@ -533,7 +535,7 @@ void AVLMainState::handleSearchButtonEvents(const sf::Event& event) {
 
         searchTextbox.setSelected(false);
         searchTextbox.setInvisible();
-        if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton) {
+        if (!isSelectedCreateButton && !isSelectedDeleteButton && !isSelectedInsertButton && !isSelectedSearchButton && !isSelectedInorderButton) {
             randomButton.setPosition(sf::Vector2f{ -1000, -1000 });
             okButton.setPosition(sf::Vector2f{ -1000, -1000 });
         }
@@ -554,10 +556,11 @@ void AVLMainState::handleInorderButtonEvents(const sf::Event& event)
     }
     if (isSelectedInorderButton)
     {
-
+        uploadFileButton.setPosition(sf::Vector2f(-1000, -1000));
+        randomButton.setPosition(sf::Vector2f(-1000, -1000));
         inorderButton.setBackColor(hoverButtonColor);
-        okButtonBackground.setPosition(sf::Vector2f{ 5 + inorderButton.getPositon().x + inorderButton.getGlobalBounds().width, inorderButton.getPositon().y });
-        okButton.setPosition(sf::Vector2f{ inorderButton.getPositon().x + (inorderButton.getGlobalBounds().width + 50) , inorderButton.getPositon().y });
+        okButtonBackground.setPosition(sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
+        okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + (searchTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5 , createButton.getPositon().y });
         if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
             (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed
                 && event.mouseButton.button == sf::Mouse::Left))
@@ -568,7 +571,6 @@ void AVLMainState::handleInorderButtonEvents(const sf::Event& event)
     }
     else
     {
-
         //initInorderFrames();
         if (!isSelectedCreateButton)
             if (!isSelectedInsertButton)
@@ -609,19 +611,19 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
             for (int x : breakpoints)
                 if (x > currentFrameIndex) {
                     currentFrameIndex = x;
-                    
+
                     break;
                 }
                 else
                 {
-					
+
                 }
             std::cerr << breakpoints.size() << std::endl;
             aniSlider.setPart(currentFrameIndex);
         }
         if (previousButton.isMouseOverCircle(*m_context->window)) {
             isPaused = true;
-           
+
             for (int i = breakpoints.size() - 1; i >= 0; i--) {
                 if (breakpoints[i] < currentFrameIndex) {
                     currentFrameIndex = breakpoints[i];
@@ -629,7 +631,7 @@ void AVLMainState::handleAniSliderEvents(const sf::Event& event) {
                 }
             }
             aniSlider.setPart(currentFrameIndex);
-			
+
 
         }
         if (forwardButton.isMouseOverCircle(*m_context->window)) {

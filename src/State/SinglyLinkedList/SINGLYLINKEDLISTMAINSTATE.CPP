@@ -615,7 +615,7 @@ void SinglyLinkedListMainState::handleUpdateButtonEvents(sf::Event event)
 		updateTextboxV.typedOnNum(event, *m_context->window);
 
 		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
-			int randomNum = std::rand() % 100 + 1;
+			int randomNum = std::rand() % LinkedList.getSize();
 			updateTextboxX.insertNum(randomNum);
 		}
 

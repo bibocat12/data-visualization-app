@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿
+#pragma once
 
 #include "../../StateMachine/State.h"
 #include "../../StateMachine/StateMachine.h"
@@ -100,7 +101,7 @@ public:
     // Frame Control
     int numFrames = 0;
     int currentFrameIndex = 0;
-	int prevFrameIndex = 0;
+    int prevFrameIndex = 0;
     bool isShowing = false;
     bool isPaused = false;
     bool isPlaying = false;
@@ -143,24 +144,24 @@ public:
     std::string currentState = "no";
 
     void deleteAllFrames();
-	void initEmptyFrames(int count);
+    void initEmptyFrames(int count);
     void initCreateFrames(std::vector<int> elements);
     void initInsertFrames();
 
-	int deleteValue = 0;
+    int deleteValue = 0;
     void initDeleteFrames(int deleteValue);
-	void initSearchFrames();
+    void initSearchFrames();
     std::vector<int> searchPath;
     int ValueFind = 0;
 
-	void initInorderFrames();
+    void initInorderFrames();
 
     void createInorderFrames();
-	void createInsertFrames(int value);
-	void createDeleteFrames(int value);
-	void createSearchFrames(int value);
+    void createInsertFrames(int value);
+    void createDeleteFrames(int value);
+    void createSearchFrames(int value);
 
-	void setCodePanelColor(int frameIndex);
+    void setCodePanelColor(int frameIndex);
 
 
     void updateFrames();
@@ -171,9 +172,9 @@ public:
     sf::Sprite background;
     std::vector<Engine::Frame> b_frames;
     std::vector<Engine::Frame> w_frames;
-	std::vector<bool> isFrameActive;
-	std::vector<int> inorderSnapshot;
-	std::vector<AVLTree::TreeSnapshot> snapshots;
+    std::vector<bool> isFrameActive;
+    std::vector<int> inorderSnapshot;
+    std::vector<AVLTree::TreeSnapshot> snapshots;
     int speed = 1;
 
     // UI Initialization
