@@ -561,6 +561,7 @@ void AVLMainState::handleInorderButtonEvents(const sf::Event& event)
         inorderButton.setBackColor(hoverButtonColor);
         okButtonBackground.setPosition(sf::Vector2f{ 5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
         okButton.setPosition(sf::Vector2f{ searchTextbox.getPositon().x + (searchTextbox.getGlobalBounds().width - okButton.getGlobalBounds().width) / 2 - 5 , createButton.getPositon().y });
+
         if ((event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) ||
             (okButton.isMouseOver(*m_context->window) && event.type == sf::Event::MouseButtonPressed
                 && event.mouseButton.button == sf::Mouse::Left))
