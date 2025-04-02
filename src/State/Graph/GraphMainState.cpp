@@ -317,6 +317,14 @@ void GraphMainState::update(const sf::Time& dt)
 				frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
 			}
 			for (int j = 0; j < (int)fGraph.numEdges; j++) {
+				if (j == tmpEdgeIndex) {
+					sf::Vector2f start = fGraph.edges[tmpEdgeIndex].edge.getStart();
+					sf::Vector2f end = fGraph.edges[tmpEdgeIndex].edge.getEnd();
+					float t = static_cast<float>(i + 1) / 59;
+					tmpEdge.setStart(start);
+					tmpEdge.setEnd(start + t * (end - start));
+					frames[i].addEdge("9tmpedges999", tmpEdge);
+				}
 				frames[i].getEdge("2edges" + std::to_string(j)).setStart(fGraph.edges[j].edge.getStart());
 				frames[i].getEdge("2edges" + std::to_string(j)).setEnd(fGraph.edges[j].edge.getEnd());
 			}

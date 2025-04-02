@@ -1,6 +1,6 @@
 ﻿#include "SinglyLinkedListMainState.h"
 
-void SinglyLinkedListMainState::initNode(std::vector<int>& getAllElements)
+void SinglyLinkedListMainState::initNode(std::vector<int>&getAllElements)
 {
 	int numElements = getAllElements.size();
 
@@ -22,7 +22,7 @@ void SinglyLinkedListMainState::initNode(std::vector<int>& getAllElements)
 
 		b_nodes[i] = w_nodes[i];
 
-		
+
 		b_nodes[i].setFillColor(B_NODE_COLOR);
 		b_nodes[i].setOutlineColor(sf::Color::Red);
 		b_nodes[i].setFont(m_context->assetManager->getFont("JetBrainsMono-Regular"));
@@ -33,7 +33,7 @@ void SinglyLinkedListMainState::initNode(std::vector<int>& getAllElements)
 		b_nodes[i].setString(std::to_string(getAllElements[i]));
 		b_nodes[i].setTextColor(sf::Color::Black);
 
-		
+
 
 
 
@@ -67,7 +67,7 @@ void SinglyLinkedListMainState::deleteAllFrames()
 {
 	b_frames.clear();
 	w_frames.clear();
-	for(int i = 0;i < 60;i++)
+	for (int i = 0;i < 60;i++)
 		for (int j = 0; j < 9; j++)
 			codePanelColor[i][j] = LavenderSoft;
 }
@@ -229,7 +229,7 @@ void SinglyLinkedListMainState::initCreateFrames()
 	{
 		b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
 		w_frame.addNode("1wnodes" + std::to_string(i), w_nodes[i]);
-		if(i > 0)
+		if (i > 0)
 		{
 			b_frame.addEdge("1bedges" + std::to_string(i), b_edges[i]);
 			w_frame.addEdge("1wedges" + std::to_string(i), w_edges[i]);
@@ -252,7 +252,7 @@ void SinglyLinkedListMainState::initCreateFrames()
 	if (curBreakpoint == 0)
 		return;
 	Edge edge = b_edges[curBreakpoint];
-	edge.setEnd(b_nodes[curBreakpoint].getPosition() - sf::Vector2f(2*RADIUS , 0));
+	edge.setEnd(b_nodes[curBreakpoint].getPosition() - sf::Vector2f(2 * RADIUS, 0));
 	changeBEdge(curBreakpoint, 1, 59, edge, b_edges[curBreakpoint]);
 	edge = w_edges[curBreakpoint];
 	edge.setEnd(w_nodes[curBreakpoint].getPosition() - sf::Vector2f(2 * RADIUS, 0));
@@ -276,14 +276,14 @@ void SinglyLinkedListMainState::initInsertFrames()
 	deleteAllFrames();
 	Engine::Frame b_frame, w_frame;
 	int v;
-	if(kInsert != -1)
+	if (kInsert != -1)
 		v = vInsert;
 
-	std::cerr << "kInsert" <<kInsert << std::endl;
+	std::cerr << "kInsert" << kInsert << std::endl;
 	allElements.erase(allElements.begin() + kInsert);
 	initNode(allElements);
 	initEdge(allElements);
-	
+
 	std::cerr << "curBreakpoint: " << currentFrameIndex << std::endl;
 	for (int i = 0; i < allElements.size(); i++)
 	{
@@ -303,8 +303,8 @@ void SinglyLinkedListMainState::initInsertFrames()
 
 	if (curBreakpoint < kInsert)
 	{
-		for(int i = 0;i < 60;i++)
-			if(i < 30)
+		for (int i = 0;i < 60;i++)
+			if (i < 30)
 				codePanelColor[i][0] = sf::Color::Red;
 			else
 				codePanelColor[i][1] = sf::Color::Red;
@@ -327,13 +327,13 @@ void SinglyLinkedListMainState::initInsertFrames()
 
 		for (int i = allElements.size() - 1; i >= kInsert; i--)
 		{
-			preb_nodes[i+1] = b_nodes[i];
-			prew_nodes[i+1] = w_nodes[i];
-			if(i > 0)
+			preb_nodes[i + 1] = b_nodes[i];
+			prew_nodes[i + 1] = w_nodes[i];
+			if (i > 0)
 			{
-				preb_edges[i+1] = b_edges[i];
-				prew_edges[i+1] = w_edges[i];
-				
+				preb_edges[i + 1] = b_edges[i];
+				prew_edges[i + 1] = w_edges[i];
+
 			}
 			b_nodes[i + 1] = b_nodes[i];
 			w_nodes[i + 1] = w_nodes[i];
@@ -384,7 +384,7 @@ void SinglyLinkedListMainState::initInsertFrames()
 		{
 			preb_edges[kInsert + 1] = b_edges[kInsert + 1];
 			prew_edges[kInsert + 1] = w_edges[kInsert + 1];
-			preb_edges[kInsert + 1].setStart(b_nodes[kInsert ].getPosition());
+			preb_edges[kInsert + 1].setStart(b_nodes[kInsert].getPosition());
 			preb_edges[kInsert + 1].setEnd(b_nodes[kInsert + 1].getPosition() - sf::Vector2f(DISTANCE_X, 0));
 			prew_edges[kInsert + 1].setStart(w_nodes[kInsert].getPosition());
 			prew_edges[kInsert + 1].setEnd(w_nodes[kInsert + 1].getPosition() - sf::Vector2f(DISTANCE_X, 0));
@@ -447,14 +447,14 @@ void SinglyLinkedListMainState::initDeleteFrames()
 		{
 			b_frames.push_back(b_frame);
 			w_frames.push_back(w_frame);
-			if(step < 30)
+			if (step < 30)
 				codePanelColor[step][1] = sf::Color::Red;
 			else
 				codePanelColor[step][3] = sf::Color::Red;
 
 			if (curBreakpoint == oldElements.size() - 1)
 			{
-				if(step < 20)
+				if (step < 20)
 					codePanelColor[step][1] = sf::Color::Red;
 				else if (step < 40)
 					codePanelColor[step][3] = sf::Color::Red;
@@ -519,7 +519,7 @@ void SinglyLinkedListMainState::initDeleteFrames()
 	else
 	{
 
-		for(int i = 0;i < 60;i++)
+		for (int i = 0;i < 60;i++)
 			if (i < 30)
 				codePanelColor[i][1] = sf::Color::Red;
 			else
@@ -527,7 +527,7 @@ void SinglyLinkedListMainState::initDeleteFrames()
 
 		for (int i = kDelete; i < oldElements.size(); i++)
 		{
-			preb_nodes[i ] = b_nodes[i + 1];
+			preb_nodes[i] = b_nodes[i + 1];
 			prew_nodes[i] = w_nodes[i + 1];
 			if (i > 0)
 			{
@@ -588,7 +588,7 @@ void SinglyLinkedListMainState::initUpdateFrames()
 		codePanel.setText(codeLines[i], i);
 	deleteAllFrames();
 	Engine::Frame b_frame, w_frame;
-	
+
 	initNode(allElements);
 	initEdge(allElements);
 	if (kUpdate == -1)
@@ -745,7 +745,7 @@ void SinglyLinkedListMainState::initSearchFrames()
 		changeWNode(curBreakpoint, 0, 59, w_nodes[curBreakpoint], node);
 		return;
 	}
-	
+
 
 	for (int i = 0; i < codeLines.size(); i++)
 		codePanel.setText(codeLines[i], i);
@@ -785,7 +785,7 @@ void SinglyLinkedListMainState::initSearchFrames()
 	{
 		b_frames.push_back(b_frame);
 		w_frames.push_back(w_frame);
-	if (step < 30)
+		if (step < 30)
 			codePanelColor[step][1] = sf::Color::Red;
 		else
 			codePanelColor[step][3] = sf::Color::Red;
@@ -809,7 +809,7 @@ void SinglyLinkedListMainState::createCreateFrames(const std::vector<int>& nums)
 	LinkedList.removeAll();
 	if (nums.size() == 0)
 	{
-		
+
 	}
 	for (int x : nums) {
 		LinkedList.insert(x);
@@ -818,8 +818,8 @@ void SinglyLinkedListMainState::createCreateFrames(const std::vector<int>& nums)
 	for (int i = 0; i < nums.size(); i++)
 	{
 		allElements.push_back(nums[i]);
-		if(i != 0)
-		breakpoints.push_back(i * 60);
+		if (i != 0)
+			breakpoints.push_back(i * 60);
 		else
 			breakpoints.push_back(0);
 	}
@@ -853,16 +853,16 @@ void SinglyLinkedListMainState::createInsertFrames(int k, int v)
 
 	}
 
-	breakpoints.push_back((kInsert+1) * 60 - 1);
-	aniSlider.setNumPart((kInsert+1) * 60);
+	breakpoints.push_back((kInsert + 1) * 60 - 1);
+	aniSlider.setNumPart((kInsert + 1) * 60);
 	aniSlider.setBreakpoints(breakpoints);
 	aniSlider.setPart(0);
 	currentFrameIndex = 0;
 	isPlaying = true;
 	isPaused = false;
 	isEnd = false;
-	numFrames = (kInsert+1) * 60;
-	
+	numFrames = (kInsert + 1) * 60;
+
 }
 void SinglyLinkedListMainState::createDeleteFrame(int v)
 {
@@ -874,7 +874,7 @@ void SinglyLinkedListMainState::createDeleteFrame(int v)
 	if (kDelete == -1) {
 		kDelete = -1;
 		std::vector<int> allElements = LinkedList.getAllElements();
-		for(int i = 0;i < allElements.size();i++)
+		for (int i = 0;i < allElements.size();i++)
 			breakpoints.push_back(i * 60);
 		breakpoints.push_back(allElements.size() * 60 - 1);
 		aniSlider.setNumPart(allElements.size() * 60);
@@ -950,7 +950,7 @@ void SinglyLinkedListMainState::createSearchFrames(int num)
 	isPlaying = true;
 	isPaused = false;
 	isEnd = false;
-	numFrames = (kSearch+1) * 60 ;
+	numFrames = (kSearch + 1) * 60;
 
 
 }
@@ -1001,8 +1001,8 @@ void SinglyLinkedListMainState::updateFrames()
 	if (currentFrameIndex == 0 || aniSlider.getBreakpoints(prevFrameIndex) != aniSlider.getBreakpoints(currentFrameIndex)) {
 		if (currentState == "create")
 		{
-			initCreateFrames();	
-		}	
+			initCreateFrames();
+		}
 		if (currentState == "insert")
 		{
 			initInsertFrames();

@@ -57,6 +57,7 @@ void GraphMainState::selectEdge(int edgeIndex, bool isSelected, int index1, int 
 
 void GraphMainState::moveTo(int from, int edgeIndex, int index1, int index2)
 {
+    tmpEdgeIndex = edgeIndex;
     sf::Vector2f start = fGraph.edges[edgeIndex].edge.getStart();
     sf::Vector2f end = fGraph.edges[edgeIndex].edge.getEnd();
     if (fGraph.edges[edgeIndex].from == from) {
@@ -87,8 +88,8 @@ void GraphMainState::preInitMstFrames()
     isSelectedMstFrames = true;
     isSelectedShortestPathFrames = false;
 
-    for (auto& node : fGraph.nodes) {
-        node.node.setTextUnder("");
+    for (int i = 0; i < fGraph.numNodes; i++) {
+        fGraph.nodes[i].node.setTextUnder("");
     }
     breakpoints.clear();
     mstArrs = graph.kruskal();

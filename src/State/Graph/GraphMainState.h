@@ -68,15 +68,13 @@ public:
 	Engine::Frame nextFrame;
 	Engine::Frame staticFrame;
 
-private:
 public:
 
 	const float RADIUS = 20;
 	Graph graph;
 	ForceGraph fGraph;
 	Edge tmpEdge;
-	Node nodes[100];
-	Edge edges[100];
+	int tmpEdgeIndex;
 
 	void initPreGraph();
 	void deleteAllFrames();
