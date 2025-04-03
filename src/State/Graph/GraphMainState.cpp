@@ -164,8 +164,9 @@ void GraphMainState::initSpeedSlider()
 {
 	speedSlider = Slider(sf::Vector2f{ aniSlider.getPositon().x + (aniSlider.getGlobalBounds().width - 300) / 2, playButton.getPosition().y + playButton.getGlobalBounds().height + 15 }, sf::Vector2f{ 300, 15.f }, sf::Vector2f{ 20, 20 });
 	speedSlider.setColor(LightGray, NavyBlue, GoldenOrange);
-	speedSlider.setNumPart(6);
-	speedSlider.setText("1.0x", "1.0x", 20, m_context->assetManager->getFont("Neon"), textColor);
+	speedSlider.setNumPart(7);
+	speedSlider.setText("0.5x", "1.0x", 20, m_context->assetManager->getFont("Neon"), textColor);
+	speedSlider.setPart(1);
 }
 
 void GraphMainState::initAniSlider()
@@ -487,10 +488,18 @@ void GraphMainState::handleAniSliderEvents(sf::Event event)
 void GraphMainState::handleSpeedSliderEvents(sf::Event event)
 {
 	speedSlider.handleEvent(event);
-	std::string st = "1.0x";
-	st[0] = char(speedSlider.getPartIndex() + 1 + '0');
+	std::string st;
+	int curSpeed = speedSlider.getPartIndex();
+	if (curSpeed == 0) st = "0.5x";
+	if (curSpeed == 1) st = "1.0x";
+	if (curSpeed == 2) st = "1.5x";
+	if (curSpeed == 3) st = "2.0x";
+	if (curSpeed == 4) st = "2.5x";
+	if (curSpeed == 5) st = "3.0x";
+	if (curSpeed == 6) st = "3.5x";
+	if (curSpeed == 7) st = "4.0x";
 	speedSlider.setMaxText(st);
-	*m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / static_cast<float>(speedSlider.getPartIndex() + 1));
+	*m_context->TIME_PER_FRAME = sf::seconds(1.f / 60.f / m_context->timeScale->at(curSpeed));
 }
 
 void GraphMainState::setDirected(bool directed)
