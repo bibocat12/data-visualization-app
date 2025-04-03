@@ -4,7 +4,7 @@ void TrieMainState::deleteAllFrames()
 {
 	b_frames.clear();
 	w_frames.clear();
-	breakpoints.clear();
+	//breakpoints.clear();
 	for (int i = 0; i < 60; i++) {
 		for (int j = 0; j < 7; j++) {
 			codePanelColor[i][j] = LavenderSoft;
@@ -504,7 +504,8 @@ void TrieMainState::initSearchFrames()
 void TrieMainState::createInsertFrames(std::string word)
 {
 	currentState = "insert";
-	deleteAllFrames();
+	//deleteAllFrames();
+	breakpoints.clear();
 	snapshots = trie.insertSnapshots(word);
 	std::cerr << "snapshots size: " << snapshots.size() << std::endl;
 	int numNodes = snapshots.size();
@@ -524,7 +525,8 @@ void TrieMainState::createInsertFrames(std::string word)
 void TrieMainState::createDeleteFrames(std::string word)
 {
 	currentState = "delete";
-	deleteAllFrames();
+	//deleteAllFrames();
+	breakpoints.clear();
 	snapshots = trie.removeSnapshots(word);
 	std::cerr << "snapshots size: " << snapshots.size() << std::endl;
 	int numNodes = snapshots.size();
@@ -544,7 +546,8 @@ void TrieMainState::createDeleteFrames(std::string word)
 void TrieMainState::createSearchFrames(std::string word)
 {
 	currentState = "search";
-	deleteAllFrames();
+	//deleteAllFrames();
+	breakpoints.clear();
 	snapshots = trie.searchSnapshots(word);
 	std::cerr << "snapshots size: " << snapshots.size() << std::endl;
 	int numNodes = snapshots.size();

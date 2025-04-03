@@ -101,7 +101,10 @@ public:
 	void initTreeFrames();
 	void merge(Tree234::Node* child, Tree234::Node* sibling, int index1, int index2);
 	void split(Tree234::Node* root, int index1, int index2);
+	void setSpacing(int nodeId);
 	void appearNode(int nodeId, int index1, int index2);
+	void markNode(int nodeId, int index1, int index2);
+	void removeNode(int nodeId, int index1, int index2);
 	void deleteEdge(int edgeId, int index1, int index2);
 	void connectEdge(int edgeId, int index1, int index2);
 	void moveEdge(int edgeId, sf::Vector2f diff, int index1, int index2);
