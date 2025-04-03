@@ -647,9 +647,9 @@ void Tree234MainState::handleButtonEvents(const sf::Event& event)
 
 sf::Vector2f Tree234MainState::middlePoint(std::vector<int> &nodes)
 {
-	float lx = b_nodes[nodes.front()].getPosition().x - SIDE / 2;
-	float ly = b_nodes[nodes.back()].getPosition().x + SIDE / 2;
-	return b_nodes[nodes.front()].getPosition() + sf::Vector2f((ly - lx) / 2.f -SIDE / 2, -SIDE / 2);
+	float lx = b_nodes[nodes.front()].getPosition().x -  b_nodes[nodes.front()].getGlobalBounds().width / 2;
+	float ly = b_nodes[nodes.back()].getPosition().x + b_nodes[nodes.back()].getGlobalBounds().width / 2;
+	return b_nodes[nodes.front()].getPosition() + sf::Vector2f((ly - lx) / 2.f - b_nodes[nodes.front()].getGlobalBounds().width / 2, -SIDE / 2);
 }
 
 void Tree234MainState::setEdgePos(Tree234::Node* par, Tree234::Node* cur, int id)

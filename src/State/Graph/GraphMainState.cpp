@@ -540,9 +540,9 @@ sf::Vector2f GraphMainState::randomNodePosition()
 
 void GraphMainState::handleButtonEvents(const sf::Event& event)
 {
+	handleMstButtonEvents(event);
 	handleSettingsButtonEvents(event);
 	handleShortestPathButtonEvents(event);
-	handleMstButtonEvents(event);
 	handleCreateButtonEvents(event);
 	handleInputButtonEvents(event);
 	handleHomeButtonEvents(event);

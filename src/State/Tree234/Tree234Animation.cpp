@@ -204,6 +204,42 @@ void Tree234MainState::split(Tree234::Node* root, int index1, int index2)
 	}
 }
 
+void Tree234MainState::setSpacing(int nodeId)
+{
+	for (int i = 0; i < maxDepth; i++) {
+		float len = 0;
+		for (auto node : nodes[i]) {
+			for (int x : node->nodes) {
+				len += b_nodes[x].getGlobalBounds().width;
+			}
+			len += spaceX;
+		}
+		if (len > 0) len -= spaceX;
+		float firX = (SCREEN_WIDTH - len) / 2.f;
+
+		float curPos = firX;
+		for (auto& node : nodes[i]) {
+			for (auto x : node->nodes) {
+				float curSide = b_nodes[x].getGlobalBounds().width;
+				b_nodes[x].setPosition(sf::Vector2f(curPos + curSide / 2.f, NodePos.y + (spaceY + SIDE) * i));
+				w_nodes[x].setPosition(sf::Vector2f(curPos + curSide / 2.f, NodePos.y + (spaceY + SIDE) * i));
+				curPos += curSide;
+			}
+			curPos += spaceX;
+		}
+	}
+
+	for (int i = 0; i < maxDepth; i++) {
+		for (auto& node : nodes[i]) {
+			if (node == nullptr) continue;
+			for (auto& child : node->children) {
+				if (child == nullptr) continue;
+				setEdgePos(node, child, child->edge);
+			}
+		}
+	}
+}
+
 void Tree234MainState::appearNode(int nodeId, int index1, int index2)
 {
 	for (int i = index1; i <= index2; i++) {
@@ -213,6 +249,47 @@ void Tree234MainState::appearNode(int nodeId, int index1, int index2)
 			b_nodes[nodeId].setFillColor(sf::Color::White);
 			w_nodes[nodeId].setFillColor(sf::Color::White);
 		}
+		
+		float t = static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
+		b_nodes[nodeId].setSide(SIDE * t);
+		w_nodes[nodeId].setSide(SIDE * t);
+		setSpacing(nodeId);
+		initTreeFrames();
+	}
+}
+
+void Tree234MainState::markNode(int nodeId, int index1, int index2)
+{
+	for (int i = index1; i <= index2; i++) {
+		b_nodes[nodeId].setFillColor(Orange);
+		w_nodes[nodeId].setFillColor(sf::Color::Red);
+		if (i == index2) {
+			b_nodes[nodeId].setFillColor(sf::Color::White);
+			w_nodes[nodeId].setFillColor(sf::Color::White);
+		}
+
+		initTreeFrames();
+	}
+}
+
+void Tree234MainState::removeNode(int nodeId, int index1, int index2)
+{
+	for (int i = index1; i <= index2; i++) {
+		b_nodes[nodeId].setFillColor(Orange);
+		w_nodes[nodeId].setFillColor(sf::Color::Red);
+		if (i == index2) {
+			b_nodes[nodeId].setFillColor(sf::Color::White);
+			w_nodes[nodeId].setFillColor(sf::Color::White);
+		}
+
+		float t = 1.f - static_cast<float> (i - index1 + 1) / (index2 - index1 + 1);
+		b_nodes[nodeId].setSide(SIDE * t);
+		w_nodes[nodeId].setSide(SIDE * t);
+		if (i - index1 + 1 == (index2 - index1 + 1) / 2) {
+			b_nodes[nodeId].setString("");
+			w_nodes[nodeId].setString("");
+		}
+		setSpacing(nodeId);
 		initTreeFrames();
 	}
 }
@@ -492,7 +569,7 @@ void Tree234MainState::initInsertFrames(int value)
 				}
 
 				initPreTree(tree234.snapshots[i - 1]);
-				for (int j = 0; j < 20; j++) {
+				for (int j = 0; j < 5; j++) {
 					initTreeFrames();
 				}
 				initPreTree(tree234.snapshots[i]);
@@ -500,7 +577,7 @@ void Tree234MainState::initInsertFrames(int value)
 				while (idx < tree234.operatedNodes[i][0]->keys.size() && tree234.operatedNodes[i][0]->keys[idx] < value) {
 					idx++;
 				}
-				appearNode(tree234.operatedNodes[i][0]->nodes[idx], 20, 59);
+				appearNode(tree234.operatedNodes[i][0]->nodes[idx], 5, 59);
 			}
 			
 			return;
@@ -824,13 +901,10 @@ void Tree234MainState::initDeleteFrames(int value)
 					}
 				}
 				initPreTree(tree234.snapshots[i - 1]);
-				appearNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 29);
-				if (tree234.operatedNodes[i].size() == 2) {
-					deleteEdge(tree234.operatedNodes[i][1]->edge, 0, 29);
-				}
-				initPreTree(tree234.snapshots[i]);
-				for (int j = 30; j < 60; j++) {
-					initTreeFrames();
+				removeNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 59);
+				if (tree234.operatedNodes[i].size() == 2 && tree234.operatedNodes[i][1]->nodes.size() == 1) {
+					deleteEdge(tree234.operatedNodes[i][1]->edge, 0, 59);
+				
 				}
 			}
 			else if (tree234.typeSnapshots[i] == "push_backNode") {
@@ -873,10 +947,9 @@ void Tree234MainState::initDeleteFrames(int value)
 					}
 				}
 				initPreTree(tree234.snapshots[i - 1]);
-				appearNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 29);
-				initPreTree(tree234.snapshots[i]);
-				for (int j = 30; j < 60; j++) {
-					initTreeFrames();
+				removeNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 59);
+				if (tree234.operatedNodes[i].size() == 2 && tree234.operatedNodes[i][1]->nodes.size() == 1) {
+					deleteEdge(tree234.operatedNodes[i][1]->edge, 0, 59);
 				}
 			} 
 			else if (tree234.typeSnapshots[i] == "replace") {
@@ -890,9 +963,9 @@ void Tree234MainState::initDeleteFrames(int value)
 				}
 
 				initPreTree(tree234.snapshots[i - 1]);
-				appearNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 29);
+				markNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 0, 29);
 				initPreTree(tree234.snapshots[i]);
-				appearNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 30, 59);
+				markNode(tree234.operatedNodes[i][0]->nodes[tree234.idxes[i]], 30, 59);
 			}
 			return;
 		}
