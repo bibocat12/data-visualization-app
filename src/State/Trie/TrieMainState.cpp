@@ -146,7 +146,7 @@ void TrieMainState::switchTheme() {
         searchButton.setTextColor(textColor);
         displayButton.setTextColor(textColor);
         title.setFillColor(textColor);
-        codePanel.setTextColor(textColor);
+        speedSlider.setTextColor(textColor);
     }
     else { // light mode
         backgroundColor = SuperLightPink;
@@ -161,7 +161,7 @@ void TrieMainState::switchTheme() {
         searchButton.setTextColor(textColor);
         displayButton.setTextColor(textColor);
         title.setFillColor(textColor);
-        codePanel.setTextColor(textColor);
+        speedSlider.setTextColor(textColor);
     }
 }
 
