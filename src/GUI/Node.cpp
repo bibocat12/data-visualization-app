@@ -77,6 +77,8 @@ void Node::setPosition(sf::Vector2f pos)
 			textBounds.top + textBounds.height / 2.0f);
 		text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
 			shapeBounds.top + shapeBounds.height / 2.0f);
+		textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
+		textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 	}
 	else {
 		squareShape.setOrigin(squareShape.getGlobalBounds().width / 2.0f,
@@ -90,6 +92,8 @@ void Node::setPosition(sf::Vector2f pos)
 			textBounds.top + textBounds.height / 2.0f);
 		text.setPosition(shapeBounds.left + shapeBounds.width / 2.0f,
 			shapeBounds.top + shapeBounds.height / 2.0f);
+		textUnder.setOrigin(textUnder.getGlobalBounds().width / 2, textUnder.getGlobalBounds().height / 2);
+		textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 	}
 }
 

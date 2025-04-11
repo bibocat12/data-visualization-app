@@ -87,7 +87,7 @@ std::vector<std::array<int, 3>> Graph::dijkstra(int source, int n)
             auto edge = edges[i];
             if (edge.u != u && edge.v != u) continue;
             if (edge.isDirected && edge.u != u) continue;
-            int v = edge.u ^ edge.v ^ u;
+            int v = (edge.u ^ edge.v ^ u);
             if (f[v] > fu + edge.weight) {
                 f[v] = fu + edge.weight;
                 q.push({ f[v], v });

@@ -60,8 +60,10 @@ void GraphMainState::moveTo(int from, int edgeIndex, int index1, int index2)
     tmpEdgeIndex = edgeIndex;
     sf::Vector2f start = fGraph.edges[edgeIndex].edge.getStart();
     sf::Vector2f end = fGraph.edges[edgeIndex].edge.getEnd();
-    if (fGraph.edges[edgeIndex].from == from) {
-        std::swap(start, end);
+    if (fGraph.edges[edgeIndex].to != from) {
+        start = fGraph.edges[edgeIndex].edge.getEnd();
+        end = fGraph.edges[edgeIndex].edge.getStart();
+        std::swap(fGraph.edges[edgeIndex].from, fGraph.edges[edgeIndex].to);
     }
     tmpEdge.setColor(Orange);
     tmpEdge.setDirected(false);
@@ -213,6 +215,7 @@ void GraphMainState::preInitShortestPathFrames(int s)
 
 void GraphMainState::initShortestPathFrames(int s)
 {
+    tmpEdgeIndex = -1;
     deleteAllFrames();
     fGraph.setColor(textColor, 1);
     for (auto& node : fGraph.nodes) {
@@ -326,9 +329,11 @@ void GraphMainState::updateFrames()
                 aniSlider.setPart(currentFrameIndex + 1);
                 setCodePanelColor(59);
                 currentFrame = frames.back();
+                tmpEdgeIndex = -1;
             }
         }
     }
+    
 }
 
 void GraphMainState::deleteOldFrames()
