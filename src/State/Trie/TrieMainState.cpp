@@ -1,5 +1,5 @@
-﻿#include "TrieMainState.h"
-#include <cmath> // Required for std::pow
+﻿#include "../../../header/State/Trie/TrieMainState.h"
+#include <cmath> 
 
 TrieMainState::TrieMainState(std::shared_ptr<Context>& context) : m_context(context) {
     // Init theme

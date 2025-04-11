@@ -1,4 +1,4 @@
-#include "Trie.h"
+#include "../../../header/State/Trie/Trie.h"
 #include <iostream> 
 
 Trie::Trie() : root(new TrieNode('\0', 0)), nextOrder(0) {} // Root node at depth 0

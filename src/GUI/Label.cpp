@@ -1,4 +1,4 @@
-#include "Label.h"
+#include "../../header/GUI/Label.h"
 
 Label::Label(std::string st, int charSize, sf::Vector2f size, sf::Color backColor, sf::Color textColor, sf::Font& font) {
 	text.setString(st);

@@ -1,4 +1,5 @@
-#include "ForceGraph.h"
+
+#include "../../header/GUI/ForceGraph.h"
 #include <cmath>
 #include <array>
 

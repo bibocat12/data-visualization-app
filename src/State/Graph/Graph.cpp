@@ -1,4 +1,4 @@
-#include "Graph.h"
+#include "../../../header/State/Graph/Graph.h"
 
 void Dsu::init() {
     for (int i = 0; i < maxn; i++) {

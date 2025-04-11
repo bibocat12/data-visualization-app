@@ -1,4 +1,4 @@
-#include "Panel.h"
+#include "../../header/GUI/Panel.h"
 
 Panel::Panel(sf::Vector2f pos, sf::Vector2f labelSize, sf::Color _textColor, sf::Color _panelColor, sf::Font& _font, int charSize) {
 	this->pos = pos;

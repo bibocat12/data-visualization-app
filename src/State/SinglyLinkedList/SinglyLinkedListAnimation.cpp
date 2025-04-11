@@ -1,4 +1,4 @@
-﻿#include "SinglyLinkedListMainState.h"
+﻿#include "../../../header/State/SinglyLinkedList/SinglyLinkedListMainState.h"
 
 void SinglyLinkedListMainState::initNode(std::vector<int>&getAllElements)
 {
@@ -622,6 +622,8 @@ void SinglyLinkedListMainState::initUpdateFrames()
 	}
 
 	allElements[kUpdate] = oldVUpdate;
+	initNode(allElements);
+	initEdge(allElements);
 
 	for (int i = 0; i < allElements.size(); i++)
 	{
@@ -664,6 +666,7 @@ void SinglyLinkedListMainState::initUpdateFrames()
 		allElements[kUpdate] = newVUpdate;
 		initNode(allElements);
 		initEdge(allElements);
+
 		for (int i = 0; i < allElements.size(); i++)
 		{
 			b_frame.addNode("1bnodes" + std::to_string(i), b_nodes[i]);
@@ -960,6 +963,8 @@ void SinglyLinkedListMainState::createUpdateFrames(int oldV, int newV)
 	deleteAllFrames();
 	breakpoints.clear();
 	kUpdate = LinkedList.search(oldV);
+	oldVUpdate = oldV;
+	newVUpdate = newV;
 	if (kUpdate == -1) {
 		std::vector<int> allElements = LinkedList.getAllElements();
 		for (int i = 0; i < allElements.size(); i++)

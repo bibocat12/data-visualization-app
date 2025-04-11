@@ -1,4 +1,4 @@
-#include "TrieMainState.h"
+#include "../../../header/State/Trie/TrieMainState.h"
 
 void TrieMainState::deleteAllFrames()
 {

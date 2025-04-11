@@ -1,4 +1,4 @@
-#include "GraphMainState.h"
+#include "../../../header/State/Graph/GraphMainState.h"
 
 void GraphMainState::switchTheme() {
 	*m_context->themeType ^= 1;

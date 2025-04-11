@@ -1,4 +1,4 @@
-#include "ImageButton.h"
+#include "../../header/GUI/ImageButton.h"
 
 
 ImageButton::ImageButton(const sf::Texture& normalTexture, float scaleX, float scaleY) {
