@@ -1,4 +1,4 @@
-#include "Node.h"
+#include "../../header/GUI/Node.h"
 
 Node::Node()
 {

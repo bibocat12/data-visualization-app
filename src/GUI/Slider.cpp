@@ -1,5 +1,4 @@
-
-#include "Slider.h"
+#include "../../header/GUI/Slider.h"
 
 Slider::Slider(sf::Vector2f pos, sf::Vector2f barSize, sf::Vector2f knobBarSize) {
 	bar.setPosition(pos);

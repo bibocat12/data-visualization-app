@@ -1,5 +1,4 @@
-#include "AssetManager.h"
-
+#include "../../header/StateMachine/AssetManager.h"	
 void Engine::AssetManager::loadTexture(std::string name, std::string fileName)
 {
 	std::unique_ptr<sf::Texture> texture = std::make_unique<sf::Texture>();

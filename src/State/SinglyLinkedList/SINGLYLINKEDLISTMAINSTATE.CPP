@@ -1,4 +1,4 @@
-﻿#include "SinglyLinkedListMainState.h"
+﻿#include "../../../header/State/SinglyLinkedList/SinglyLinkedListMainState.h"
 
 
 void SinglyLinkedListMainState::switchTheme() {

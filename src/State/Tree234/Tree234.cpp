@@ -1,4 +1,4 @@
-#include "Tree234.h"
+#include "../../../header/State/Tree234/Tree234.h"
 #include <algorithm>
 
 Tree234::Tree234() : root(new Node()) {}

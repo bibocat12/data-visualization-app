@@ -1,4 +1,4 @@
-#include "Button.h"
+#include "../../header/GUI/Button.h"
 
 
 Button::Button(std::string st, sf::Vector2f size, int charSize, sf::Color bgColor, sf::Color textColor) {

@@ -1,4 +1,4 @@
-#include "HeapMainState.h"
+#include "../../../header/State/Heap/HeapMainState.h"
 
 void HeapMainState::connectTwoNodes(int index, int index1, int index2, bool isEnd)
 {

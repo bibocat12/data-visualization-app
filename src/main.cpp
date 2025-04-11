@@ -1,7 +1,7 @@
 // main.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
 
-#include "App.h"
+#include "../header/App.h"
 
 int main()
 {

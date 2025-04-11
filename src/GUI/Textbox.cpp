@@ -1,4 +1,4 @@
-#include "Textbox.h"
+#include "../../header/GUI/Textbox.h"
 
 Textbox::Textbox(int size, sf::Color color, bool sel) {
 	textbox.setCharacterSize(size);

@@ -1,4 +1,4 @@
-#include "GraphMainState.h"
+#include "../../../header/State/Graph/GraphMainState.h"
 
 void GraphMainState::initPreGraph()
 {

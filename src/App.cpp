@@ -1,6 +1,6 @@
-#include "App.h"
+#include "../header/App.h"
 #include <SFML/System.hpp>
-#include "State/MenuState.h"
+
 
 App::App()
 	: m_context(std::make_shared<Context>())

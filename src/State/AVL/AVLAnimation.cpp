@@ -1,5 +1,4 @@
-#include "AVLMainState.h"
-
+#include "../../../header/State/AVL/AVLMainState.h"
 
 
 void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
@@ -34,6 +33,21 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 
 	PADDING_X = SCREEN_WIDTH / 2.0 - numNodes / 2.0 * DISTANCE_X;
 	PADDING_Y = 100;
+
+	for (int i = 0; i < 100; i++)
+	{
+		b_nodes[i].setRadius(0);
+		w_nodes[i].setRadius(0);
+		b_edges[i].setThickness(0);
+		w_edges[i].setThickness(0);
+		b_nodes[i].setPosition(sf::Vector2f(-100, -100));
+		w_nodes[i].setPosition(sf::Vector2f(-100, -100));
+		w_edges[i].setStart(sf::Vector2f(-100, -100));
+		w_edges[i].setEnd(sf::Vector2f(-100, -100));
+		b_edges[i].setStart(sf::Vector2f(-100, -100));
+		b_edges[i].setEnd(sf::Vector2f(-100, -100));
+
+	}
 
 	for (int i = 0; i < elements.size(); i++)
 	{
