@@ -8,7 +8,6 @@
 
 #include "../App.h"
 
-#include "../State/GameState.h"
 
 #include <SFML/Graphics.hpp>
 
