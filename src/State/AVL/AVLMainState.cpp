@@ -143,8 +143,9 @@ void AVLMainState::switchTheme() {
         insertButton.setTextColor(textColor);
         deleteButton.setTextColor(textColor);
         searchButton.setTextColor(textColor);
+        inorderButton.setTextColor(textColor);
         title.setFillColor(textColor);
-        codePanel.setTextColor(textColor);
+        speedSlider.setTextColor(textColor);
     }
     else if (*m_context->themeType == 0) { // light mode
         backgroundColor = SuperLightPink;
@@ -158,8 +159,9 @@ void AVLMainState::switchTheme() {
         insertButton.setTextColor(textColor);
         deleteButton.setTextColor(textColor);
         searchButton.setTextColor(textColor);
+        inorderButton.setTextColor(textColor);
         title.setFillColor(textColor);
-        codePanel.setTextColor(textColor);
+        speedSlider.setTextColor(textColor);
     }
 }
 

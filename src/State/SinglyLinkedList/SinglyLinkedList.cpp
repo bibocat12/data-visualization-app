@@ -7,8 +7,16 @@ SinglyLinkedList::SinglyLinkedList()
 	size = 0;
 }
 
-SinglyLinkedList::~SinglyLinkedList()
-{
+SinglyLinkedList::~SinglyLinkedList() {
+	Node* current = head;
+	while (current != nullptr) {
+		Node* nextNode = current->next;
+		delete current;
+		current = nextNode;
+	}
+	head = nullptr;
+	size = 0;
+	allElements.clear();
 }
 
 void SinglyLinkedList::init(std::vector<int> allElements)
