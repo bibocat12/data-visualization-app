@@ -3,11 +3,6 @@
 #include <cmath>
 #include <array>
 
-ForceGraph::ForceGraph() :
-    nodeRadius(0), edgeThickness(0), font(*(new sf::Font())), numNodes(0), numEdges(0)
-{
-}
-
 void ForceGraph::init(float nodeRadius, float edgeThickness, sf::Font& font, sf::Color color)
 {
     this->nodeRadius = nodeRadius;
@@ -18,7 +13,7 @@ void ForceGraph::init(float nodeRadius, float edgeThickness, sf::Font& font, sf:
 
 void ForceGraph::addNode(sf::Vector2f pos, const std::string& text) {
     Node node;
-    nodes[numNodes] = { node, sf::Vector2f(0, 0), false, false };
+    nodes.push_back({ node, sf::Vector2f(0, 0), false, false });
     nodes[numNodes].node.setRadius(nodeRadius);
     nodes[numNodes].node.setPosition(pos);
     nodes[numNodes].node.setCharacterSize(20);
@@ -34,7 +29,7 @@ void ForceGraph::addNode(sf::Vector2f pos, const std::string& text) {
 
 void ForceGraph::addEdge(int from, int to, int weight, bool directed) {
     Edge edge;
-    edges[numEdges] = { edge, from - 1, to - 1, weight };
+    edges.push_back({ edge, from - 1, to - 1, weight });
     edges[numEdges].edge.setThickness(edgeThickness);
     edges[numEdges].edge.setFont(font);
     edges[numEdges].edge.setDirected(directed);
@@ -142,7 +137,7 @@ void ForceGraph::update(float dt) {
     }
 }
 
-void ForceGraph::draw(sf::RenderWindow& window) {
+void ForceGraph::setPositionBeforeDrawing() {
     for (int i = 0; i < numEdges; i++) {
         sf::Vector2f start = nodes[edges[i].from].node.position;
         sf::Vector2f end = nodes[edges[i].to].node.position;
@@ -152,11 +147,20 @@ void ForceGraph::draw(sf::RenderWindow& window) {
 
         edges[i].edge.setStart(start + unitDir * nodeRadius);
         edges[i].edge.setEnd(end - unitDir * nodeRadius);
-        edges[i].edge.drawTo(window);
     }
 
     for (int i = 0; i < numNodes; i++) {
         nodes[i].node.setPosition(nodes[i].node.position);
+    }
+}
+
+void ForceGraph::draw(sf::RenderWindow& window) {
+    setPositionBeforeDrawing();
+    for (int i = 0; i < numEdges; i++) {
+        edges[i].edge.drawTo(window);
+    }
+
+    for (int i = 0; i < numNodes; i++) {
         nodes[i].node.drawTo(window);
     }
 }
@@ -204,4 +208,6 @@ void ForceGraph::reset()
 {
     numNodes = 0;
     numEdges = 0;
+    nodes.clear();
+    edges.clear();
 }

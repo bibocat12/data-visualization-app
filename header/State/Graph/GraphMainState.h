@@ -74,7 +74,7 @@ public:
 	Graph graph;
 	ForceGraph fGraph;
 	Edge tmpEdge;
-	int tmpEdgeIndex;
+	int tmpEdgeIndex = -1;
 
 	void initPreGraph();
 	void deleteAllFrames();

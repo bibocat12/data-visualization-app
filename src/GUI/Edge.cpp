@@ -43,6 +43,7 @@ void Edge::setThickness(float thickness)
 void Edge::setFont(sf::Font& font)
 {
 	this->font = font;
+	text.setFont(font);
 }
 
 sf::Color Edge::getColor()
@@ -87,7 +88,6 @@ void Edge::drawTo(sf::RenderWindow& window)
 	}
 	if (isWeight)
 	{
-		text.setFont(font);
 		text.setCharacterSize(20);
 		text.setFillColor(color);
 		text.setPosition((start + end) / 2.f);

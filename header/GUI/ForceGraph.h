@@ -10,7 +10,6 @@
 
 class ForceGraph {
 public:
-    ForceGraph();
     void init(float nodeRadius, float edgeThickness, sf::Font& font, sf::Color color);
     void addNode(sf::Vector2f pos, const std::string& text = "");
     void addEdge(int from, int to, int weight = 0, bool directed = false);
@@ -18,6 +17,7 @@ public:
     void setColor(sf::Color _color, bool changeFillColor);
     void applyForces(float dt, float optimalEdgeLength);
     void update(float dt);
+    void setPositionBeforeDrawing();
     void draw(sf::RenderWindow& window);
     int getNodeAtPosition(sf::Vector2f pos);
     void handleEvent(const sf::Event& event, sf::RenderWindow& window);
@@ -42,15 +42,15 @@ public:
 public:
     int numNodes = 0;
     int numEdges = 0;
-    forceNode nodes[100];
-    forceEdge edges[100];
+    std::vector<forceNode> nodes;
+    std::vector<forceEdge> edges;
 private:
 
     int selectedNode = -1;
     float idealEdgeLength = 300.0f;
     float nodeRadius;
     float edgeThickness;
-    sf::Font& font;
+    sf::Font font;
     sf::Color color;
 };
 

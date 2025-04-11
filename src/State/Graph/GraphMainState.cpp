@@ -232,6 +232,11 @@ GraphMainState::GraphMainState(std::shared_ptr<Context>& context) : m_context(co
 
 GraphMainState::~GraphMainState()
 {
+	frames.clear();
+	breakpoints.clear();
+	mstArrs.clear();
+	spArrs.clear();
+	fGraph.reset();
 }
 
 void GraphMainState::init()
@@ -274,7 +279,7 @@ void GraphMainState::processEvents()
 		handleSpeedSliderEvents(event);
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
-		if(isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) fGraph.handleEvent(event, *m_context->window);
+		if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) fGraph.handleEvent(event, *m_context->window);
 	}
 
 	createTextboxN.handleCursor();
@@ -313,12 +318,13 @@ void GraphMainState::update(const sf::Time& dt)
 
 	if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) {
 		fGraph.update(dt.asSeconds());
+		//fGraph.setPositionBeforeDrawing();
 		for (int i = 0; i < (int)frames.size(); i++) {
 			for (int j = 0; j < (int)fGraph.numNodes; j++) {
 				frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
 			}
 			for (int j = 0; j < (int)fGraph.numEdges; j++) {
-				if (j == tmpEdgeIndex) {
+				if (j == tmpEdgeIndex && isSelectedShortestPathFrames) {
 					sf::Vector2f start = fGraph.edges[tmpEdgeIndex].edge.getStart();
 					sf::Vector2f end = fGraph.edges[tmpEdgeIndex].edge.getEnd();
 					float t = static_cast<float>(i + 1) / 59;
@@ -354,7 +360,6 @@ void GraphMainState::draw()
 
 	themeButton.drawTo(*m_context->window);
 	homeButton.drawTo(*m_context->window);
-	//codePanel.draw(*m_context->window);
 
 	aniSlider.draw(*m_context->window);
 	speedSlider.draw(*m_context->window);
@@ -386,7 +391,9 @@ void GraphMainState::draw()
 		if(isSelectedMstFrames || isSelectedShortestPathFrames) codePanel.draw(*m_context->window);
 		fGraph.draw(*m_context->window);
 	}
-	if(!isEnd) currentFrame.drawAll(*m_context->window);
+	if (!isEnd) {
+		currentFrame.drawAll(*m_context->window);
+	}
 	m_context->window->display();
 
 }
@@ -630,7 +637,7 @@ void GraphMainState::handleCreateButtonEvents(sf::Event event)
 		createTextboxN.typedOnNum(event, *m_context->window);
 		createTextboxE.typedOnNum(event, *m_context->window);
 
-		if (randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
+		if(randomButton.isMouseOverCircle(*m_context->window) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 			int randomNum = Utils::rand(1, 12);
 			createTextboxN.insertNum(randomNum);
 		}
