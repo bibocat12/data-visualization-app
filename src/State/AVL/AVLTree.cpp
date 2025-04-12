@@ -115,6 +115,13 @@ int AVLTree::findMinRight(int value)
 std::vector<AVLTree::TreeSnapshot> AVLTree::insertSnapshots(int value)
 {
 	std::vector<TreeSnapshot> snapshots;
+	if (root == nullptr)
+	{
+		root = new Node(value);
+		TreeSnapshot snapshot;
+		recordSnapshot(snapshots, "end", root);
+		return snapshots;
+	}
 	root = insertSnapshot(root, value, snapshots);
 	recordSnapshot(snapshots, "end", root);
 	return snapshots;
@@ -125,6 +132,10 @@ std::vector<AVLTree::TreeSnapshot> AVLTree::removeSnapshots(int value)
 {
 	std::vector<TreeSnapshot> snapshots;
 	root = removeSnapshot(root, value, snapshots);
+	if (root == nullptr)
+	{
+		return snapshots;
+	}
 	recordSnapshot(snapshots, "end", root);
 	return snapshots;
 
@@ -427,6 +438,10 @@ AVLTree::Node* AVLTree::search(Node* node, int value)
 
 AVLTree::Node* AVLTree::create(Node* node, std::vector<int> elements)
 {
+	if (node != nullptr)
+	{
+		clear(node);
+	}
 	for (int element : elements)
 		node = insert(node, element);
 

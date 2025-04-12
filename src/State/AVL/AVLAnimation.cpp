@@ -40,12 +40,13 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 		w_nodes[i].setRadius(0);
 		b_edges[i].setThickness(0);
 		w_edges[i].setThickness(0);
-		b_nodes[i].setPosition(sf::Vector2f(-100, -100));
-		w_nodes[i].setPosition(sf::Vector2f(-100, -100));
-		w_edges[i].setStart(sf::Vector2f(-100, -100));
-		w_edges[i].setEnd(sf::Vector2f(-100, -100));
-		b_edges[i].setStart(sf::Vector2f(-100, -100));
-		b_edges[i].setEnd(sf::Vector2f(-100, -100));
+		b_nodes[i].setPosition(sf::Vector2f(-1000, -1000));
+		w_nodes[i].setPosition(sf::Vector2f(-1000, -1000));
+		w_edges[i].setStart(sf::Vector2f(-1000, -1000));
+		w_edges[i].setEnd(sf::Vector2f(-1000, -1000));
+		b_edges[i].setStart(sf::Vector2f(-1000, -1000));
+		b_edges[i].setEnd(sf::Vector2f(-1000, -1000));
+
 
 	}
 
@@ -64,9 +65,9 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 		b_nodes[i].setRadius(RADIUS);
 		b_nodes[i].setCharacterSize(RADIUS);
 		b_nodes[i].setString(std::to_string(elements[i]));
-		b_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::Black);
 		b_nodes[i].setTextColor(sf::Color::Black);
 		b_nodes[i].setPosition(pos);
+		b_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::Black);
 
 		w_nodes[i] = Node();
 		w_nodes[i].setFillColor(W_NODE_COLOR);
@@ -76,10 +77,10 @@ void AVLMainState::initNode(std::vector<int>& elements, std::vector<int>& depth)
 		w_nodes[i].setTextColor(sf::Color::Black);
 		w_nodes[i].setOutlineThickness(-3);
 		w_nodes[i].setCharacterSize(RADIUS);
-		w_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::Black);
 		w_nodes[i].setRadius(RADIUS);
 		w_nodes[i].setString(std::to_string(elements[i]));
 		w_nodes[i].setPosition(pos);
+		w_nodes[i].setTextUnder(std::to_string(depth[i]), 15, sf::Color::White);
 
 
 	}
@@ -156,6 +157,7 @@ void AVLMainState::changeBNode(int index, int index1, int index2, Node from, Nod
 		b_nodes[index].setFillColor(color);
 		b_nodes[index].setPosition(pos);
 		b_nodes[index].setOutlineColor(colorOutline);
+		b_nodes[index].setTextUnder(b_nodes[index].getStringUnder());
 		b_frames[i].addNode("1bnodes" + std::to_string(index), b_nodes[index]);
 	}
 }
@@ -191,6 +193,7 @@ void AVLMainState::changeWNode(int index, int index1, int index2, Node from, Nod
 		w_nodes[index].setFillColor(color);
 		w_nodes[index].setPosition(pos);
 		w_nodes[index].setOutlineColor(colorOutline);
+		w_nodes[index].setTextUnder(w_nodes[index].getStringUnder());
 		w_frames[i].addNode("1wnodes" + std::to_string(index), w_nodes[index]);
 	}
 }
@@ -250,7 +253,7 @@ void AVLMainState::deleteAllFrames()
 	b_frames.clear();
 	w_frames.clear();
 
-	for (int i = 0;i < 60;i++)
+	for (int i = 0; i < 60; i++)
 		for (int j = 0; j < 9; j++)
 			codePanelColor[i][j] = LavenderSoft;
 }
@@ -385,7 +388,7 @@ void AVLMainState::initInsertFrames()
 	std::string operation1;
 	if (currBreakpoint > 0)
 		operation1 = snapshots[currBreakpoint - 1].operation;
-	if (operation == "find" || operation.find("check") != std::string::npos)
+	if (operation == "find" || operation.find("check") != std::string::npos || operation == "end")
 	{
 		Engine::Frame b_frame, w_frame;
 		std::vector<int> inorder = snapshots[currBreakpoint].inorder;
@@ -422,10 +425,10 @@ void AVLMainState::initInsertFrames()
 
 		Node node = w_nodes[order];
 		node.setFillColor(W_NODE_COLOR_HOVER);
-		changeBNode(order, 1, 59, b_nodes[order], node);
+		changeBNode(order, 0, 59, b_nodes[order], node);
 		node = b_nodes[order];
 		node.setFillColor(B_NODE_COLOR_HOVER);
-		changeWNode(order, 1, 59, w_nodes[order], node);
+		changeWNode(order, 0, 59, w_nodes[order], node);
 	}
 	else
 	{
@@ -491,8 +494,8 @@ void AVLMainState::initInsertFrames()
 			if (prew_nodes[i].getPosition() != b_nodes[i].getPosition())
 			{
 
-				changeBNode(i, 1, 59, preb_nodes[i], b_nodes[i]);
-				changeWNode(i, 1, 59, prew_nodes[i], w_nodes[i]);
+				changeBNode(i, 0, 59, preb_nodes[i], b_nodes[i]);
+				changeWNode(i, 0, 59, prew_nodes[i], w_nodes[i]);
 
 			}
 
@@ -500,8 +503,8 @@ void AVLMainState::initInsertFrames()
 				continue;
 			if (parent[i] != -1 && preparent[i] != -1)
 			{
-				changeBEdge(i, 1, 59, preb_edges[i], b_edges[i]);
-				changeWEdge(i, 1, 59, prew_edges[i], w_edges[i]);
+				changeBEdge(i, 0, 59, preb_edges[i], b_edges[i]);
+				changeWEdge(i, 0, 59, prew_edges[i], w_edges[i]);
 			}
 			else if (parent[i] != -1)
 				x = i;
@@ -510,8 +513,8 @@ void AVLMainState::initInsertFrames()
 		}
 		if (x != -1)
 		{
-			changeBEdge(x, 1, 59, preb_edges[y], b_edges[x]);
-			changeWEdge(x, 1, 59, prew_edges[y], w_edges[x]);
+			changeBEdge(x, 0, 59, preb_edges[y], b_edges[x]);
+			changeWEdge(x, 0, 59, prew_edges[y], w_edges[x]);
 		}
 	}
 }
@@ -950,7 +953,7 @@ void AVLMainState::createInorderFrames()
 	int numNodes = inorderSnapshot.size();
 
 
-	for (int i = 0;i < numNodes;i++)
+	for (int i = 0; i < numNodes; i++)
 		breakpoints.push_back(i * 60);
 	breakpoints.push_back(numNodes * 60 - 1);
 	aniSlider.setNumPart(numNodes * 60);
