@@ -62,6 +62,12 @@ namespace Engine
         return panelMap.at(name);
     }
 
+    void Frame::clear()
+    {
+        nodeMap.clear();
+        edgeMap.clear();
+    }
+
     void Frame::drawAll(sf::RenderWindow& window)
     {
         for (auto& button : buttonMap)

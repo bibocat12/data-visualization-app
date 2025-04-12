@@ -228,14 +228,17 @@ GraphMainState::GraphMainState(std::shared_ptr<Context>& context) : m_context(co
 	fGraph.init(20, 3.5f, m_context->assetManager->getFont("JetBrainsMono-Regular"), textColor);
 	setDirected(isDirected);
 	setFixed(isFixed);
+	graph.init();
 }
 
 GraphMainState::~GraphMainState()
 {
+	for (auto& frame : frames) frame.clear();
 	frames.clear();
 	breakpoints.clear();
 	mstArrs.clear();
 	spArrs.clear();
+	graph.reset();
 	fGraph.reset();
 }
 
@@ -279,7 +282,7 @@ void GraphMainState::processEvents()
 		handleSpeedSliderEvents(event);
 		handleButtonEvents(event);
 		handleAniSliderEvents(event);
-		if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) fGraph.handleEvent(event, *m_context->window);
+		fGraph.handleEvent(event, *m_context->window);
 	}
 
 	createTextboxN.handleCursor();
@@ -316,25 +319,24 @@ void GraphMainState::update(const sf::Time& dt)
 
 	}
 
-	if (isEnd || (!isSelectedMstFrames && !isSelectedShortestPathFrames)) {
-		fGraph.update(dt.asSeconds());
-		//fGraph.setPositionBeforeDrawing();
-		for (int i = 0; i < (int)frames.size(); i++) {
-			for (int j = 0; j < (int)fGraph.numNodes; j++) {
-				frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
+	fGraph.update(dt.asSeconds());
+	fGraph.setPositionBeforeDrawing();
+	for (int i = 0; i < (int)frames.size(); i++) {
+		for (int j = 0; j < (int)fGraph.numNodes; j++) {
+			frames[i].getNode("1nodes" + std::to_string(j)).setPosition(fGraph.nodes[j].node.position);
+			frames[i].getNode("1nodes" + std::to_string(j)).setTextUnderPosition();
+		}
+		for (int j = 0; j < (int)fGraph.numEdges; j++) {
+			if (j == tmpEdgeIndex && isSelectedShortestPathFrames) {
+				sf::Vector2f start = fGraph.edges[tmpEdgeIndex].edge.getStart();
+				sf::Vector2f end = fGraph.edges[tmpEdgeIndex].edge.getEnd();
+				float t = static_cast<float>(i + 1) / 59;
+				tmpEdge.setStart(start);
+				tmpEdge.setEnd(start + t * (end - start));
+				frames[i].addEdge("9tmpedges999", tmpEdge);
 			}
-			for (int j = 0; j < (int)fGraph.numEdges; j++) {
-				if (j == tmpEdgeIndex && isSelectedShortestPathFrames) {
-					sf::Vector2f start = fGraph.edges[tmpEdgeIndex].edge.getStart();
-					sf::Vector2f end = fGraph.edges[tmpEdgeIndex].edge.getEnd();
-					float t = static_cast<float>(i + 1) / 59;
-					tmpEdge.setStart(start);
-					tmpEdge.setEnd(start + t * (end - start));
-					frames[i].addEdge("9tmpedges999", tmpEdge);
-				}
-				frames[i].getEdge("2edges" + std::to_string(j)).setStart(fGraph.edges[j].edge.getStart());
-				frames[i].getEdge("2edges" + std::to_string(j)).setEnd(fGraph.edges[j].edge.getEnd());
-			}
+			frames[i].getEdge("2edges" + std::to_string(j)).setStart(fGraph.edges[j].edge.getStart());
+			frames[i].getEdge("2edges" + std::to_string(j)).setEnd(fGraph.edges[j].edge.getEnd());
 		}
 	}
 	updateFrames();
