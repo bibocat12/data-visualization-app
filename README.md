@@ -1,6 +1,6 @@
 # Data Structures Visualizer
 
-**Data Structures Visualizer** is an educational tool that visualizes the internal operations of basic data structures such as linked lists, stacks, queues, binary search trees, heaps, tries, graphs, and more. The project is built using **C++** and the **SFML** graphics library, aimed at supporting students in learning and reinforcing concepts from the **Data Structures (CS163)** course at the University of Science – VNU-HCM.
+**Data Structures Visualizer** is an tool that visualizes the internal operations of basic data structures such as linked lists, heaps, tries, graphs. The project is built using **C++** and the **SFML** graphics library, aimed at supporting students in learning and reinforcing concepts from the **Data Structures (CS163)** course at the University of Science – VNU-HCM.
 
 ---
 
