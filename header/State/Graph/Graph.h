@@ -8,10 +8,10 @@
 
 class Dsu {
 private:
-    static const int maxn = 100 + 7;
-    int p[maxn];
+    std::vector<int> p;
 public:
     void init();
+    void clear();
     int find_node(int u);
     bool Union(int u, int v);
 };
@@ -29,10 +29,10 @@ public:
 
     std::vector<edge> edges;
     Dsu ds;
-    static const int maxn = 107;
-    int c[maxn][maxn];
+    std::vector<std::vector<int>> c;
 
 public:
+    void init();
     void setDirected(int directed);
     void addEdge(int u, int v, int weight = 0, bool isDirected = false);
     void reset();

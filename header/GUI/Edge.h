@@ -33,7 +33,6 @@ private:
 	int weight;
 	float thickness;
 	sf::Text text;
-	sf::Font font;
 	sf::Color color;
 	sf::Vector2f start;
 	sf::Vector2f end;

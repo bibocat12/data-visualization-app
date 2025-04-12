@@ -42,7 +42,6 @@ void Edge::setThickness(float thickness)
 
 void Edge::setFont(sf::Font& font)
 {
-	this->font = font;
 	text.setFont(font);
 }
 

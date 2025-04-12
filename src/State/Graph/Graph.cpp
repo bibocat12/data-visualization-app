@@ -1,9 +1,12 @@
 #include "../../../header/State/Graph/Graph.h"
 
 void Dsu::init() {
-    for (int i = 0; i < maxn; i++) {
-        p[i] = -1;
-    }
+    p.resize(100, -1);
+}
+
+void Dsu::clear()
+{
+    p.clear();
 }
 
 int Dsu::find_node(int u) {
@@ -18,6 +21,12 @@ bool Dsu::Union(int u, int v) {
     p[u] += p[v];
     p[v] = u;
     return true;
+}
+
+void Graph::init()
+{
+    ds.init();
+    c.assign(100, std::vector<int>(100, 0));
 }
 
 void Graph::setDirected(int directed)
@@ -35,12 +44,7 @@ void Graph::addEdge(int u, int v, int weight, bool isDirected) {
 
 void Graph::reset() {
     edges.clear();
-    for (int i = 0; i < maxn; i++) {
-        for (int j = 0; j < maxn; j++) {
-            c[i][j] = 0;
-        }
-    }
-    ds.init();
+    ds.clear();
 }
 
 bool Graph::hasEdge(int u, int v) {

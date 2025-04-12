@@ -30,7 +30,7 @@ namespace Engine
         Edge& getEdge(const std::string& name);
         sf::Text& getText(const std::string& name);
         Panel& getPanel(const std::string& name);
-
+        void clear();
         void drawAll(sf::RenderWindow& window);
     private:
         std::unordered_map<std::string, Button> buttonMap;
