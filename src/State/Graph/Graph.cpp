@@ -45,6 +45,9 @@ void Graph::addEdge(int u, int v, int weight, bool isDirected) {
 void Graph::reset() {
     edges.clear();
     ds.clear();
+    for (int i = 0; i < 100; i++) {
+        for (int j = 0; j < 100; j++) c[i][j] = 0;
+    }
 }
 
 bool Graph::hasEdge(int u, int v) {

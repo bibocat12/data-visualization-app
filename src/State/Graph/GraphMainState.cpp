@@ -658,10 +658,10 @@ void GraphMainState::handleCreateButtonEvents(sf::Event event)
 			createTextboxE.setSelected(false);
 
 			// Build graph
-			
+
 			deleteOldFrames();
-			fGraph.reset();
 			graph.reset();
+			fGraph.reset();
 			for (int i = 1; i <= n; i++) {
 				fGraph.addNode(randomNodePosition(), std::to_string(i));
 			}
@@ -732,8 +732,8 @@ void GraphMainState::handleInputButtonEvents(sf::Event event)
 				std::string filename = selection[0];  // Get the file path
 
 				std::ifstream fileIn(filename);
-					
-				deleteAllFrames();
+				
+				deleteOldFrames();
 				graph.reset();
 				fGraph.reset();
 				if (fileIn.is_open()) {
@@ -806,7 +806,7 @@ void GraphMainState::handleInputButtonEvents(sf::Event event)
 				inputTextbox[i].setSelected(false);
 			}
 
-			deleteAllFrames();
+			deleteOldFrames();
 			graph.reset();
 			fGraph.reset();
 			for (int i = 1; i <= n; i++) {
