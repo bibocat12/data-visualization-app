@@ -70,6 +70,11 @@ void Node::setTextUnderPosition() {
 	textUnder.setPosition(shape.getPosition().x, shape.getPosition().y + shape.getRadius() * 1.25);
 }
 
+std::string Node::getTextUnderString()
+{
+	return stringUnder;
+}
+
 void Node::setPosition(sf::Vector2f pos)
 {
 	this->position = pos;
