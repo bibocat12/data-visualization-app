@@ -108,7 +108,7 @@ void GraphMainState::initFunctionButton() {
 	createTextboxE.setLimit(true, 2);
 
 	initTextbox(inputTextbox[numMatrix - 1], 15, textColor, m_context->assetManager->getFont("JetBrainsMono-Regular"), sf::Vector2f{5 + createButton.getPositon().x + createButton.getGlobalBounds().width, createButton.getPositon().y });
-	inputTextbox[numMatrix - 1].setConstText(std::to_string(numMatrix) + "   ");
+	inputTextbox[numMatrix - 1].setConstText(std::to_string(numMatrix - 1) + "   ");
 	inputTextbox[numMatrix - 1].setLimit(true, 38);
 	inputTextbox[numMatrix - 1].setBox(sf::Vector2f(400, 30), BeigeGrey);
 	inputTextbox[numMatrix - 1].setLineBoundingBox(DarkBeigeGrey);
