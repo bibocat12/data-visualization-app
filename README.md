@@ -1,6 +1,6 @@
 # Data Structures Visualizer
 
-**Data Structures Visualizer** is an tool that visualizes the internal operations of basic data structures such as linked lists, heaps, tries, graphs. The project is built using **C++** and the **SFML** graphics library, aimed at supporting students in learning and reinforcing concepts from the **Data Structures (CS163)** course at the University of Science – VNU-HCM.
+**Data Structures Visualizer** is an tool that visualizes the internal operations of basic data structures such as linked lists, heaps, tries, graphs. The project is built using **C++** and the **SFML** graphics library, from the **Data Structures (CS163)** course at the University of Science – VNU-HCM.
 
 ---
 
@@ -47,7 +47,7 @@
 
 ```bash
 git clone https://github.com/bibocat12/data-visualization-app
-cd data-structures-visualizer
+cd data-visualization-app
 
 # Create a build directory
 mkdir build
