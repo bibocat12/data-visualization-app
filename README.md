@@ -46,7 +46,7 @@
 ### Build and Run (Command Line)
 
 ```bash
-git clone https://github.com/your-username/data-structures-visualizer.git
+git clone https://github.com/bibocat12/data-visualization-app
 cd data-structures-visualizer
 
 # Create a build directory
